@@ -23,8 +23,7 @@
         "jms/di-extra-bundle": "1.4.0",
         "jms/serializer": "0.15.0",
         "jms/serializer-bundle": "0.13.0",
-        "nelmio/api-doc-bundle": "2.4.*",
-        "guzzlehttp/guzzle": "4.*"
+        "nelmio/api-doc-bundle": "2.4.*"
     },
     "scripts": {
         "post-install-cmd": [
