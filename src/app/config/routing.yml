@@ -1,0 +1,4 @@
+seer_uk_rest:
+    resource: "@SeerUKRestBundle/Resources/config/routing.yml"
+    prefix:   /
+

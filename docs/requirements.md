@@ -3,6 +3,8 @@
 
 Property Privately shall be powered by a RESTful API service. The API shall be the only method for the front-end to interacr with data, and as such it has to support all of the possible requests that may be made of it. 
 
+---
+
 ### Implementation Requirements
 
 This part is mainly for me to be able to visibly see the things I need to write for this to be possible.
