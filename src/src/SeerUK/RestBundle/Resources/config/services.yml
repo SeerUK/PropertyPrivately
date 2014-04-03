@@ -2,6 +2,7 @@ parameters:
 #    seer_uk_rest.example.class: SeerUK\RestBundle\Example
 
 services:
-#    seer_uk_rest.example:
-#        class: %seer_uk_rest.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    seer_uk_rest.listener.exception_listener:
+        class: SeerUK\RestBundle\EventListener\ExceptionListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
