@@ -14,6 +14,7 @@ namespace SeerUK\RestBundle\EventListener;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use SeerUK\RestBundle\Exception\ExceptionWrapper;
 
 /**
  * Exception Listener
@@ -23,24 +24,9 @@ class ExceptionListener
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
-        $body      = array(
-            'code'     => $exception->getCode(),
-            'type'     => get_class($exception),
-            'message'  => $exception->getMessage()
-        );
-
-        if ($previous = $exception->getPrevious()) {
-            $body['previous'] = array();
-
-            do {
-                $body['previous'][] = array(
-                    'code'    => $previous->getCode(),
-                    'message' => $previous->getMessage(),
-                );
-            } while ($previous = $previous->getPrevious());
-        }
-
-        $response = new JsonResponse();
+        $body      = new ExceptionWrapper($exception);
+        $response  = new JsonResponse();
+        $response->setData($body);
 
         if ($exception instanceof HttpExceptionInterface) {
             $response->setStatusCode($exception->getStatusCode());
@@ -48,24 +34,6 @@ class ExceptionListener
         } else {
             $response->setStatusCode(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        // if ($exception instanceof RestfulExceptionInterface) {
-        //     $body['errors'] = array();
-
-        //     foreach ($exception->getErrors() as $error) {
-        //         if ( ! $error instanceof ValidationErrorInterface) {
-        //             continue;
-        //         }
-
-        //         $body['errors'][] = array(
-        //             'code'    => $error->getCode(),
-        //             'field'   => $error->getField(),
-        //             'message' => $error->getMessage(),
-        //         );
-        //     }
-        // }
-
-        $response->setData($body);
 
         $event->setResponse($response);
     }
