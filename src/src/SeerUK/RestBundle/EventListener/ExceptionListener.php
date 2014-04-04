@@ -15,7 +15,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use SeerUK\RestBundle\Exception\ExceptionWrapper;
+use SeerUK\RestBundle\Wrapper\Exception\ExceptionWrapper;
 
 /**
  * Exception Listener

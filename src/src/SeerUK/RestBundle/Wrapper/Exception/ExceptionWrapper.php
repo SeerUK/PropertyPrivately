@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SeerUK\RestBundle\Exception;
+namespace SeerUK\RestBundle\Wrapper\Exception;
 
 use SeerUK\RestBundle\Validator\Exception\ConstraintViolationException;
 
