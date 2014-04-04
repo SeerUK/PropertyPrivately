@@ -28,9 +28,9 @@ class ConstraintViolationException extends \RuntimeException
      *
      * @param ConstraintViolationList $constraintViolations
      */
-    public function __construct(ConstraintViolationList $constraintViolations)
+    public function __construct(ConstraintViolationList $constraintViolations, \Exception $previous = null)
     {
-        parent::__construct(sprintf('Constraint violation, %d error(s).', count($constraintViolations)));
+        parent::__construct(sprintf('Constraint violation, %d error(s).', count($constraintViolations)), 400, $previous);
 
         $this->constraintViolations = $constraintViolations;
     }

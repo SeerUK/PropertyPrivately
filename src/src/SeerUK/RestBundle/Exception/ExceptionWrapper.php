@@ -62,7 +62,7 @@ class ExceptionWrapper extends \ArrayObject
     {
         $errors = array();
         if ($exception instanceof ConstraintViolationException) {
-            foreach ($exception->getValidationErrors() as $error) {
+            foreach ($exception->getConstraintViolationList() as $error) {
                 $errors[] = array(
                     'code'    => $error->getCode(),
                     'field'   => $error->getRoot(),

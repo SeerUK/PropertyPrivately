@@ -11,6 +11,7 @@
 
 namespace SeerUK\RestBundle\EventListener;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -21,6 +22,26 @@ use SeerUK\RestBundle\Exception\ExceptionWrapper;
  */
 class ExceptionListener
 {
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * Set up Exception Listener
+     *
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * Hijack Exception Handler
+     *
+     * @param  GetResponseForExceptionEvent $event
+     */
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $exception = $event->getException();
@@ -34,6 +55,14 @@ class ExceptionListener
         } else {
             $response->setStatusCode(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        $this->logger->error(sprintf(
+            '"%s" with message "%s" on line %d in %s.',
+            get_class($exception),
+            $exception->getMessage(),
+            $exception->getLine(),
+            $exception->getFile()
+        ));
 
         $event->setResponse($response);
     }

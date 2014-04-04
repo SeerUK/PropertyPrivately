@@ -4,5 +4,7 @@ parameters:
 services:
     seer_uk_rest.listener.exception_listener:
         class: SeerUK\RestBundle\EventListener\ExceptionListener
+        arguments:
+            logger: '@logger'
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
