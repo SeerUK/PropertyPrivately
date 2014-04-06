@@ -12,9 +12,9 @@
 namespace SeerUK\RestBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolation;
+use SeerUK\RestBundle\HttpFoundation\HalJsonResponse;
 use SeerUK\RestBundle\Validator\Exception\ConstraintViolationException;
 
 /**
@@ -38,6 +38,6 @@ class TestController extends Controller
             );
         }
 
-        return new JsonResponse(array('oops' => 'heh'));
+        return new HalJsonResponse(array('oops' => 'heh'));
     }
 }

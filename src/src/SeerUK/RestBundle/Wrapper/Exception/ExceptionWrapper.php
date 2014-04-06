@@ -16,49 +16,100 @@ use SeerUK\RestBundle\Validator\Exception\ConstraintViolationException;
 /**
  * Exception Wrapper
  */
-class ExceptionWrapper extends \ArrayObject
+class ExceptionWrapper
 {
     /**
      * @var integer|string
      */
-    public $code;
+    private $code;
 
     /**
      * @var string
      */
-    public $type;
+    private $type;
 
     /**
      * @var string
      */
-    public $message;
+    private $message;
 
     /**
      * @var array|\ArrayObject
      */
-    public $errors;
+    private $errors;
 
     /**
      * @var array|\ArrayObject
      */
-    public $previous;
+    private $previous;
 
     public function __construct(\Exception $exception)
     {
-        $this->setFlags(self::STD_PROP_LIST);
-
         $this->type    = get_class($exception);
         $this->code    = $exception->getCode();
         $this->message = $exception->getMessage();
 
-        $this->errors   = $this->getErrors($exception);
-        $this->previous = $this->getPrevious($exception);
+        $this->errors   = $this->setErrors($exception);
+        $this->previous = $this->setPrevious($exception);
     }
 
     /**
-     * @todo NYI
+     * Get code
+     *
+     * @return mixed
      */
-    private function getErrors(\Exception $exception)
+    public function getCode()
+    {
+        return $this->code;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Get message
+     *
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * Get errors
+     *
+     * @return array
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    /**
+     * Get previous exception
+     *
+     * @return array
+     */
+    public function getPrevious()
+    {
+        return $this->previous;
+    }
+
+    /**
+     * Sets all validation errors
+     *
+     * @param  \Exception $exception
+     * @return array
+     */
+    public function setErrors(\Exception $exception)
     {
         $errors = array();
         if ($exception instanceof ConstraintViolationException) {
@@ -74,14 +125,13 @@ class ExceptionWrapper extends \ArrayObject
         return $errors;
     }
 
-
     /**
-     * Gets all linked exceptions
+     * Sets all linked exceptions
      *
      * @param  \Exception $exception
      * @return array
      */
-    private function getPrevious(\Exception $exception)
+    public function setPrevious(\Exception $exception)
     {
         $exceptions = array();
         while ($exception = $exception->getPrevious()) {
@@ -93,5 +143,21 @@ class ExceptionWrapper extends \ArrayObject
         }
 
         return $exceptions;
+    }
+
+    /**
+     * Convert wrapped content to array
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return array(
+            'code'     => $this->getCode(),
+            'type'     => $this->getType(),
+            'message'  => $this->getMessage(),
+            'errors'   => $this->getErrors(),
+            'previous' => $this->getPrevious(),
+        );
     }
 }

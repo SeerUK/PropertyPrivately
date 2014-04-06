@@ -20,11 +20,7 @@ This part is mainly for me to be able to visibly see the things I need to write 
     - Easy to compile a list of errors from exception message
     - Can provide other useful tools like logging on certain exceptions (perhaps a parameter for the constructor?)
 * View system:
-    - Possibly make use of view models and presenters again
-        + View models should be identical to the ones used in DWI
-        + Presenters could do with a different name, and being a bit more reusable (i.e. if there is more than one place preparing a view model for displaying a house, that's silly, make it DRY)
-    - Could potentially contain information related to the request for debugging. 
-        + Maybe have a debugging mode for this kind of thing, rather than this information being prepared all the time. Though, it shouldn't cause much overhead), i.e. route, parameters, format, dump of template variables, status code (should also be part of the response on error)
+    - Potentially handle HAL aspects in an OO way. Maybe create a HalJsonResponse class that extends the Symfony JsonResponse class?
 * Some means of disable CSRF and enabling a custom solution.
 * Utility classes:
     - HTTP status codes in plain text class
