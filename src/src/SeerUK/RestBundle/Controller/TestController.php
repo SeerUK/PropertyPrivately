@@ -12,10 +12,7 @@
 namespace SeerUK\RestBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\ConstraintViolation;
-use SeerUK\RestBundle\HttpFoundation\HalJsonResponse;
-use SeerUK\RestBundle\Validator\Exception\ConstraintViolationException;
+use SeerUK\RestBundle\Hal\HalLink;
 
 /**
  * Test Controller
@@ -24,20 +21,14 @@ class TestController extends Controller
 {
     public function testAction()
     {
-        try {
-            throw new \Exception('This is a test, this exception was thrown and caught before the constraint exception!');
-        } catch (\Exception $e) {
-            // Catch previous exception, but maintain the fact that it was there, and throw new one:
-            throw new ConstraintViolationException(
-                new ConstraintViolationList(array(
-                    new ConstraintViolation('That was not found!', 'Not sure what this means', array('or', 'this'), 'destination', 'a path', '23', 1, 404),
-                    new ConstraintViolation('Bad data.', 'Not sure what this means', array('or', 'this'), 'date', 'a path', '23', 1, 400),
-                    new ConstraintViolation('Bad data.', 'Not sure what this means', array('or', 'this'), 'modified', 'a path', '23', 1, 400),
-                )),
-                $e
-            );
-        }
+        $router   = $this->get('router');
+        $request  = $this->get('request');
+        $response = $this->get('seer_uk_rest.hal_response_json');
+        $response->addLink(new HalLink($router->generate($request->get('_route'))), 'next');
+        $response->setData(array(
+            'oops' => 'heh'
+        ));
 
-        return new HalJsonResponse(array('oops' => 'heh'));
+        return $response;
     }
 }

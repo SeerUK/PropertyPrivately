@@ -9,14 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SeerUK\RestBundle\HttpFoundation;
-
-use SeerUK\RestBundle\Model\NestableModelInterface;
+namespace SeerUK\RestBundle\Hal;
 
 /**
  * HAL Link Collection
  */
-class HalLinkCollection
+class HalLinkCollection implements \JsonSerializable
 {
     /**
      * @var array
@@ -140,29 +138,12 @@ class HalLinkCollection
     }
 
     /**
-     * Partially recursive converstion of array of HalLink(s) to regular array
+     * Select data to serialise
      *
-     * @param  array  $links
-     * @return array
+     * @return mixed
      */
-    private function convertLinkArrayToArray(array $links)
+    public function jsonSerialize()
     {
-        return array_map(function($link) {
-            if ($link instanceof HalLink) {
-                return $link->toArray();
-            } elseif (is_array($link)) {
-                return $this->convertLinkArrayToArray($link);
-            }
-        }, $links);
-    }
-
-    /**
-     * Convert this collection to a standard array for JSON encoding
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return $this->convertLinkArrayToArray($this->getLinks());
+        return $this->getLinks();
     }
 }

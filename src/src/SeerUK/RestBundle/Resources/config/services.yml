@@ -1,10 +1,25 @@
 parameters:
-#    seer_uk_rest.example.class: SeerUK\RestBundle\Example
+    # HAL
+    seer_uk_rest.hal_response_factory.class: SeerUK\RestBundle\Hal\Factory\HalResponseFactory
+    seer_uk_rest.hal_response_json.class: SeerUK\RestBundle\Hal\Response\HalJsonResponse
 
 services:
     seer_uk_rest.listener.exception_listener:
         class: SeerUK\RestBundle\EventListener\ExceptionListener
         arguments:
+            response: '@seer_uk_rest.hal_response_json'
             logger: '@logger'
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+    # HAL
+    seer_uk_rest.hal_response_factory:
+        class: "%seer_uk_rest.hal_response_factory.class%"
+
+    seer_uk_rest.hal_response_json:
+        class: "%seer_uk_rest.hal_response_json.class%"
+        factory_service: seer_uk_rest.hal_response_factory
+        factory_method: buildJsonResponse
+        arguments:
+            - '@request_stack'
+            - '@router'

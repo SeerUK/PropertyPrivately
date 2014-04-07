@@ -9,26 +9,46 @@
  * file that was distributed with this source code.
  */
 
-namespace SeerUK\RestBundle\HttpFoundation;
+namespace SeerUK\RestBundle\Hal;
 
 /**
  * HAL Link Resource
  */
-class HalLink
+class HalLink implements \JsonSerializable
 {
+    /**
+     * @var string
+     */
     private $href;
 
+    /**
+     * Constructor
+     *
+     * @param string $href
+     * @param array  $attributes
+     */
     public function __construct($href, $attributes = array())
     {
         $this->setHref($href);
         // $this->setAttributes($attributes);
     }
 
+    /**
+     * Get href
+     *
+     * @return string
+     */
     public function getHref()
     {
         return $this->href;
     }
 
+    /**
+     * Set href
+     *
+     * @param  string $href
+     * @return HalLink
+     */
     public function setHref($href)
     {
         // Validate URL here?
@@ -38,10 +58,15 @@ class HalLink
         return $this;
     }
 
-    public function toArray()
+    /**
+     * Select data to serialise
+     *
+     * @return mixed
+     */
+    public function jsonSerialize()
     {
         return array(
-            'href' => $this->href,
+            'href' => $this->getHref(),
         );
     }
 }
