@@ -14,7 +14,7 @@ namespace SeerUK\RestBundle\Hal\Factory;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\RequestStack;
 use SeerUK\RestBundle\Hal\Response\HalJsonResponse;
-use SeerUK\RestBundle\Hal\Link\HalLink;
+use SeerUK\RestBundle\Hal\Link\Link;
 
 /**
  * Hal Response Factory
@@ -51,7 +51,7 @@ class HalResponseFactory
     public function buildJsonResponse()
     {
         $response = new HalJsonResponse();
-        $response->addLink(new HalLink($this->request->getRequestUri()), 'self');
+        $response->addLink(new Link($this->request->getRequestUri()), 'self');
 
         return $response;
     }

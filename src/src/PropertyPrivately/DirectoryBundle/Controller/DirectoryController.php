@@ -12,7 +12,7 @@
 namespace PropertyPrivately\DirectoryBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use SeerUK\RestBundle\Hal\Link\HalLink;
+use SeerUK\RestBundle\Hal\Link\Link as HalLink;
 
 /**
  * Directory Controller

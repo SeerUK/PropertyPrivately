@@ -11,10 +11,13 @@
 
 namespace SeerUK\RestBundle\Hal\Link;
 
+use SeerUK\RestBundle\Hal\CollectionInterface;
+use SeerUK\RestBundle\Hal\ResourceInterface;
+
 /**
  * HAL Link Collection
  */
-class HalLinkCollection implements \JsonSerializable
+class LinkCollection implements \JsonSerializable, CollectionInterface
 {
     /**
      * @var array
@@ -32,29 +35,29 @@ class HalLinkCollection implements \JsonSerializable
     /**
      * Add a child HalLink
      *
-     * @param  HalLink $child
+     * @param  ResourceInterface $resource
      * @param  string            $name
      * @param  boolean           $append
      * @return HalLinkCollection
      */
-    public function addLink(HalLink $child, $name, $append = null)
+    public function add(ResourceInterface $resource, $name, $append = null)
     {
         if ( ! $append) {
-            $this->links[$name] = $child;
+            $this->links[$name] = $resource;
         } else {
-            $temp = array();
+            $appended = array();
 
             if ($this->hasLink($name)) {
                 if (is_array($this->getLink($name))) {
-                    $temp = $this->getLink($name);
+                    $appended = $this->getLink($name);
                 } else {
-                    $temp[] = $this->getLink($name);
+                    $appended[] = $this->getLink($name);
                 }
             }
 
-            $temp[] = $child;
+            $appended[] = $resource;
 
-            $this->links[$name] = $temp;
+            $this->links[$name] = $appended;
         }
 
         return $this;
@@ -66,7 +69,7 @@ class HalLinkCollection implements \JsonSerializable
      * @param  string $name
      * @return array|HalLink
      */
-    public function getLink($name)
+    public function get($name)
     {
         return $this->links[$name];
     }
@@ -76,7 +79,7 @@ class HalLinkCollection implements \JsonSerializable
      *
      * @return array
      */
-    public function getLinks()
+    public function getAll()
     {
         return $this->links;
     }
@@ -87,7 +90,7 @@ class HalLinkCollection implements \JsonSerializable
      * @param  string  $name
      * @return boolean
      */
-    public function hasLink($name)
+    public function has($name)
     {
         return isset($this->links[$name]);
     }
@@ -97,9 +100,9 @@ class HalLinkCollection implements \JsonSerializable
      *
      * @return boolean
      */
-    public function hasLinks()
+    public function hasAny()
     {
-        return (bool) $this->countLinks();
+        return (bool) $this->count();
     }
 
     /**
@@ -108,7 +111,7 @@ class HalLinkCollection implements \JsonSerializable
      * @param  string $name
      * @return HalLinkCollection
      */
-    public function removeLink($name)
+    public function remove($name)
     {
         unset($this->links[$name]);
 
@@ -120,7 +123,7 @@ class HalLinkCollection implements \JsonSerializable
      *
      * @return HalLinkCollection
      */
-    public function clearLinks()
+    public function clear()
     {
         $this->links = array();
 
@@ -132,7 +135,7 @@ class HalLinkCollection implements \JsonSerializable
      *
      * @return integer
      */
-    public function countLinks()
+    public function count()
     {
         return count($this->links);
     }
@@ -144,6 +147,6 @@ class HalLinkCollection implements \JsonSerializable
      */
     public function jsonSerialize()
     {
-        return $this->getLinks();
+        return $this->getAll();
     }
 }

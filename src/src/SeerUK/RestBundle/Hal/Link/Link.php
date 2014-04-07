@@ -11,10 +11,12 @@
 
 namespace SeerUK\RestBundle\Hal\Link;
 
+use SeerUK\RestBundle\Hal\ResourceInterface;
+
 /**
  * HAL Link Resource
  */
-class HalLink implements \JsonSerializable
+class Link implements \JsonSerializable, ResourceInterface
 {
     /**
      * @var string

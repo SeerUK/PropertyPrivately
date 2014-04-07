@@ -13,8 +13,8 @@ namespace SeerUK\RestBundle\Hal\Response;
 
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use SeerUK\RestBundle\Hal\Link\HalLinkCollection;
-use SeerUK\RestBundle\Hal\Link\HalLink;
+use SeerUK\RestBundle\Hal\Link\LinkCollection;
+use SeerUK\RestBundle\Hal\Link\Link;
 
 /**
  * HAL JSON Response
@@ -22,7 +22,7 @@ use SeerUK\RestBundle\Hal\Link\HalLink;
 class HalJsonResponse extends JsonResponse
 {
     /**
-     * @var HalLinkCollection
+     * @var LinkCollection
      */
     private $linkCollection;
 
@@ -40,7 +40,7 @@ class HalJsonResponse extends JsonResponse
      */
     public function __construct($data = null, $status = 200, $headers = array())
     {
-        $this->linkCollection = new HalLinkCollection();
+        $this->linkCollection = new LinkCollection();
         // $this->embeddedCollection = new HalEmbeddedCollection();
 
         parent::__construct('', $status, $headers);
@@ -70,8 +70,8 @@ class HalJsonResponse extends JsonResponse
      */
     public function updateContent()
     {
-        if ($this->linkCollection->hasLinks()) {
-            $this->rawData['_links']    = $this->linkCollection;
+        if ($this->linkCollection->hasAny()) {
+            $this->rawData['_links'] = $this->linkCollection;
         }
 
         // if ($this->embeddedCollection->hasEmbeddedContent()) {
@@ -84,14 +84,14 @@ class HalJsonResponse extends JsonResponse
     /**
      * Add a HAL link
      *
-     * @param  HalLink $link
+     * @param  Link    $link
      * @param  string  $name
      * @param  boolean $append
      * @return HalJsonResponse
      */
-    public function addLink(HalLink $link, $name, $append = null)
+    public function addLink(Link $link, $name, $append = null)
     {
-        $this->linkCollection->addLink($link, $name, $append);
+        $this->linkCollection->add($link, $name, $append);
 
         return $this->updateContent();
     }
@@ -105,9 +105,9 @@ class HalJsonResponse extends JsonResponse
     public function addLinks(array $links)
     {
         foreach ($links as $rel => $link) {
-            if ( ! $link instanceof HalLink) {
+            if ( ! $link instanceof Link) {
                 throw new \InvalidArgumentException(
-                    __METHOD__ . ': Expected SeerUK\RestBundle\Hal\HalLink, but got "' . gettype($link) . '"'
+                    __METHOD__ . ': Expected SeerUK\RestBundle\Hal\Link\Link, but got "' . gettype($link) . '"'
                 );
             }
 
