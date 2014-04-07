@@ -106,8 +106,9 @@ class HalJsonResponse extends JsonResponse
     {
         foreach ($links as $rel => $link) {
             if ( ! $link instanceof Link) {
+                $type = is_object($link) ? get_class($link) : gettype($link);
                 throw new \InvalidArgumentException(
-                    __METHOD__ . ': Expected SeerUK\RestBundle\Hal\Link\Link, but got "' . gettype($link) . '"'
+                    __METHOD__ . ': Expected SeerUK\RestBundle\Hal\Link\Link, but got "' . $type . '"'
                 );
             }
 

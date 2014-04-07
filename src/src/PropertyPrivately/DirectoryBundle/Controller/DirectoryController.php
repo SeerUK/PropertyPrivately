@@ -29,6 +29,8 @@ class DirectoryController extends Controller
         $router   = $this->get('router');
         $response = $this->get('seer_uk_rest.hal_response_json');
 
+        $response->addLinks(array('test'));
+
         // Generate directory index links
         $links = array();
 

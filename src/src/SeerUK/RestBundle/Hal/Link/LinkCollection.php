@@ -13,6 +13,7 @@ namespace SeerUK\RestBundle\Hal\Link;
 
 use SeerUK\RestBundle\Hal\CollectionInterface;
 use SeerUK\RestBundle\Hal\ResourceInterface;
+use SeerUK\RestBundle\Hal\Link\Link;
 
 /**
  * HAL Link Collection
@@ -42,6 +43,12 @@ class LinkCollection implements \JsonSerializable, CollectionInterface
      */
     public function add(ResourceInterface $resource, $name, $append = null)
     {
+        if ( ! $resource instanceof Link) {
+            throw new \InvalidArgumentException(
+                __METHOD__ . ': Expected SeerUK\RestBundle\Hal\Link\Link, but got "' . get_class($resource) . '"'
+            );
+        }
+
         if ( ! $append) {
             $this->links[$name] = $resource;
         } else {
