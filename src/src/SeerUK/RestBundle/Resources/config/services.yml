@@ -7,7 +7,7 @@ services:
     seer_uk_rest.listener.exception_listener:
         class: SeerUK\RestBundle\EventListener\ExceptionListener
         arguments:
-            response: '@seer_uk_rest.hal_response_json'
+            response: '@seer_uk_rest.hal_response_factory'
             logger: '@logger'
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
@@ -15,11 +15,11 @@ services:
     # HAL
     seer_uk_rest.hal_response_factory:
         class: "%seer_uk_rest.hal_response_factory.class%"
+        arguments:
+            - '@request_stack'
+            - '@router'
 
     seer_uk_rest.hal_response_json:
         class: "%seer_uk_rest.hal_response_json.class%"
         factory_service: seer_uk_rest.hal_response_factory
         factory_method: buildJsonResponse
-        arguments:
-            - '@request_stack'
-            - '@router'

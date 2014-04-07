@@ -13,8 +13,8 @@ namespace SeerUK\RestBundle\Hal\Response;
 
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use SeerUK\RestBundle\Hal\HalLinkCollection;
-use SeerUK\RestBundle\Hal\HalLink;
+use SeerUK\RestBundle\Hal\Link\HalLinkCollection;
+use SeerUK\RestBundle\Hal\Link\HalLink;
 
 /**
  * HAL JSON Response
@@ -27,7 +27,7 @@ class HalJsonResponse extends JsonResponse
     private $linkCollection;
 
     /**
-     * @var array|\ArrayObject
+     * @var array
      */
     private $rawData;
 
@@ -70,8 +70,13 @@ class HalJsonResponse extends JsonResponse
      */
     public function updateContent()
     {
-        $this->rawData['_links']    = $this->linkCollection;
-        $this->rawData['_embedded'] = array();
+        if ($this->linkCollection->hasLinks()) {
+            $this->rawData['_links']    = $this->linkCollection;
+        }
+
+        // if ($this->embeddedCollection->hasEmbeddedContent()) {
+            // $this->rawData['_embedded'] = array();
+        // }
 
         return parent::setData($this->rawData);
     }
@@ -89,5 +94,26 @@ class HalJsonResponse extends JsonResponse
         $this->linkCollection->addLink($link, $name, $append);
 
         return $this->updateContent();
+    }
+
+    /**
+     * Add HAL links to link collection
+     *
+     * @param  array $links
+     * @return HalJsonResponse
+     */
+    public function addLinks(array $links)
+    {
+        foreach ($links as $rel => $link) {
+            if ( ! $link instanceof HalLink) {
+                throw new \InvalidArgumentException(
+                    __METHOD__ . ': Expected SeerUK\RestBundle\Hal\HalLink, but got "' . gettype($link) . '"'
+                );
+            }
+
+            $this->addLink($link, $rel);
+        }
+
+        return $this;
     }
 }

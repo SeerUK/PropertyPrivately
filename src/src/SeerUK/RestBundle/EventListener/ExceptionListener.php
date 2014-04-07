@@ -12,11 +12,10 @@
 namespace SeerUK\RestBundle\EventListener;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use SeerUK\RestBundle\Hal\HalLink;
+use SeerUK\RestBundle\Hal\Factory\HalResponseFactory;
+use SeerUK\RestBundle\Hal\Response\HalJsonResponse;
 use SeerUK\RestBundle\Wrapper\Exception\ExceptionWrapper;
 
 /**
@@ -30,19 +29,19 @@ class ExceptionListener
     private $logger;
 
     /**
-     * @var Symfony\Component\HttpFoundation\Request
+     * @var Symfony\Component\HttpFoundation\Response
      */
-    private $request;
+    private $response;
 
     /**
      * Set up Exception Listener
      *
      * @param LoggerInterface $logger
      */
-    public function __construct(Response $response, LoggerInterface $logger)
+    public function __construct(HalResponseFactory $responseFactory, LoggerInterface $logger)
     {
         $this->logger   = $logger;
-        $this->response = $response;
+        $this->response = $responseFactory->buildJsonResponse();
     }
 
     /**

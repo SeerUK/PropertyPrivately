@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SeerUK\RestBundle\Hal;
+namespace SeerUK\RestBundle\Hal\Link;
 
 /**
  * HAL Link Collection

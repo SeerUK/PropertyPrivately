@@ -1,6 +1,6 @@
 <?php
 
-namespace SeerUK\RestBundle\Tests\Controller;
+namespace PropertyPrivately\DirectoryBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 

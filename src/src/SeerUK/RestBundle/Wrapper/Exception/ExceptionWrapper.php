@@ -152,12 +152,19 @@ class ExceptionWrapper
      */
     public function toArray()
     {
-        return array(
-            'code'     => $this->getCode(),
-            'type'     => $this->getType(),
-            'message'  => $this->getMessage(),
-            'errors'   => $this->getErrors(),
-            'previous' => $this->getPrevious(),
-        );
+        $exception = array();
+        $exception['code'] = $this->getCode();
+        $exception['type'] = $this->getType();
+        $exception['message'] = $this->getMessage();
+
+        if ($errors = $this->getErrors()) {
+            $exception['errors'] = $errors;
+        }
+
+        if ($previous = $this->getPrevious()) {
+            $exception['previous'] = $previous;
+        }
+
+        return $exception;
     }
 }
