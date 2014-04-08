@@ -1,25 +1,25 @@
 parameters:
     # HAL
-    seer_uk_rest.hal_response_factory.class: SeerUK\RestBundle\Hal\Factory\HalResponseFactory
-    seer_uk_rest.hal_response_json.class: SeerUK\RestBundle\Hal\Response\HalJsonResponse
+    seer_uk_rest.hal_root_resource_factory.class: SeerUK\RestBundle\Hal\Factory\RootResourceFactory
+    seer_uk_rest.hal_root_resource.class: SeerUK\RestBundle\Hal\Resource\Resource
 
 services:
     seer_uk_rest.listener.exception_listener:
         class: SeerUK\RestBundle\EventListener\ExceptionListener
         arguments:
-            response: '@seer_uk_rest.hal_response_factory'
+            response: '@seer_uk_rest.hal_root_resource_factory'
             logger: '@logger'
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 
     # HAL
-    seer_uk_rest.hal_response_factory:
-        class: "%seer_uk_rest.hal_response_factory.class%"
+    seer_uk_rest.hal_root_resource_factory:
+        class: "%seer_uk_rest.hal_root_resource_factory.class%"
         arguments:
             - '@request_stack'
             - '@router'
 
-    seer_uk_rest.hal_response_json:
-        class: "%seer_uk_rest.hal_response_json.class%"
-        factory_service: seer_uk_rest.hal_response_factory
-        factory_method: buildJsonResponse
+    seer_uk_rest.hal_root_resource:
+        class: "%seer_uk_rest.hal_root_resource.class%"
+        factory_service: seer_uk_rest.hal_root_resource_factory
+        factory_method: build

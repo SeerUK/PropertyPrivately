@@ -12,10 +12,10 @@
 namespace SeerUK\RestBundle\EventListener;
 
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
-use SeerUK\RestBundle\Hal\Factory\HalResponseFactory;
-use SeerUK\RestBundle\Hal\Response\HalJsonResponse;
+use SeerUK\RestBundle\Hal\Factory\RootResourceFactory;
 use SeerUK\RestBundle\Wrapper\Exception\ExceptionWrapper;
 
 /**
@@ -38,10 +38,10 @@ class ExceptionListener
      *
      * @param LoggerInterface $logger
      */
-    public function __construct(HalResponseFactory $responseFactory, LoggerInterface $logger)
+    public function __construct(RootResourceFactory $resourceFactory, LoggerInterface $logger)
     {
         $this->logger   = $logger;
-        $this->response = $responseFactory->buildJsonResponse();
+        $this->resource = $resourceFactory->build();
     }
 
     /**
@@ -54,13 +54,15 @@ class ExceptionListener
         $exception = $event->getException();
         $wrapper   = new ExceptionWrapper($exception);
 
-        $this->response->setData($wrapper->toArray());
+        $this->resource->setVariables($wrapper->toArray());
+
+        $response = new JsonResponse($this->resource);
 
         if ($exception instanceof HttpExceptionInterface) {
-            $this->response->setStatusCode($exception->getStatusCode());
-            $this->response->headers->replace($exception->getHeaders());
+            $response->setStatusCode($exception->getStatusCode());
+            $response->headers->replace($exception->getHeaders());
         } else {
-            $this->response->setStatusCode(HalJsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            $response->setStatusCode(HalJsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         $this->logger->error(sprintf(
@@ -71,6 +73,6 @@ class ExceptionListener
             $exception->getFile()
         ));
 
-        $event->setResponse($this->response);
+        $event->setResponse($response);
     }
 }

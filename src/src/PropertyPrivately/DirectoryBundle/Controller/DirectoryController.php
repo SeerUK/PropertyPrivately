@@ -12,9 +12,9 @@
 namespace PropertyPrivately\DirectoryBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use SeerUK\RestBundle\Hal\Link\Link as HalLink;
-use SeerUK\RestBundle\Hal\Link\LinkCollection as HalLinkCollection;
-use SeerUK\RestBundle\Hal\EmbeddedResource\EmbeddedResource as HalEmbeddedResource;
+use SeerUK\RestBundle\Hal\Resource\Resource as HalResource;
 
 /**
  * Directory Controller
@@ -29,7 +29,7 @@ class DirectoryController extends Controller
     public function indexAction()
     {
         $router   = $this->get('router');
-        $response = $this->get('seer_uk_rest.hal_response_json');
+        $resource = $this->get('seer_uk_rest.hal_root_resource');
 
         // Generate directory index links
         $links = array();
@@ -38,28 +38,21 @@ class DirectoryController extends Controller
         $links['pp:properties']   = new HalLink($router->generate('property_privately_directory_index'));
         $links['pp:users']        = new HalLink($router->generate('property_privately_directory_index'));
 
-        $response->addLinks($links);
+        $resource->addLinks($links);
 
-        return $response;
+        return new JsonResponse($resource);
     }
 
     public function embeddedTestAction()
     {
-        $response = $this->get('seer_uk_rest.hal_response_json');
+        $router   = $this->get('router');
+        $resource = $this->get('seer_uk_rest.hal_root_resource');
+        $resource->addLink(new HalLink($router->generate('property_privately_directory_embedded_test')), 'first');
+        $resource->addLink(new HalLink($router->generate('property_privately_directory_embedded_test')), 'last');
 
+        $resource->setVariable('embedded', $resource->getEmbeddedResourceCollection()->count());
+        $resource->setVariable('total', 0); // You'd really get this from the DB
 
-        $collection = new HalLinkCollection();
-        $collection->add(new HalLink('test'), 'test');
-
-        $resource = new HalEmbeddedResource('test');
-        $resource->setLinkCollection($collection);
-        // $resource->setEmbeddedResourceCollection($collection);
-        // $resource->setVariable('name', $value)
-
-        $response->addEmbeddedResource($resource, 'test', true);
-        $response->addEmbeddedResource($resource, 'test', true);
-        $response->addEmbeddedResource($resource, 'test', true);
-
-        return $response;
+        return new JsonResponse($resource);
     }
 }

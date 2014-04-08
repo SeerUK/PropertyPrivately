@@ -11,7 +11,7 @@
 
 namespace SeerUK\RestBundle\Hal;
 
-use SeerUK\RestBundle\Hal\ResourceInterface;
+use SeerUK\RestBundle\Hal\Resource\ResourceInterface;
 
 /**
  * Collection Interface

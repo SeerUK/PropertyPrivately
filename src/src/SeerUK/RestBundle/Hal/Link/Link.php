@@ -11,7 +11,7 @@
 
 namespace SeerUK\RestBundle\Hal\Link;
 
-use SeerUK\RestBundle\Hal\ResourceInterface;
+use SeerUK\RestBundle\Hal\Resource\ResourceInterface;
 
 /**
  * HAL Link Resource
