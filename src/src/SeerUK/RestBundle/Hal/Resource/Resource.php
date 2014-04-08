@@ -17,7 +17,7 @@ use SeerUK\RestBundle\Hal\Resource\EmbeddedResourceCollection;
 use SeerUK\RestBundle\Hal\Resource\ResourceInterface;
 
 /**
- * Hal Embedded Resource
+ * Hal Resource
  */
 class Resource implements \JsonSerializable, ResourceInterface
 {
@@ -60,7 +60,7 @@ class Resource implements \JsonSerializable, ResourceInterface
      * Set embedded resource collection
      *
      * @param  EmbeddedResourceCollection $collection
-     * @return EmbeddedResource
+     * @return Resource
      */
     public function setEmbeddedResourceCollection(EmbeddedResourceCollection $collection)
     {
@@ -83,7 +83,7 @@ class Resource implements \JsonSerializable, ResourceInterface
      * Set link collection
      *
      * @param LinkCollection $collection
-     * @return EmbeddedResource
+     * @return Resource
      */
     public function setLinkCollection(LinkCollection $collection)
     {
