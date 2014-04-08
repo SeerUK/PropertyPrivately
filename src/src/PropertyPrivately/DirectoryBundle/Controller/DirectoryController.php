@@ -13,6 +13,8 @@ namespace PropertyPrivately\DirectoryBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use SeerUK\RestBundle\Hal\Link\Link as HalLink;
+use SeerUK\RestBundle\Hal\Link\LinkCollection as HalLinkCollection;
+use SeerUK\RestBundle\Hal\EmbeddedResource\EmbeddedResource as HalEmbeddedResource;
 
 /**
  * Directory Controller
@@ -29,8 +31,6 @@ class DirectoryController extends Controller
         $router   = $this->get('router');
         $response = $this->get('seer_uk_rest.hal_response_json');
 
-        $response->addLinks(array('test'));
-
         // Generate directory index links
         $links = array();
 
@@ -46,7 +46,19 @@ class DirectoryController extends Controller
     public function embeddedTestAction()
     {
         $response = $this->get('seer_uk_rest.hal_response_json');
-        // $response->addEmbeddedResource();
+
+
+        $collection = new HalLinkCollection();
+        $collection->add(new HalLink('test'), 'test');
+
+        $resource = new HalEmbeddedResource('test');
+        $resource->setLinkCollection($collection);
+        // $resource->setEmbeddedResourceCollection($collection);
+        // $resource->setVariable('name', $value)
+
+        $response->addEmbeddedResource($resource, 'test', true);
+        $response->addEmbeddedResource($resource, 'test', true);
+        $response->addEmbeddedResource($resource, 'test', true);
 
         return $response;
     }

@@ -13,6 +13,8 @@ namespace SeerUK\RestBundle\Hal\Response;
 
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use SeerUK\RestBundle\Hal\EmbeddedResource\EmbeddedResourceCollection;
+use SeerUK\RestBundle\Hal\EmbeddedResource\EmbeddedResource;
 use SeerUK\RestBundle\Hal\Link\LinkCollection;
 use SeerUK\RestBundle\Hal\Link\Link;
 
@@ -21,6 +23,11 @@ use SeerUK\RestBundle\Hal\Link\Link;
  */
 class HalJsonResponse extends JsonResponse
 {
+    /**
+     * @var EmbeddedResourceCollection
+     */
+    private $embeddedResourceCollection;
+
     /**
      * @var LinkCollection
      */
@@ -40,8 +47,8 @@ class HalJsonResponse extends JsonResponse
      */
     public function __construct($data = null, $status = 200, $headers = array())
     {
-        $this->linkCollection = new LinkCollection();
-        // $this->embeddedCollection = new HalEmbeddedCollection();
+        $this->embeddedResourceCollection = new EmbeddedResourceCollection();
+        $this->linkCollection             = new LinkCollection();
 
         parent::__construct('', $status, $headers);
 
@@ -74,9 +81,9 @@ class HalJsonResponse extends JsonResponse
             $this->rawData['_links'] = $this->linkCollection;
         }
 
-        // if ($this->embeddedCollection->hasEmbeddedContent()) {
-            // $this->rawData['_embedded'] = array();
-        // }
+        if ($this->embeddedResourceCollection->hasAny()) {
+            $this->rawData['_embedded'] = $this->embeddedResourceCollection;
+        }
 
         return parent::setData($this->rawData);
     }
@@ -113,6 +120,43 @@ class HalJsonResponse extends JsonResponse
             }
 
             $this->addLink($link, $rel);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Add an embedded resource
+     *
+     * @param  EmbeddedResource $link
+     * @param  string           $name
+     * @param  boolean          $append
+     * @return HalJsonResponse
+     */
+    public function addEmbeddedResource(EmbeddedResource $resource, $name, $append = null)
+    {
+        $this->embeddedResourceCollection->add($resource, $name, $append);
+
+        return $this->updateContent();
+    }
+
+    /**
+     * Add embedded resources to embedded resource collection
+     *
+     * @param  array $links
+     * @return HalJsonResponse
+     */
+    public function addEmbeddedResources(array $resources)
+    {
+        foreach ($resources as $rel => $resource) {
+            if ( ! $resource instanceof EmbeddedResource) {
+                $type = is_object($resource) ? get_class($resource) : gettype($resource);
+                throw new \InvalidArgumentException(
+                    __METHOD__ . ': Expected SeerUK\RestBundle\Hal\EmbeddedResource\EmbeddedResource, but got "' . $type . '"'
+                );
+            }
+
+            $this->addEmbeddedResource($resource, $rel);
         }
 
         return $this;

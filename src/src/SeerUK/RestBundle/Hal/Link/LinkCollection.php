@@ -26,7 +26,7 @@ class LinkCollection implements \JsonSerializable, CollectionInterface
     private $links;
 
     /**
-     * Set up class variables
+     * Constructor
      */
     public function __construct()
     {
@@ -34,12 +34,12 @@ class LinkCollection implements \JsonSerializable, CollectionInterface
     }
 
     /**
-     * Add a child HalLink
+     * Add a child Link
      *
      * @param  ResourceInterface $resource
      * @param  string            $name
      * @param  boolean           $append
-     * @return HalLinkCollection
+     * @return LinkCollection
      */
     public function add(ResourceInterface $resource, $name, $append = null)
     {
@@ -54,11 +54,11 @@ class LinkCollection implements \JsonSerializable, CollectionInterface
         } else {
             $appended = array();
 
-            if ($this->hasLink($name)) {
-                if (is_array($this->getLink($name))) {
-                    $appended = $this->getLink($name);
+            if ($this->has($name)) {
+                if (is_array($this->get($name))) {
+                    $appended = $this->get($name);
                 } else {
-                    $appended[] = $this->getLink($name);
+                    $appended[] = $this->get($name);
                 }
             }
 
@@ -74,7 +74,7 @@ class LinkCollection implements \JsonSerializable, CollectionInterface
      * Get a specific link
      *
      * @param  string $name
-     * @return array|HalLink
+     * @return array|Link
      */
     public function get($name)
     {
@@ -116,7 +116,7 @@ class LinkCollection implements \JsonSerializable, CollectionInterface
      * Remove a link
      *
      * @param  string $name
-     * @return HalLinkCollection
+     * @return LinkCollection
      */
     public function remove($name)
     {
@@ -128,7 +128,7 @@ class LinkCollection implements \JsonSerializable, CollectionInterface
     /**
      * Clear links
      *
-     * @return HalLinkCollection
+     * @return LinkCollection
      */
     public function clear()
     {
