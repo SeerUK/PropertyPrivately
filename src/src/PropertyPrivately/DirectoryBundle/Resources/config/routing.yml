@@ -2,6 +2,6 @@ property_privately_directory_index:
     pattern:  /
     defaults: { _controller: PropertyPrivatelyDirectoryBundle:Directory:index }
 
-property_privately_directory_embedded_test:
-    pattern:  /embedded
-    defaults: { _controller: PropertyPrivatelyDirectoryBundle:Directory:embeddedTest }
+property_privately_directory_user_test:
+    pattern:  /users
+    defaults: { _controller: PropertyPrivatelyDirectoryBundle:Directory:userTest }

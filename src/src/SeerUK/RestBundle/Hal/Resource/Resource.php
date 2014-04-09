@@ -15,21 +15,22 @@ use SeerUK\RestBundle\Hal\Link\Link;
 use SeerUK\RestBundle\Hal\Link\LinkCollection;
 use SeerUK\RestBundle\Hal\Resource\EmbeddedResourceCollection;
 use SeerUK\RestBundle\Hal\Resource\ResourceInterface;
+use SeerUK\RestBundle\Model\VariableModelInterface;
 
 /**
  * Hal Embedded Resource
  */
-class Resource implements \JsonSerializable, ResourceInterface
+class Resource implements \JsonSerializable, ResourceInterface, VariableModelInterface
 {
     /**
-     * @var EmbeddedResourceCollection
+     * @var array
      */
-    private $embeddedResourceCollection;
+    private $links;
 
     /**
-     * @var LinkCollection
+     * @var array
      */
-    private $linkCollection;
+    private $resources;
 
     /**
      * @var array
@@ -39,77 +40,167 @@ class Resource implements \JsonSerializable, ResourceInterface
     /**
      * Constructor
      */
-    public function __construct()
+    public function __construct(array $variables = array())
     {
-        $this->setEmbeddedResourceCollection(new EmbeddedResourceCollection());
-        $this->setLinkCollection(new LinkCollection());
-        $this->setVariables(array());
+        $this->links     = array();
+        $this->resources = array();
+        $this->variables = $variables;
     }
 
     /**
-     * Get embedded resource collection
+     * Add a resource
      *
-     * @return EmbeddedResourceCollection
+     * @param string   $name
+     * @param Resource $resource
      */
-    public function getEmbeddedResourceCollection()
+    public function addResource($name, Resource $resource, $append = null)
     {
-        return $this->embeddedResourceCollection;
-    }
+        if ( ! $append) {
+            $this->resources[$name] = $resource;
+        } else {
+            $appended = array();
 
-    /**
-     * Set embedded resource collection
-     *
-     * @param  EmbeddedResourceCollection $collection
-     * @return EmbeddedResource
-     */
-    public function setEmbeddedResourceCollection(EmbeddedResourceCollection $collection)
-    {
-        $this->embeddedResourceCollection = $collection;
+            if ($this->hasResource($name)) {
+                if (is_array($this->getResource($name))) {
+                    $appended = $this->getResource($name);
+                } else {
+                    $appended[] = $this->getResource($name);
+                }
+            }
+
+            $appended[] = $resource;
+
+            $this->resources[$name] = $appended;
+        }
 
         return $this;
     }
 
     /**
-     * Get link collection
+     * Add resources
      *
-     * @return LinkCollection
+     * @param  array $resources
+     * @return Resource
      */
-    public function getLinkCollection()
+    public function addResources(array $resources)
     {
-        return $this->linkCollection;
-    }
-
-    /**
-     * Set link collection
-     *
-     * @param LinkCollection $collection
-     * @return EmbeddedResource
-     */
-    public function setLinkCollection(LinkCollection $collection)
-    {
-        $this->linkCollection = $collection;
+        foreach ($resources as $rel => $resource) {
+            $this->addResource($rel, $resource);
+        }
 
         return $this;
     }
 
     /**
-     * Add a link to the link collection in this resource
+     * Get a resource
      *
-     * @param  Link    $Link
+     * @param  string $name
+     * @return Resource
+     */
+    public function getResource($name)
+    {
+        return $this->resources[$name];
+    }
+
+    /**
+     * Get resources
+     *
+     * @return array
+     */
+    public function getResources()
+    {
+        return $this->resources;
+    }
+
+    /**
+     * Check if a resource exists
+     *
      * @param  string  $name
+     * @return boolean
+     */
+    public function hasResource($name)
+    {
+        return isset($this->resources[$name]);
+    }
+
+    /**
+     * Check if resources exist
+     *
+     * @return boolean
+     */
+    public function hasResources()
+    {
+        return (bool) $this->countResources();
+    }
+
+    /**
+     * Remove a resource
+     *
+     * @param  string $name
+     * @return Resource
+     */
+    public function removeResource($name)
+    {
+        unset($this->resources[$name]);
+
+        return $this;
+    }
+
+    /**
+     * Clear resources
+     *
+     * @return Resource
+     */
+    public function clearResources()
+    {
+        $this->resources = array();
+
+        return $this;
+    }
+
+    /**
+     * Count resources
+     *
+     * @return integer
+     */
+    public function countResources()
+    {
+        return count($this->resources);
+    }
+
+    /**
+     * Add a link
+     *
+     * @param  string  $name
+     * @param  Link    $link
      * @param  boolean $append
      * @return Resource
      */
-    public function addLink(Link $link, $name, $append = null)
+    public function addLink($name, Link $link, $append = null)
     {
-        $this->linkCollection->add($link, $name, $append);
+        if ( ! $append) {
+            $this->links[$name] = $link;
+        } else {
+            $appended = array();
+
+            if ($this->hasLink($name)) {
+                if (is_array($this->getLink($name))) {
+                    $appended = $this->getLink($name);
+                } else {
+                    $appended[] = $this->getLink($name);
+                }
+            }
+
+            $appended[] = $link;
+
+            $this->links[$name] = $appended;
+        }
 
         return $this;
     }
 
-
     /**
-     * Add an array of links to collection in this resource
+     * Add links
      *
      * @param  array $links
      * @return Resource
@@ -117,30 +208,87 @@ class Resource implements \JsonSerializable, ResourceInterface
     public function addLinks(array $links)
     {
         foreach ($links as $rel => $link) {
-            if ( ! $link instanceof Link) {
-                $type = is_object($link) ? get_class($link) : gettype($link);
-                throw new \InvalidArgumentException(
-                    __METHOD__ . ': Expected SeerUK\RestBundle\Hal\Link\Link, but instead received "' . $type . '"'
-                );
-            }
-
-            $this->addLink($link, $rel);
+            $this->addLink($rel, $link);
         }
 
         return $this;
     }
 
     /**
-     * Remove a link from the link collection in this resource
+     * Get a link
+     *
+     * @param  string $name
+     * @return Link
+     */
+    public function getLink($name)
+    {
+        return $this->links[$name];
+    }
+
+    /**
+     * Get links
+     *
+     * @return array
+     */
+    public function getLinks()
+    {
+        return $this->links;
+    }
+
+    /**
+     * Check if link exists
+     *
+     * @param  string $name
+     * @return boolean
+     */
+    public function hasLink($name)
+    {
+        return isset($this->links[$name]);
+    }
+
+    /**
+     * Check if links exist
+     *
+     * @return boolean
+     */
+    public function hasLinks()
+    {
+        return (bool) $this->countLinks();
+    }
+
+    /**
+     * Remove a link
      *
      * @param  string $name
      * @return Resource
      */
     public function removeLink($name)
     {
-        $this->linkCollection->remove($name);
+        unset($this->links[$name]);
 
         return $this;
+    }
+
+    /**
+     * Clear links
+     *
+     * @return Resource
+     */
+    public function clearLinks()
+    {
+        $this->links = array();
+
+        return $this;
+    }
+
+    /**
+     * Count links
+     *
+     * @return integer
+     */
+    public function countLinks()
+    {
+        return count($this->links);
     }
 
     /**
@@ -213,12 +361,12 @@ class Resource implements \JsonSerializable, ResourceInterface
     {
         $resource = $this->getVariables();
 
-        if ($this->linkCollection->hasAny()) {
-            $resource['_links'] = $this->linkCollection;
+        if ($this->hasLinks()) {
+            $resource['_links'] = $this->getLinks();
         }
 
-        if ($this->embeddedResourceCollection->hasAny()) {
-            $resource['_embedded'] = $this->embeddedResourceCollection;
+        if ($this->hasResources()) {
+            $resource['_embedded'] = $this->getResources();
         }
 
         return $resource;

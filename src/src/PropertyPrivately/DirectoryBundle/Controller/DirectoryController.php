@@ -30,29 +30,16 @@ class DirectoryController extends Controller
     {
         $router   = $this->get('router');
         $resource = $this->get('seer_uk_rest.hal_root_resource');
-
-        // Generate directory index links
-        $links = array();
-
-        $links['pp:embeddedTest'] = new HalLink($router->generate('property_privately_directory_embedded_test'));
-        $links['pp:properties']   = new HalLink($router->generate('property_privately_directory_index'));
-        $links['pp:users']        = new HalLink($router->generate('property_privately_directory_index'));
-
-        $resource->addLinks($links);
+        $resource->addLink('pp:properties', new HalLink($router->generate('property_privately_directory_index')));
+        $resource->addLink('pp:users', new HalLink($router->generate('property_privately_directory_user_test')));
 
         return new JsonResponse($resource);
     }
 
-    public function embeddedTestAction()
+    public function userTestAction()
     {
-        $router   = $this->get('router');
-        $resource = $this->get('seer_uk_rest.hal_root_resource');
-        $resource->addLink(new HalLink($router->generate('property_privately_directory_embedded_test')), 'first');
-        $resource->addLink(new HalLink($router->generate('property_privately_directory_embedded_test')), 'last');
+        $assembler = $this->get('pp_directory.user_test_resource_assembler');
 
-        $resource->setVariable('embedded', $resource->getEmbeddedResourceCollection()->count());
-        $resource->setVariable('total', 0); // You'd really get this from the DB
-
-        return new JsonResponse($resource);
+        return new JsonResponse($assembler->assemble());
     }
 }

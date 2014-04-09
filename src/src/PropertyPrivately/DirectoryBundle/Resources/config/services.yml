@@ -1,7 +1,9 @@
 parameters:
-#    property_privately_directory.example.class: PropertyPrivately\DirectoryBundle\Example
+    pp_directory.user_test_resource_assembler.class: PropertyPrivately\DirectoryBundle\Resource\Assembler\Directory\UserTestResourceAssembler
 
 services:
-#    property_privately_directory.example:
-#        class: %property_privately_directory.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    pp_directory.user_test_resource_assembler:
+        class: %pp_directory.user_test_resource_assembler.class%
+        arguments:
+            - '@seer_uk_rest.hal_root_resource'
+            - '@router'

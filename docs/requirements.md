@@ -21,16 +21,35 @@ This part is mainly for me to be able to visibly see the things I need to write 
 * Some means of disabling CSRF and enabling a custom solution for handling forms
 * API access should be over HTTPS in production. Make sure it damn well is.
 
-class EmbeddedResourceCollection implements \JsonSerializable {
-    public function addResource(EmbeddedResource $resource);
-}
+### ResourceAssembler
 
-abstract class EmbeddedResource implements \JsonSerializable {
-    public function jsonSerialize() {
-        
+abstract class AbstractResourceAssembler implements ResourceAssemblerInterface 
+{
+    private $variables;
+
+    abstract public function assemble();
+
+    public function getVariable($name)
+    {
+        return $this->variables[$name];
+    }
+
+    public function setVariable($name, $value) 
+    {
+        $this->variables[$name] = $value;
+
+        return $this;
     }
 }
 
-class ExampleResource extends EmbeddedResource {
-    
+class UserResourceAssembler extends AbstractResourceAssembler 
+{
+    public function assemble()
+    {
+        $resource = new Resource();
+
+        // Do some assembling!
+
+        return $resource;
+    }
 }
