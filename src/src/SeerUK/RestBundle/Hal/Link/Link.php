@@ -83,7 +83,7 @@ class Link implements \JsonSerializable, ResourceInterface
      * Set href
      *
      * @param  string $href
-     * @return HalLink
+     * @return Link
      */
     public function setHref($href)
     {
@@ -106,7 +106,7 @@ class Link implements \JsonSerializable, ResourceInterface
      * Set templated
      *
      * @param  boolean $templated
-     * @return HalLink
+     * @return Link
      */
     public function setTemplated($templated)
     {
@@ -129,7 +129,7 @@ class Link implements \JsonSerializable, ResourceInterface
      * Set type
      *
      * @param  string $type
-     * @return HalLink
+     * @return Link
      */
     public function setType($type)
     {
@@ -152,7 +152,7 @@ class Link implements \JsonSerializable, ResourceInterface
      * Set deprecation
      *
      * @param  string $deprecation
-     * @return HalLink
+     * @return Link
      */
     public function setDeprecation($deprecation)
     {
@@ -175,7 +175,7 @@ class Link implements \JsonSerializable, ResourceInterface
      * Set name
      *
      * @param  string $name
-     * @return HalLink
+     * @return Link
      */
     public function setName($name)
     {
@@ -198,7 +198,7 @@ class Link implements \JsonSerializable, ResourceInterface
      * Set profile
      *
      * @param  string $profile
-     * @return HalLink
+     * @return Link
      */
     public function setProfile($profile)
     {
@@ -221,7 +221,7 @@ class Link implements \JsonSerializable, ResourceInterface
      * Set title
      *
      * @param  string $title
-     * @return HalLink
+     * @return Link
      */
     public function setTitle($title)
     {
@@ -244,7 +244,7 @@ class Link implements \JsonSerializable, ResourceInterface
      * Set hreflang
      *
      * @param  string $hreflang
-     * @return HalLink
+     * @return Link
      */
     public function setHreflang($hreflang)
     {

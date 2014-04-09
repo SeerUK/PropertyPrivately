@@ -47,7 +47,7 @@ class RootResourceFactory
     /**
      * Build a JSON response
      *
-     * @return HalJsonResponse
+     * @return Resource
      */
     public function build()
     {

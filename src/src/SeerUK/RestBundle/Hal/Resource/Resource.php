@@ -18,7 +18,7 @@ use SeerUK\RestBundle\Hal\Resource\ResourceInterface;
 use SeerUK\RestBundle\Model\VariableModelInterface;
 
 /**
- * Hal Embedded Resource
+ * Hal Resource
  */
 class Resource implements \JsonSerializable, ResourceInterface, VariableModelInterface
 {
