@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Property Privately API
+ * Seer UK REST Bundle
  *
  * (c) Elliot Wright, 2014 <wright.elliot@gmail.com>
  *

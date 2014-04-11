@@ -24,7 +24,7 @@ class DirectoryController extends Controller
     /**
      * Directory index
      *
-     * @return HalJsonResponse
+     * @return JsonResponse
      */
     public function indexAction()
     {
