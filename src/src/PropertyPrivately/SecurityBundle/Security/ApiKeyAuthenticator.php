@@ -30,24 +30,48 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
      */
     protected $userProvider;
 
+    /**
+     * Constructor
+     *
+     * @param ApiKeyUserProvider $userProvider
+     */
     public function __construct(ApiKeyUserProvider $userProvider)
     {
         $this->userProvider = $userProvider;
     }
 
+    /**
+     * Create token to authenticate
+     *
+     * @param  Request $request
+     * @param  string  $providerKey
+     * @return PreAuthenticatedToken
+     *
+     * @throws BadCredentialsException
+     */
     public function createToken(Request $request, $providerKey)
     {
-        if ( ! $request->query->has('apikey')) {
+        if ( ! $request->headers->has('X-API-Key')) {
             throw new BadCredentialsException('No API key found.');
         }
 
         return new PreAuthenticatedToken(
             'anon.',
-            $request->query->get('apikey'),
+            $request->headers->get('X-API-Key'),
             $providerKey
         );
     }
 
+    /**
+     * Authenticate a token
+     *
+     * @param  TokenInterface        $token
+     * @param  UserProviderInterface $userProvider
+     * @param  string                $providerKey
+     * @return PreAuthenticatedToken
+     *
+     * @throws AuthenticationException
+     */
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
     {
         $apiKey = $token->getCredentials();
@@ -69,6 +93,13 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
         );
     }
 
+    /**
+     * Supports which token?
+     *
+     * @param  TokenInterface $token
+     * @param  string         $providerKey
+     * @return boolean
+     */
     public function supportsToken(TokenInterface $token, $providerKey)
     {
         return $token instanceof PreAuthenticatedToken && $token->getProviderKey() === $providerKey;

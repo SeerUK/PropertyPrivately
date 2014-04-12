@@ -52,7 +52,10 @@ class RootResourceFactory
     public function build()
     {
         $resource = new Resource();
-        $resource->addLink('self', new Link($this->request->getRequestUri()));
+
+        if ($this->request) {
+            $resource->addLink('self', new Link($this->request->getRequestUri()));
+        }
 
         return $resource;
     }

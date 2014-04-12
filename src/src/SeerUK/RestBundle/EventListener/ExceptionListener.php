@@ -56,14 +56,16 @@ class ExceptionListener
 
         $this->resource->setVariables($wrapper->toArray());
 
-        $response = new JsonResponse($this->resource);
+        $response = new JsonResponse();
 
         if ($exception instanceof HttpExceptionInterface) {
             $response->setStatusCode($exception->getStatusCode());
             $response->headers->replace($exception->getHeaders());
         } else {
-            $response->setStatusCode(HalJsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            $response->setStatusCode(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        $response->setData($this->resource);
 
         $this->logger->error(sprintf(
             '"%s" with message "%s" on line %d in %s.',

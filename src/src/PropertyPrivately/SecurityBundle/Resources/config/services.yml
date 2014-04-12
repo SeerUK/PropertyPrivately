@@ -1,7 +1,56 @@
 parameters:
-#    property_privately_security.example.class: PropertyPrivately\SecurityBundle\Example
+    # Repos
+    pp_security.user_repository.class: PropertyPrivately\SecurityBundle\Entity\UserRepository
+
+    # Entities
+    pp_security.user.class: PropertyPrivately\SecurityBundle\Entity\User
+
+    # Generators
+    pp_security.token_generator.class: PropertyPrivately\SecurityBundle\Generator\TokenGenerator
+
+    # Security
+    pp_security.apikey_user_provider.class: PropertyPrivately\SecurityBundle\Security\ApiKeyUserProvider
+    pp_security.apikey_authenticator.class: PropertyPrivately\SecurityBundle\Security\ApiKeyAuthenticator
+    pp_security.apikey_authenticated_voter.class: PropertyPrivately\SecurityBundle\Security\Authorization\Voter\ApiKeyAuthenticatedVoter
+
+    # Validators
+    pp_security.user_validator.class: PropertyPrivately\SecurityBundle\Validator\UserValidator
 
 services:
-#    property_privately_security.example:
-#        class: %property_privately_security.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    # Repos
+    pp_security.user_repository:
+        class: %pp_security.user_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %pp_security.user.class%
+
+    # Entities
+    pp_security.apikey_user_provider:
+        class: %pp_security.apikey_user_provider.class%
+        arguments:
+            - "@pp_security.user_repository"
+
+    # Generators
+    pp_security.token_generator:
+        class: %pp_security.token_generator.class%
+
+    # Security
+    pp_security.apikey_authenticator:
+        class: %pp_security.apikey_authenticator.class%
+        arguments:
+            - "@pp_security.apikey_user_provider"
+
+    pp_security.apikey_authenticated_voter:
+        class: %pp_security.apikey_authenticated_voter.class%
+        arguments:
+            - "@security.authentication.trust_resolver"
+        public:     false
+        tags:
+            - { name: security.voter }
+
+    # Validator
+    pp_security.user_validator:
+        class: %pp_security.user_validator.class%
+        arguments:
+            - "@security.encoder_factory"

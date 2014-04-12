@@ -11,8 +11,38 @@
 
 namespace PropertyPrivately\SecurityBundle\Security;
 
+use Symfony\Component\Security\Core\User\UserProviderInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use PropertyPrivately\SecurityBundle\Entity\User;
+use PropertyPrivately\SecurityBundle\Repository\UserRepository;
+
+/**
+ * API Key User Provider
+ */
 class ApiKeyUserProvider implements UserProviderInterface
 {
+    /**
+     * @var UserRepository
+     */
+    private $userRepo;
+
+    /**
+     * Constructor
+     *
+     * @param UserRepository $userRepo
+     */
+    public function __construct(UserRepository $userRepo)
+    {
+        $this->userRepo = $userRepo;
+    }
+
+    /**
+     * Get username for API key
+     *
+     * @param  string $apiKey
+     * @return string
+     */
     public function getUsernameForApiKey($apiKey)
     {
         // Look up the username based on the token in the database, via
@@ -32,13 +62,7 @@ class ApiKeyUserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
-        return new User(
-            $username,
-            null,
-            // the roles for the user - you may choose to determine
-            // these dynamically somehow based on the user
-            array('ROLE_USER')
-        );
+        return $this->userRepo->loadUserByUsername($username);
     }
 
     /**
@@ -60,6 +84,6 @@ class ApiKeyUserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        return 'Symfony\Component\Security\Core\User\User' === $class;
+        return 'PropertyPrivately\SecurityBundle\Entity\User' === $class;
     }
 }
