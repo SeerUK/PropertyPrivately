@@ -20,6 +20,9 @@ use SeerUK\RestBundle\Resource\Assembler\AbstractResourceAssembler;
  */
 class GetResourceAssembler extends AbstractResourceAssembler
 {
+    /**
+     * @see AbstractResourceAssembler::assemble()
+     */
     public function assemble()
     {
         $tokenAssembler = $this->getSubAssembler('token');

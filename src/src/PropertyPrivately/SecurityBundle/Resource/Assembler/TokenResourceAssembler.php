@@ -20,6 +20,9 @@ use SeerUK\RestBundle\Resource\Assembler\AbstractResourceAssembler;
  */
 class TokenResourceAssembler extends AbstractResourceAssembler
 {
+    /**
+     * @see AbstractResourceAssembler::assemble()
+     */
     public function assemble()
     {
         $token = $this->getVariable('token');
@@ -30,6 +33,11 @@ class TokenResourceAssembler extends AbstractResourceAssembler
         return $this->rootResource;
     }
 
+    /**
+     * Assemble links
+     *
+     * @return array
+     */
     public function assembleLinks()
     {
         $token = $this->getVariable('token');
