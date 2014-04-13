@@ -5,5 +5,6 @@ services:
     pp_directory.user_test_resource_assembler:
         class: %pp_directory.user_test_resource_assembler.class%
         arguments:
-            - '@seer_uk_rest.hal_root_resource'
             - '@router'
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]

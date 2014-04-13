@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\JoinColumn;
+use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
 
 /**
  * PropertyPrivately\SecurityBundle\Entity\Token
@@ -22,7 +23,7 @@ use Doctrine\ORM\Mapping\JoinColumn;
  * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Repository\TokenRepository")
  * @ORM\Table(name="Token")
  */
-class Token implements \Serializable
+class Token implements \Serializable, ArrayableInterface
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -229,6 +230,20 @@ class Token implements \Serializable
     public function isEnabled()
     {
         return (bool) $this->getEnabled();
+    }
+
+    /**
+     * @see ArrayableInterface::toArray()
+     */
+    public function toArray()
+    {
+        return array(
+            'id'          => $this->id,
+            'description' => $this->description,
+            'token'       => $this->token,
+            'created'     => $this->created,
+            'enabled'     => $this->enabled
+        );
     }
 
     /**

@@ -292,10 +292,7 @@ class Resource implements \JsonSerializable, ResourceInterface, VariableModelInt
     }
 
     /**
-     * Get a specific variable
-     *
-     * @param  string $name
-     * @return mixed
+     * @see VariableModelInterface::getVariable()
      */
     public function getVariable($name)
     {
@@ -303,11 +300,15 @@ class Resource implements \JsonSerializable, ResourceInterface, VariableModelInt
     }
 
     /**
-     * Set a specific variable
-     *
-     * @param  string $name
-     * @param  mixed  $value
-     * @return Resource
+     * @see VariableModelInterface::getVariables()
+     */
+    public function getVariables()
+    {
+        return $this->variables;
+    }
+
+    /**
+     * @see VariableModelInterface::setVariable()
      */
     public function setVariable($name, $value)
     {
@@ -317,10 +318,17 @@ class Resource implements \JsonSerializable, ResourceInterface, VariableModelInt
     }
 
     /**
-     * Unset a specific variable
-     *
-     * @param  string $name
-     * @return Resource
+     * @see VariableModelInterface::setVariables()
+     */
+    public function setVariables(array $variables)
+    {
+        $this->variables = $variables;
+
+        return $this;
+    }
+
+    /**
+     * @see VariableModelInterface::unsetVariable()
      */
     public function unsetVariable($name)
     {
@@ -330,26 +338,21 @@ class Resource implements \JsonSerializable, ResourceInterface, VariableModelInt
     }
 
     /**
-     * Get variables
-     *
-     * @return array
+     * @see VariableModelInterface::clearVariables()
      */
-    public function getVariables()
+    public function clearVariables()
     {
-        return $this->variables;
+        $this->variables = array();
+
+        return $this;
     }
 
     /**
-     * Set variables
-     *
-     * @param  array $variables
-     * @return Resource
+     * @see VariableModelInterface::countVariables()
      */
-    public function setVariables(array $variables)
+    public function countVariables()
     {
-        $this->variables = $variables;
-
-        return $this;
+        return count($this->variables);
     }
 
     /**

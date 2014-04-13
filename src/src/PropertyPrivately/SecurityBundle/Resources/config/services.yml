@@ -15,6 +15,10 @@ parameters:
     pp_security.token_repository.class: PropertyPrivately\SecurityBundle\Entity\TokenRepository
     pp_security.user_repository.class: PropertyPrivately\SecurityBundle\Entity\UserRepository
 
+    # Resource Assemblers
+    pp_security.resource_assembler.token.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\Token\GetResourceAssembler
+    pp_security.resource_assembler.token_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\TokenResourceAssembler
+
     # Security
     pp_security.user_provider.class: PropertyPrivately\SecurityBundle\User\UserProvider
     pp_security.apikey_user_provider.class: PropertyPrivately\SecurityBundle\User\ApiKeyUserProvider
@@ -60,6 +64,20 @@ services:
         factory_method: getRepository
         arguments:
             - %pp_security.user.class%
+
+    # Resource Assemblers
+    pp_security.resource_assembler.token.get_assembler:
+        class: %pp_security.resource_assembler.token.get_assembler.class%
+        arguments:
+            - '@router'
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+            - [setSubAssembler, ["token", "@pp_security.resource_assembler.token_assembler"]]
+
+    pp_security.resource_assembler.token_assembler:
+        class: %pp_security.resource_assembler.token_assembler.class%
+        arguments:
+            - '@router'
 
     # Security
     pp_security.user_provider:

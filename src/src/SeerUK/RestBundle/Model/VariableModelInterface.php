@@ -16,4 +16,11 @@ namespace SeerUK\RestBundle\Model;
  */
 interface VariableModelInterface
 {
+    public function getVariable($name);
+    public function getVariables();
+    public function setVariable($name, $value);
+    public function setVariables(array $variables);
+    public function unsetVariable($name);
+    public function clearVariables();
+    public function countVariables();
 }

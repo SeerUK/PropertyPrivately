@@ -27,7 +27,19 @@ class TokenController extends RestController
 {
     public function getAction($id)
     {
-        return new JsonResponse(array('id' => $id));
+        if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AccessDeniedException();
+        }
+
+        $user      = $this->get('security.context')->getToken()->getUser();
+        $tokenRepo = $this->get('pp_security.token_repository');
+        $assembler = $this->get('pp_security.resource_assembler.token.get_assembler');
+        $assembler->setVariable('token', $tokenRepo->findOneBy(array(
+            'id'   => $id,
+            'user' => $user->getId()
+        )));
+
+        return new JsonResponse($assembler->assemble());
     }
 
     public function postAction()
@@ -54,8 +66,10 @@ class TokenController extends RestController
 
         $tokenRepo->persist($token);
 
-        return $this->forwardToRoute('pp_security_token_get', array(
+        return $this->createInternalRequest('pp_security_token_get', array(
             'id' => $token->getId()
-        ), JsonResponse::HTTP_CREATED);
+        ), JsonResponse::HTTP_CREATED, array(
+            'X-API-Key' => $token->getToken()
+        ));
     }
 }

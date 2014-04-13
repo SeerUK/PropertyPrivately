@@ -33,19 +33,26 @@ abstract class AbstractResourceAssembler implements VariableModelInterface
     /**
      * @var array
      */
+    protected $subAssemblers;
+
+    /**
+     * @var array
+     */
     protected $variables;
 
     /**
      * Constructor
      *
+     * @param Router   $router
      * @param Resource $rootResource
      */
-    public function __construct(Resource $rootResource, Router $router)
+    public function __construct(Router $router)
     {
-        $this->router    = $router;
-        $this->variables = array();
+        $this->router        = $router;
+        $this->subAssemblers = array();
+        $this->variables     = array();
 
-        $this->setRootResource($rootResource);
+        $this->setRootResource(new Resource());
     }
 
     /**
@@ -68,7 +75,8 @@ abstract class AbstractResourceAssembler implements VariableModelInterface
     /**
      * Set root resource
      *
-     * @param Resource $resource
+     * @param  Resource $resource
+     * @return AbstractResourceAssembler
      */
     public function setRootResource(Resource $resource)
     {
@@ -78,10 +86,57 @@ abstract class AbstractResourceAssembler implements VariableModelInterface
     }
 
     /**
-     * Get a variable
+     * Get assembler
      *
      * @param  string $name
-     * @return mixed
+     * @return AbstractResourceAssembler
+     */
+    public function getSubAssembler($name)
+    {
+        return $this->subAssemblers[$name];
+    }
+
+    /**
+     * Get sub assemblers
+     *
+     * @return array
+     */
+    public function getSubAssemblers()
+    {
+        return $this->subAssemblers;
+    }
+
+    /**
+     * Set sub assembler
+     *
+     * @param  string                    $name
+     * @param  AbstractResourceAssembler $assembler
+     * @return AbstractResourceAssembler
+     */
+    public function setSubAssembler($name, AbstractResourceAssembler $assembler)
+    {
+        $this->subAssemblers[$name] = $assembler;
+
+        return $this;
+    }
+
+    /**
+     * Set sub assemblers
+     *
+     * @param array $assemblers
+     * @return AbstractResourceAssembler
+     */
+    public function setSubAssemblers(array $assemblers)
+    {
+        foreach ($assemblers as $name => $assembler) {
+            $this->setSubAssembler($name, $assembler);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @see VariableModelInterface::getVariable()
      */
     public function getVariable($name)
     {
@@ -89,12 +144,58 @@ abstract class AbstractResourceAssembler implements VariableModelInterface
     }
 
     /**
-     * Get variables
-     *
-     * @return array
+     * @see VariableModelInterface::getVariables()
      */
     public function getVariables()
     {
         return $this->variables;
+    }
+
+    /**
+     * @see VariableModelInterface::setVariable()
+     */
+    public function setVariable($name, $value)
+    {
+        $this->variables[$name] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @see VariableModelInterface::setVariables()
+     */
+    public function setVariables(array $variables)
+    {
+        $this->variables = $variables;
+
+        return $this;
+    }
+
+    /**
+     * @see VariableModelInterface::unsetVariable()
+     */
+    public function unsetVariable($name)
+    {
+        unset($this->variables[$name]);
+
+        return $this;
+    }
+
+    /**
+     * @see VariableModelInterface::clearVariables()
+     */
+    public function clearVariables()
+    {
+        $this->variables = array();
+
+        return $this;
+    }
+
+    /**
+     * @see VariableModelInterface::countVariables()
+     */
+    public function countVariables()
+    {
+        return count($this->variables);
     }
 }
