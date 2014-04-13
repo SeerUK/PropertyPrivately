@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PropertyPrivately\SecurityBundle\Security;
+namespace PropertyPrivately\SecurityBundle\Authentication;
 
 use Symfony\Component\Security\Core\Authentication\SimplePreAuthenticatorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -19,6 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use PropertyPrivately\SecurityBundle\User\ApiKeyUserProvider;
 
 /**
  * API Key Authenticator

@@ -35,6 +35,6 @@ class UserRepository extends PersistentEntityRepository
 
         // $query->useResultCache(true, 120);
 
-        return $query->getSingleResult();
+        return $query->getOneOrNullResult();
     }
 }

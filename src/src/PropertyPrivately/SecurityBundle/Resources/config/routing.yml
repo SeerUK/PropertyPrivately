@@ -1,3 +1,11 @@
-property_privately_security_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: PropertyPrivatelySecurityBundle:Default:index }
+pp_security_token_get:
+    pattern: /user/tokens/{id}
+    defaults: { _controller: PropertyPrivatelySecurityBundle:Token:get }
+    methods: [GET]
+    requirements:
+        id: \d+
+
+pp_security_token_post:
+    pattern: /user/tokens
+    defaults: { _controller: PropertyPrivatelySecurityBundle:Token:post }
+    methods: [POST]

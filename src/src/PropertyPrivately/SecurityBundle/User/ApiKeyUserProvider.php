@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace PropertyPrivately\SecurityBundle\Security;
+namespace PropertyPrivately\SecurityBundle\User;
 
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Doctrine\ORM\NoResultException;
 use PropertyPrivately\SecurityBundle\Repository\TokenRepository;
-use PropertyPrivately\SecurityBundle\Security\UserProvider;
+use PropertyPrivately\SecurityBundle\User\UserProvider;
 
 /**
  * API Key User Provider

@@ -27,5 +27,4 @@ security:
             anonymous: ~
 
     access_control:
-        - { path: ^/user/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        # - { path: ^/, requires_channel: https }
