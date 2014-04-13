@@ -24,6 +24,7 @@ class AppKernel extends Kernel
             new SeerUK\RestBundle\SeerUKRestBundle(),
             new PropertyPrivately\DirectoryBundle\PropertyPrivatelyDirectoryBundle(),
             new PropertyPrivately\SecurityBundle\PropertyPrivatelySecurityBundle(),
+            new PropertyPrivately\CoreBundle\PropertyPrivatelyCoreBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

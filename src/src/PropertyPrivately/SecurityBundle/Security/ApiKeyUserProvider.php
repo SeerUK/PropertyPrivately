@@ -14,8 +14,9 @@ namespace PropertyPrivately\SecurityBundle\Security;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
-use PropertyPrivately\SecurityBundle\Entity\User;
-use PropertyPrivately\SecurityBundle\Repository\UserRepository;
+use Doctrine\ORM\NoResultException;
+use PropertyPrivately\SecurityBundle\Repository\TokenRepository;
+use PropertyPrivately\SecurityBundle\Security\UserProvider;
 
 /**
  * API Key User Provider
@@ -23,18 +24,24 @@ use PropertyPrivately\SecurityBundle\Repository\UserRepository;
 class ApiKeyUserProvider implements UserProviderInterface
 {
     /**
-     * @var UserRepository
+     * @var UserProvider
      */
-    private $userRepo;
+    private $userProvider;
+
+    /**
+     * @var TokenRepository
+     */
+    private $tokenRepository;
 
     /**
      * Constructor
      *
      * @param UserRepository $userRepo
      */
-    public function __construct(UserRepository $userRepo)
+    public function __construct(UserProvider $userProvider, TokenRepository $tokenRepository)
     {
-        $this->userRepo = $userRepo;
+        $this->userProvider    = $userProvider;
+        $this->tokenRepository = $tokenRepository;
     }
 
     /**
@@ -45,13 +52,13 @@ class ApiKeyUserProvider implements UserProviderInterface
      */
     public function getUsernameForApiKey($apiKey)
     {
-        // Look up the username based on the token in the database, via
-        // an API call, or do something entirely different
-        // $username = ...;
+        try {
+            $user = $this->tokenRepository->findOneByToken($apiKey)->getUser();
+        } catch (NoResultException $e) {
+            return false;
+        }
 
-        $username = 'Seer';
-
-        return $username;
+        return $user->getUsername();
     }
 
     /**
@@ -62,7 +69,7 @@ class ApiKeyUserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
-        return $this->userRepo->loadUserByUsername($username);
+        return $this->userProvider->loadUserByUsername($username);
     }
 
     /**

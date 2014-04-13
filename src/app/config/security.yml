@@ -27,4 +27,5 @@ security:
             anonymous: ~
 
     access_control:
-        - { path: ^/v1/user/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/user/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }

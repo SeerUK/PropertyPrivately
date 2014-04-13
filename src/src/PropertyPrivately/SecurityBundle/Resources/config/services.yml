@@ -1,14 +1,17 @@
 parameters:
     # Repos
+    pp_security.token_repository.class: PropertyPrivately\SecurityBundle\Entity\TokenRepository
     pp_security.user_repository.class: PropertyPrivately\SecurityBundle\Entity\UserRepository
 
     # Entities
+    pp_security.token.class: PropertyPrivately\SecurityBundle\Entity\Token
     pp_security.user.class: PropertyPrivately\SecurityBundle\Entity\User
 
     # Generators
     pp_security.token_generator.class: PropertyPrivately\SecurityBundle\Generator\TokenGenerator
 
     # Security
+    pp_security.user_provider.class: PropertyPrivately\SecurityBundle\Security\UserProvider
     pp_security.apikey_user_provider.class: PropertyPrivately\SecurityBundle\Security\ApiKeyUserProvider
     pp_security.apikey_authenticator.class: PropertyPrivately\SecurityBundle\Security\ApiKeyAuthenticator
     pp_security.apikey_authenticated_voter.class: PropertyPrivately\SecurityBundle\Security\Authorization\Voter\ApiKeyAuthenticatedVoter
@@ -18,6 +21,13 @@ parameters:
 
 services:
     # Repos
+    pp_security.token_repository:
+        class: %pp_security.token_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %pp_security.token.class%
+
     pp_security.user_repository:
         class: %pp_security.user_repository.class%
         factory_service: doctrine.orm.entity_manager
@@ -25,17 +35,22 @@ services:
         arguments:
             - %pp_security.user.class%
 
-    # Entities
-    pp_security.apikey_user_provider:
-        class: %pp_security.apikey_user_provider.class%
-        arguments:
-            - "@pp_security.user_repository"
-
     # Generators
     pp_security.token_generator:
         class: %pp_security.token_generator.class%
 
     # Security
+    pp_security.user_provider:
+        class: %pp_security.user_provider.class%
+        arguments:
+            - "@pp_security.user_repository"
+
+    pp_security.apikey_user_provider:
+        class: %pp_security.apikey_user_provider.class%
+        arguments:
+            - "@pp_security.user_provider"
+            - "@pp_security.token_repository"
+
     pp_security.apikey_authenticator:
         class: %pp_security.apikey_authenticator.class%
         arguments:

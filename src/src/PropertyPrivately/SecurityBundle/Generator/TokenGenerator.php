@@ -23,6 +23,6 @@ class TokenGenerator
      */
     public function generate()
     {
-        return hash('sha256', uniqid(rand(), true));
+        return hash('sha256', uniqid(rand() + microtime(), true));
     }
 }

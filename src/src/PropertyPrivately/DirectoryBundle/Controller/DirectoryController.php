@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Doctrine\ORM\NoResultException;
 use SeerUK\RestBundle\Hal\Link\Link as HalLink;
 use SeerUK\RestBundle\Hal\Resource\Resource as HalResource;
 use PropertyPrivately\SecurityBundle\Entity\Token;
@@ -68,8 +69,8 @@ class DirectoryController extends Controller
         }
 
         try {
-            $user = $ur->loadUserByUsername($credentials->username);
-        } catch (UsernameNotFoundException $e) {
+            $user = $ur->findOneByUsername($credentials->username);
+        } catch (NoResultException $e) {
             throw new UnauthorizedHttpException(null, 'Bad credentials.');
         }
 

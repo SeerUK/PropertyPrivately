@@ -11,58 +11,32 @@
 
 namespace PropertyPrivately\SecurityBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NoResultException;
+use PropertyPrivately\CoreBundle\Repository\PersistentEntityRepository;
 use PropertyPrivately\SecurityBundle\Entity\Token;
 
 /**
  * Token Repository
  */
-class TokenRepository extends EntityRepository
+class TokenRepository extends PersistentEntityRepository
 {
     /**
-     * Persist Token
+     * Find one Token by token
      *
-     * @param  Token $entity
-     * @return TokenRepository
+     * @param  string $token
+     * @return PropertyPrivately\SecurityBundle\Entity\Token
      */
-    public function persist($entity)
+    public function findOneByToken($token)
     {
-        if ( ! $this->isEntitySupported($entity)) {
-            $type = gettype($entity) === 'object' ? get_class($entity) : gettype($entity);
-            throw new \InvalidArgumentException(
-                __METHOD__ .
-                ' expected an instance of "' . $this->getEntityName() . '". Received "' . $type . '"'
-            );
-        }
+        $query = $this->createQueryBuilder('t')
+            ->select('t, u')
+            ->leftJoin('t.user', 'u')
+            ->where('t.token = :token')
+            ->setParameter('token', $token)
+            ->getQuery();
 
-        $em = $this->getEntityManager();
-        $em->persist($entity);
-        $em->flush();
+        // $query->useResultCache(true, 120);
 
-        // Clear query cache so that subsequent requests for Gallery objects
-        // don't return ghosts
-        $cd = $em->getConfiguration()->getResultCacheImpl();
-        $cd->deleteAll();
-
-        return $this;
-    }
-
-    protected function getEntityName()
-    {
-        return 'PropertyPrivately\SecurityBundle\Entity\Token';
-    }
-
-    /**
-     * Is the given entity supported by this repository?
-     *
-     * @param  mixed   $entity
-     * @return boolean
-     */
-    public function isEntitySupported($entity)
-    {
-        return ($entity instanceof Token)
-            ? true
-            : false;
+        return $query->getSingleResult();
     }
 }
