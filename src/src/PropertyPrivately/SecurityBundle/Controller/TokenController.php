@@ -25,6 +25,23 @@ use PropertyPrivately\SecurityBundle\Exception\BadCredentialsException;
  */
 class TokenController extends RestController
 {
+    public function getAllAction()
+    {
+        if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AccessDeniedException();
+        }
+
+        $user      = $this->get('security.context')->getToken()->getUser();
+        $tokenRepo = $this->get('pp_security.token_repository');
+        $assembler = $this->get('pp_security.resource_assembler.token.get_all_assembler');
+        $assembler->setVariable('user', $user);
+        $assembler->setVariable('tokens', $tokenRepo->findBy(array(
+            'user' => $user->getId()
+        )));
+
+        return new JsonResponse($assembler->assemble());
+    }
+
     public function getAction($id)
     {
         if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
@@ -34,6 +51,7 @@ class TokenController extends RestController
         $user      = $this->get('security.context')->getToken()->getUser();
         $tokenRepo = $this->get('pp_security.token_repository');
         $assembler = $this->get('pp_security.resource_assembler.token.get_assembler');
+        $assembler->setVariable('user', $user);
         $assembler->setVariable('token', $tokenRepo->findOneBy(array(
             'id'   => $id,
             'user' => $user->getId()
@@ -49,7 +67,6 @@ class TokenController extends RestController
         }
 
         $request      = $this->get('request');
-        $resource     = $this->get('seer_uk_rest.hal_root_resource');
         $tokenBuilder = $this->get('pp_security.token_builder');
         $tokenRepo    = $this->get('pp_security.token_repository');
 

@@ -16,22 +16,19 @@ use SeerUK\RestBundle\Hal\Resource\Resource;
 use SeerUK\RestBundle\Resource\Assembler\AbstractResourceAssembler;
 
 /**
- * Token Assembler
+ * User Assembler
  */
-class TokenResourceAssembler extends AbstractResourceAssembler
+class UserResourceAssembler extends AbstractResourceAssembler
 {
     /**
      * @see AbstractResourceAssembler::assemble()
      */
     public function assemble()
     {
-        $token         = $this->getVariable('token');
-        $userAssembler = $this->getSubAssembler('user');
-        $userAssembler->setVariable('user', $this->getVariable('user'));
+        $user = $this->getVariable('user');
 
-        $this->rootResource->setVariables($token->toArray());
+        $this->rootResource->setVariables($user->toArray());
         $this->rootResource->addLinks($this->assembleLinks());
-        $this->rootResource->addResource('user', $userAssembler->assemble());
 
         return $this->rootResource;
     }
@@ -43,12 +40,13 @@ class TokenResourceAssembler extends AbstractResourceAssembler
      */
     public function assembleLinks()
     {
-        $token = $this->getVariable('token');
+        $user = $this->getVariable('user');
 
         $links = array();
-        $links['self'] = new Link($this->router->generate('pp_security_token_get', array(
-            'id' => $token->getId()
-        )));
+        $links['self'] = new Link('/user/' . $user->getId());
+        // $links['self'] = new Link($this->router->generate('pp_security_token_get', array(
+        //     'id' => $token->getId()
+        // )));
 
         return $links;
     }

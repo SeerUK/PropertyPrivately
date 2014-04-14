@@ -16,8 +16,10 @@ parameters:
     pp_security.user_repository.class: PropertyPrivately\SecurityBundle\Entity\UserRepository
 
     # Resource Assemblers
+    pp_security.resource_assembler.token.get_all_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\Token\GetAllResourceAssembler
     pp_security.resource_assembler.token.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\Token\GetResourceAssembler
     pp_security.resource_assembler.token_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\TokenResourceAssembler
+    pp_security.resource_assembler.user_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\UserResourceAssembler
 
     # Security
     pp_security.user_provider.class: PropertyPrivately\SecurityBundle\User\UserProvider
@@ -66,10 +68,18 @@ services:
             - %pp_security.user.class%
 
     # Resource Assemblers
+    pp_security.resource_assembler.token.get_all_assembler:
+        class: %pp_security.resource_assembler.token.get_all_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+            - [setSubAssembler, ["token", "@pp_security.resource_assembler.token_assembler"]]
+
     pp_security.resource_assembler.token.get_assembler:
         class: %pp_security.resource_assembler.token.get_assembler.class%
         arguments:
-            - '@router'
+            - "@router"
         calls:
             - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
             - [setSubAssembler, ["token", "@pp_security.resource_assembler.token_assembler"]]
@@ -77,7 +87,14 @@ services:
     pp_security.resource_assembler.token_assembler:
         class: %pp_security.resource_assembler.token_assembler.class%
         arguments:
-            - '@router'
+            - "@router"
+        calls:
+            - [setSubAssembler, ["user", "@pp_security.resource_assembler.user_assembler"]]
+
+    pp_security.resource_assembler.user_assembler:
+        class: %pp_security.resource_assembler.user_assembler.class%
+        arguments:
+            - "@router"
 
     # Security
     pp_security.user_provider:

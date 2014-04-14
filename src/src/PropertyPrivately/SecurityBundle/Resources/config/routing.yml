@@ -1,3 +1,8 @@
+pp_security_token_get_all:
+    pattern: /user/tokens
+    defaults: { _controller: PropertyPrivatelySecurityBundle:Token:getAll }
+    methods: [GET]
+
 pp_security_token_get:
     pattern: /user/tokens/{id}
     defaults: { _controller: PropertyPrivatelySecurityBundle:Token:get }

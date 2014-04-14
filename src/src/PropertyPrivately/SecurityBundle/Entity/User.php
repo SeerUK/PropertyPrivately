@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
+use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
 
 /**
  * PropertyPrivately\SecurityBundle\Entity\User
@@ -23,7 +24,7 @@ use Doctrine\ORM\Mapping\JoinTable;
  * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Repository\UserRepository")
  * @ORM\Table(name="User")
  */
-class User implements AdvancedUserInterface, \Serializable
+class User implements AdvancedUserInterface, \Serializable, ArrayableInterface
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -201,6 +202,20 @@ class User implements AdvancedUserInterface, \Serializable
     public function equals(AdvancedUserInterface $user)
     {
         return $this->userName === $user->getUsername();
+    }
+
+    /**
+     * @see ArrayableInterface::toArray()
+     */
+    public function toArray()
+    {
+        return array(
+            'id'       => $this->id,
+            'username' => $this->username,
+            'email'    => $this->email,
+            'enabled'  => $this->enabled,
+            'roles'    => $this->roles
+        );
     }
 
     /**
