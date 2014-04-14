@@ -13,7 +13,11 @@ namespace PropertyPrivately\SecurityBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\OneToMany;
+use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
+use PropertyPrivately\SecurityBundle\Entity\User;
 
 /**
  * PropertyPrivately\SecurityBundle\Entity\Application
@@ -21,7 +25,7 @@ use Doctrine\ORM\Mapping\OneToMany;
  * @ORM\Entity
  * @ORM\Table(name="Application")
  */
-class Application implements \Serializable
+class Application implements \Serializable, \JsonSerializable, ArrayableInterface
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -29,6 +33,12 @@ class Application implements \Serializable
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    /**
+     * @ManyToOne(targetEntity="User", cascade={"all"}, fetch="EAGER", inversedBy="applications")
+     * @JoinColumn(name="userId", referencedColumnName="id")
+     */
+    protected $user;
 
     /**
      * @ORM\Column(name="name", type="string", length=50, unique=true)
@@ -84,6 +94,29 @@ class Application implements \Serializable
     }
 
     /**
+     * Get user
+     *
+     * @return User $user
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set user
+     *
+     * @param  User $user
+     * @return Application
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
      * Get name
      *
      * @return string
@@ -97,6 +130,7 @@ class Application implements \Serializable
      * Set name
      *
      * @param string $name
+     * @return Application
      */
     public function setName($name)
     {
@@ -119,6 +153,7 @@ class Application implements \Serializable
      * Set description
      *
      * @param string $description
+     * @return Application
      */
     public function setDescription($description)
     {
@@ -141,7 +176,7 @@ class Application implements \Serializable
      * Set token
      *
      * @param  string $token
-     * @return Token
+     * @return Application
      */
     public function setToken($token)
     {
@@ -164,7 +199,7 @@ class Application implements \Serializable
      * Set created
      *
      * @param  \DateTime $created
-     * @return Token
+     * @return Application
      */
     public function setCreated(\DateTime $created)
     {
@@ -186,7 +221,8 @@ class Application implements \Serializable
     /**
      * Set enabled
      *
-     * @param boolean $enabled
+     * @param  boolean $enabled
+     * @return Application
      */
     public function setEnabled($enabled)
     {
@@ -213,6 +249,29 @@ class Application implements \Serializable
     public function getTokens()
     {
         return $this->tokens;
+    }
+
+    /**
+     * @see ArrayableInterface::toArray()
+     */
+    public function toArray()
+    {
+        return array(
+            'id'          => $this->id,
+            'name'        => $this->name,
+            'description' => $this->description,
+            'token'       => $this->token,
+            'created'     => $this->created,
+            'enabled'     => $this->enabled
+        );
+    }
+
+    /**
+     * @see \JsonSerializable::jsonSerialize()
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 
     /**

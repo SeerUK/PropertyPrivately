@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
+use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
 
 /**
  * DWI\SecurityBundle\Entity\Role
@@ -23,7 +24,7 @@ use Doctrine\ORM\Mapping\JoinTable;
  * @ORM\Entity
  * @ORM\Table(name="Role")
  */
-class Role implements RoleInterface, \Serializable
+class Role implements RoleInterface, \Serializable, \JsonSerializable, ArrayableInterface
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -54,6 +55,14 @@ class Role implements RoleInterface, \Serializable
     public function __construct()
     {
         $this->users = new ArrayCollection();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -98,6 +107,27 @@ class Role implements RoleInterface, \Serializable
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * @see ArrayableInterface::toArray()
+     */
+    public function toArray()
+    {
+        return array(
+            'id'    => $this->id,
+            'name'  => $this->name,
+            'role'  => $this->role,
+            'users' => $this->users
+        );
+    }
+
+    /**
+     * @see \JsonSerializable::jsonSerialize()
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 
     /**

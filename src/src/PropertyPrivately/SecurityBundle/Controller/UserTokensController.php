@@ -12,28 +12,28 @@
 namespace PropertyPrivately\SecurityBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use SeerUK\RestBundle\Controller\RestController;
-use SeerUK\RestBundle\HttpFoundation\RedirectResponse;
 use PropertyPrivately\CoreBundle\Exception\MissingMandatoryParametersException;
 use PropertyPrivately\SecurityBundle\Exception\BadCredentialsException;
+use PropertyPrivately\SecurityBundle\Exception\Utils\ErrorMessages;
 
 /**
- * Token Controller
+ * User Tokens Controller
  */
-class TokenController extends RestController
+class UserTokensController extends RestController
 {
     public function getAllAction()
     {
         if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
         }
 
         $user      = $this->get('security.context')->getToken()->getUser();
         $tokenRepo = $this->get('pp_security.token_repository');
-        $assembler = $this->get('pp_security.resource_assembler.token.get_all_assembler');
+        $assembler = $this->get('pp_security.resource_assembler.user_tokens.get_all_assembler');
         $assembler->setVariable('user', $user);
         $assembler->setVariable('tokens', $tokenRepo->findBy(array(
             'user' => $user->getId()
@@ -45,12 +45,12 @@ class TokenController extends RestController
     public function getAction($id)
     {
         if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
         }
 
         $user      = $this->get('security.context')->getToken()->getUser();
         $tokenRepo = $this->get('pp_security.token_repository');
-        $assembler = $this->get('pp_security.resource_assembler.token.get_assembler');
+        $assembler = $this->get('pp_security.resource_assembler.user_tokens.get_assembler');
         $assembler->setVariable('user', $user);
         $assembler->setVariable('token', $tokenRepo->findOneBy(array(
             'id'   => $id,
@@ -63,7 +63,7 @@ class TokenController extends RestController
     public function postAction()
     {
         if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_ANONYMOUSLY')) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_ANONYMOUSLY);
         }
 
         $request      = $this->get('request');

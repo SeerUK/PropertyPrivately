@@ -31,6 +31,7 @@ class DirectoryController extends Controller
         $router   = $this->get('router');
         $resource = $this->get('seer_uk_rest.hal_root_resource');
         $resource->addLink('pp:properties', new HalLink($router->generate('property_privately_directory_index')));
+        $resource->addLink('pp:user', new HalLink($router->generate('pp_security_user_get')));
         $resource->addLink('pp:users', new HalLink($router->generate('property_privately_directory_user_test')));
 
         return new JsonResponse($resource);

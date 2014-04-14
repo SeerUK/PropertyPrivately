@@ -58,9 +58,10 @@ abstract class AbstractResourceAssembler implements VariableModelInterface
     /**
      * Assemble the root resource
      *
+     * @param  array $nested
      * @return Resource
      */
-    abstract public function assemble();
+    abstract public function assemble(array $nested = array());
 
     /**
      * Get root resource

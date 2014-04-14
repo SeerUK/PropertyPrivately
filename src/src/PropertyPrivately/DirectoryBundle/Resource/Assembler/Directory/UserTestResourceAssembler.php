@@ -25,7 +25,7 @@ class UserTestResourceAssembler extends AbstractResourceAssembler
      *
      * @return Resource
      */
-    public function assemble()
+    public function assemble(array $nested = array())
     {
         $this->rootResource->addLinks($this->assembleLinks());
 

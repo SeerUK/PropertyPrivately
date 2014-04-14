@@ -53,10 +53,9 @@ class ExceptionListener
     {
         $exception = $event->getException();
         $wrapper   = new ExceptionWrapper($exception);
+        $response  = new JsonResponse();
 
         $this->resource->setVariables($wrapper->toArray());
-
-        $response = new JsonResponse();
 
         if ($exception instanceof HttpExceptionInterface) {
             $response->setStatusCode($exception->getStatusCode());

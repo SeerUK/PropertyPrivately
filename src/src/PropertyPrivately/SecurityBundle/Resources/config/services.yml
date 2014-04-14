@@ -16,10 +16,16 @@ parameters:
     pp_security.user_repository.class: PropertyPrivately\SecurityBundle\Entity\UserRepository
 
     # Resource Assemblers
-    pp_security.resource_assembler.token.get_all_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\Token\GetAllResourceAssembler
-    pp_security.resource_assembler.token.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\Token\GetResourceAssembler
-    pp_security.resource_assembler.token_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\TokenResourceAssembler
-    pp_security.resource_assembler.user_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\UserResourceAssembler
+    # Application
+    pp_security.resource_assembler.user_applications.get_all_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\UserApplications\GetAllResourceAssembler
+    pp_security.resource_assembler.user_applications.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\UserApplications\GetResourceAssembler
+    # Token:
+    pp_security.resource_assembler.user_tokens.get_all_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\UserTokens\GetAllResourceAssembler
+    pp_security.resource_assembler.user_tokens.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\UserTokens\GetResourceAssembler
+    # User
+    pp_security.resource_assembler.user.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\User\GetResourceAssembler
+    # Users
+    pp_security.resource_assembler.users.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\Users\GetResourceAssembler
 
     # Security
     pp_security.user_provider.class: PropertyPrivately\SecurityBundle\User\UserProvider
@@ -68,33 +74,51 @@ services:
             - %pp_security.user.class%
 
     # Resource Assemblers
-    pp_security.resource_assembler.token.get_all_assembler:
-        class: %pp_security.resource_assembler.token.get_all_assembler.class%
+    # Application
+    pp_security.resource_assembler.user_applications.get_all_assembler:
+        class: %pp_security.resource_assembler.user_applications.get_all_assembler.class%
         arguments:
             - "@router"
         calls:
             - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
-            - [setSubAssembler, ["token", "@pp_security.resource_assembler.token_assembler"]]
 
-    pp_security.resource_assembler.token.get_assembler:
-        class: %pp_security.resource_assembler.token.get_assembler.class%
+    pp_security.resource_assembler.user_applications.get_assembler:
+        class: %pp_security.resource_assembler.user_applications.get_assembler.class%
         arguments:
             - "@router"
         calls:
             - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
-            - [setSubAssembler, ["token", "@pp_security.resource_assembler.token_assembler"]]
 
-    pp_security.resource_assembler.token_assembler:
-        class: %pp_security.resource_assembler.token_assembler.class%
+    # Token
+    pp_security.resource_assembler.user_tokens.get_all_assembler:
+        class: %pp_security.resource_assembler.user_tokens.get_all_assembler.class%
         arguments:
             - "@router"
         calls:
-            - [setSubAssembler, ["user", "@pp_security.resource_assembler.user_assembler"]]
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
 
-    pp_security.resource_assembler.user_assembler:
-        class: %pp_security.resource_assembler.user_assembler.class%
+    pp_security.resource_assembler.user_tokens.get_assembler:
+        class: %pp_security.resource_assembler.user_tokens.get_assembler.class%
         arguments:
             - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
+    # User
+    pp_security.resource_assembler.user.get_assembler:
+        class: %pp_security.resource_assembler.user.get_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
+    # Users
+    pp_security.resource_assembler.users.get_assembler:
+        class: %pp_security.resource_assembler.users.get_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
 
     # Security
     pp_security.user_provider:

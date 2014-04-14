@@ -14,6 +14,7 @@ namespace PropertyPrivately\SecurityBundle\Resource\Assembler;
 use SeerUK\RestBundle\Hal\Link\Link;
 use SeerUK\RestBundle\Hal\Resource\Resource;
 use SeerUK\RestBundle\Resource\Assembler\AbstractResourceAssembler;
+use PropertyPrivately\SecurityBundle\Resource\Assembler\ApplicationResourceAssembler;
 
 /**
  * Token Assembler
@@ -23,15 +24,19 @@ class TokenResourceAssembler extends AbstractResourceAssembler
     /**
      * @see AbstractResourceAssembler::assemble()
      */
-    public function assemble()
+    public function assemble(array $nested = array())
     {
-        $token         = $this->getVariable('token');
-        $userAssembler = $this->getSubAssembler('user');
-        $userAssembler->setVariable('user', $this->getVariable('user'));
+        $token = $this->getVariable('token');
 
         $this->rootResource->setVariables($token->toArray());
         $this->rootResource->addLinks($this->assembleLinks());
-        $this->rootResource->addResource('user', $userAssembler->assemble());
+
+        if (in_array('application', $nested)) {
+            $appAssembler = new ApplicationResourceAssembler($this->router);
+            $appAssembler->setVariable('application', $token->getApplication());
+
+            $this->rootResource->addResource('application', $appAssembler->assemble());
+        }
 
         return $this->rootResource;
     }
@@ -43,12 +48,14 @@ class TokenResourceAssembler extends AbstractResourceAssembler
      */
     public function assembleLinks()
     {
-        $token = $this->getVariable('token');
+        $token       = $this->getVariable('token');
+        $application = $token->getApplication();
+        $user        = $token->getUser();
 
         $links = array();
-        $links['self'] = new Link($this->router->generate('pp_security_token_get', array(
-            'id' => $token->getId()
-        )));
+        $links['self']        = new Link($this->router->generate('pp_security_tokens_get', ['id' => $token->getId()]));
+        $links['application'] = new Link($this->router->generate('pp_security_applications_get', ['id' => $application->getId()]));
+        $links['user']        = new Link($this->router->generate('pp_security_users_get', ['id' => $user->getId()]));
 
         return $links;
     }

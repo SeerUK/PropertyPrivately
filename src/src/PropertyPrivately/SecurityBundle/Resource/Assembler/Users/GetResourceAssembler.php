@@ -9,11 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace PropertyPrivately\SecurityBundle\Resource\Assembler\Token;
+namespace PropertyPrivately\SecurityBundle\Resource\Assembler\Users;
 
 use SeerUK\RestBundle\Hal\Link\Link;
 use SeerUK\RestBundle\Hal\Resource\Resource;
 use SeerUK\RestBundle\Resource\Assembler\AbstractResourceAssembler;
+use PropertyPrivately\SecurityBundle\Resource\Assembler\UserResourceAssembler;
 
 /**
  * Get Action Assembler
@@ -23,13 +24,12 @@ class GetResourceAssembler extends AbstractResourceAssembler
     /**
      * @see AbstractResourceAssembler::assemble()
      */
-    public function assemble()
+    public function assemble(array $nested = array())
     {
-        $tokenAssembler = $this->getSubAssembler('token');
-        $tokenAssembler->setVariable('token', $this->getVariable('token'));
-        $tokenAssembler->setVariable('user', $this->getVariable('user'));
-        $tokenAssembler->setRootResource($this->getRootResource());
+        $userAssembler = new UserResourceAssembler($this->router);
+        $userAssembler->setVariable('user', $this->getVariable('user'));
+        $userAssembler->setRootResource($this->getRootResource());
 
-        return $tokenAssembler->assemble();
+        return $userAssembler->assemble(['roles']);
     }
 }

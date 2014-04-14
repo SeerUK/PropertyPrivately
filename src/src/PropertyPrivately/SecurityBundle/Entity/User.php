@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\ORM\Mapping\OneToMany;
 use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
 
 /**
@@ -24,7 +25,7 @@ use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
  * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Repository\UserRepository")
  * @ORM\Table(name="User")
  */
-class User implements AdvancedUserInterface, \Serializable, ArrayableInterface
+class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, ArrayableInterface
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -61,6 +62,11 @@ class User implements AdvancedUserInterface, \Serializable, ArrayableInterface
      * )
      */
     protected $roles;
+
+    /**
+     * @OneToMany(targetEntity="Application", mappedBy="user", cascade={"all"})
+     */
+    protected $applications;
 
     /**
      * @ORM\Column(name="enabled", type="boolean")
@@ -170,6 +176,16 @@ class User implements AdvancedUserInterface, \Serializable, ArrayableInterface
     }
 
     /**
+     * Get applications
+     *
+     * @return array
+     */
+    public function getApplications()
+    {
+        return $this->applications;
+    }
+
+    /**
      * @inheritDoc
      */
     public function eraseCredentials()
@@ -216,6 +232,14 @@ class User implements AdvancedUserInterface, \Serializable, ArrayableInterface
             'enabled'  => $this->enabled,
             'roles'    => $this->roles
         );
+    }
+
+    /**
+     * @see \JsonSerializable::jsonSerialize()
+     */
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 
     /**
