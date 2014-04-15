@@ -28,6 +28,7 @@ class GetAllResourceAssembler extends AbstractResourceAssembler
     {
         $applications = $this->getVariable('applications');
         $this->rootResource->setVariable('total', count($applications));
+        $this->rootResource->addLinks($this->assembleLinks());
 
         $appAssembler = new ApplicationResourceAssembler($this->router);
         $appAssembler->setVariable('user', $this->getVariable('user'));
@@ -40,5 +41,13 @@ class GetAllResourceAssembler extends AbstractResourceAssembler
         }
 
         return $this->rootResource;
+    }
+
+    private function assembleLinks()
+    {
+        $links = array();
+        $links['user'] = new Link($this->router->generate('pp_security_user_get'));
+
+        return $links;
     }
 }

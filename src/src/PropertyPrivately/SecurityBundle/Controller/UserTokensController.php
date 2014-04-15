@@ -14,6 +14,7 @@ namespace PropertyPrivately\SecurityBundle\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use SeerUK\RestBundle\Controller\RestController;
 use PropertyPrivately\CoreBundle\Exception\MissingMandatoryParametersException;
@@ -50,12 +51,18 @@ class UserTokensController extends RestController
 
         $user      = $this->get('security.context')->getToken()->getUser();
         $tokenRepo = $this->get('pp_security.token_repository');
-        $assembler = $this->get('pp_security.resource_assembler.user_tokens.get_assembler');
-        $assembler->setVariable('user', $user);
-        $assembler->setVariable('token', $tokenRepo->findOneBy(array(
+        $token     = $tokenRepo->findOneBy(array(
             'id'   => $id,
             'user' => $user->getId()
-        )));
+        ));
+
+        if ( ! $token) {
+            throw new NotFoundHttpException('Token not found.');
+        }
+
+        $assembler = $this->get('pp_security.resource_assembler.user_tokens.get_assembler');
+        $assembler->setVariable('user', $user);
+        $assembler->setVariable('token', $token);
 
         return new JsonResponse($assembler->assemble());
     }
@@ -83,7 +90,7 @@ class UserTokensController extends RestController
 
         $tokenRepo->persist($token);
 
-        return $this->createInternalRequest('pp_security_token_get', array(
+        return $this->createInternalRequest('pp_security_user_tokens_get', array(
             'id' => $token->getId()
         ), JsonResponse::HTTP_CREATED, array(
             'X-API-Key' => $token->getToken()

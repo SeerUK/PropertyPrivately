@@ -11,9 +11,9 @@ parameters:
     pp_security.token_generator.class: PropertyPrivately\SecurityBundle\Token\Utils\TokenGenerator
 
     # Repos
-    pp_security.application_repository.class: Doctrine\ORM\EntityRepository
-    pp_security.token_repository.class: PropertyPrivately\SecurityBundle\Entity\TokenRepository
-    pp_security.user_repository.class: PropertyPrivately\SecurityBundle\Entity\UserRepository
+    pp_security.application_repository.class: PropertyPrivately\SecurityBundle\Repository\ApplicationRepository
+    pp_security.token_repository.class: PropertyPrivately\SecurityBundle\Repository\TokenRepository
+    pp_security.user_repository.class: PropertyPrivately\SecurityBundle\Repository\UserRepository
 
     # Resource Assemblers
     # Users
@@ -140,6 +140,7 @@ services:
         class: %pp_security.apikey_user_provider.class%
         arguments:
             - "@pp_security.user_provider"
+            - "@pp_security.application_repository"
             - "@pp_security.token_repository"
 
     pp_security.apikey_authenticator:

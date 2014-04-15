@@ -43,14 +43,21 @@ class GetAllResourceAssembler extends AbstractResourceAssembler
         return $this->rootResource;
     }
 
+    /**
+     * Assemble links
+     *
+     * @return array
+     */
     private function assembleLinks()
     {
         $links     = array();
 
         $appLink = new Link($this->generateRouteTemplate('pp_security_user_tokens_application_get_all'));
+        $appLink->setName('Current user tokens for an application');
         $appLink->setTemplated(true);
 
         $links['application'] = $appLink;
+        $links['user']        = new Link($this->router->generate('pp_security_user_get'));
 
         return $links;
     }

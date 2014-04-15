@@ -29,6 +29,7 @@ class GetAllResourceAssembler extends AbstractResourceAssembler
     {
         $tokens = $this->getVariable('tokens');
         $this->rootResource->setVariable('total', count($tokens));
+        $this->rootResource->addLinks($this->assembleLinks());
         $this->rootResource->addResource('application', $this->assembleApplication());
 
         // Create tokens
@@ -58,5 +59,13 @@ class GetAllResourceAssembler extends AbstractResourceAssembler
         $application->unsetVariable('token');
 
         return $application;
+    }
+
+    private function assembleLinks()
+    {
+        $links = array();
+        $links['user'] = new Link($this->router->generate('pp_security_user_get'));
+
+        return $links;
     }
 }

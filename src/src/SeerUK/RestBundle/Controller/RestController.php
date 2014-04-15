@@ -13,6 +13,7 @@ namespace SeerUK\RestBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 /**
  * Rest Controller
@@ -32,7 +33,15 @@ class RestController extends Controller
     protected function createInternalRequest($route, array $path = array(), $statusCode = 200,
         array $requestHeaders = null, array $query = array())
     {
-        $routes              = $this->get('router')->getRouteCollection();
+        $routes = $this->get('router')->getRouteCollection();
+
+        if ( ! $routes->get($route)) {
+            throw new RouteNotFoundException(sprintf(
+                'No route found with name "%s"',
+                $route
+            ));
+        }
+
         $path['_controller'] = $routes->get($route)->getDefaults()['_controller'];
 
         // Create internal-request

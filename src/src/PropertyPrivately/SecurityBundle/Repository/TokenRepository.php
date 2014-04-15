@@ -11,9 +11,7 @@
 
 namespace PropertyPrivately\SecurityBundle\Repository;
 
-use Doctrine\ORM\NoResultException;
 use PropertyPrivately\CoreBundle\Repository\PersistentEntityRepository;
-use PropertyPrivately\SecurityBundle\Entity\Token;
 
 /**
  * Token Repository

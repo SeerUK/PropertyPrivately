@@ -13,6 +13,7 @@ namespace PropertyPrivately\SecurityBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use SeerUK\RestBundle\Controller\RestController;
 use PropertyPrivately\SecurityBundle\Exception\Utils\ErrorMessages;
 
@@ -27,13 +28,19 @@ class UserTokensApplicationController extends RestController
             throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
         }
 
-        $user      = $this->get('security.context')->getToken()->getUser();
-        $appRepo   = $this->get('pp_security.application_repository');
-        $tokenRepo = $this->get('pp_security.token_repository');
-        $assembler = $this->get('pp_security.resource_assembler.user_tokens_application.get_all_assembler');
-        $assembler->setVariable('application', $appRepo->findOneBy(array(
+        $user        = $this->get('security.context')->getToken()->getUser();
+        $appRepo     = $this->get('pp_security.application_repository');
+        $tokenRepo   = $this->get('pp_security.token_repository');
+        $application = $appRepo->findOneBy(array(
             'id' => $id
-        )));
+        ));
+
+        if ( ! $application) {
+            throw new NotFoundHttpException('Application not found.');
+        }
+
+        $assembler = $this->get('pp_security.resource_assembler.user_tokens_application.get_all_assembler');
+        $assembler->setVariable('application', $application);
         $assembler->setVariable('tokens', $tokenRepo->findBy(array(
             'application' => $id,
             'user'        => $user->getId()

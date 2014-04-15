@@ -15,6 +15,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Doctrine\ORM\NoResultException;
+use PropertyPrivately\SecurityBundle\Repository\ApplicationRepository;
 use PropertyPrivately\SecurityBundle\Repository\TokenRepository;
 use PropertyPrivately\SecurityBundle\User\UserProvider;
 
@@ -24,9 +25,9 @@ use PropertyPrivately\SecurityBundle\User\UserProvider;
 class ApiKeyUserProvider implements UserProviderInterface
 {
     /**
-     * @var UserProvider
+     * @var ApplicationRepository
      */
-    private $userProvider;
+    private $appRepository;
 
     /**
      * @var TokenRepository
@@ -34,31 +35,48 @@ class ApiKeyUserProvider implements UserProviderInterface
     private $tokenRepository;
 
     /**
+     * @var UserProvider
+     */
+    private $userProvider;
+
+    /**
      * Constructor
      *
-     * @param UserRepository $userRepo
+     * @param UserProvider          $userProvider
+     * @param ApplicationRepository $appRepository
+     * @param TokenRepository       $tokenRepository
      */
-    public function __construct(UserProvider $userProvider, TokenRepository $tokenRepository)
+    public function __construct(UserProvider $userProvider, ApplicationRepository $appRepository,
+        TokenRepository $tokenRepository)
     {
         $this->userProvider    = $userProvider;
+        $this->appRepository   = $appRepository;
         $this->tokenRepository = $tokenRepository;
     }
 
     /**
-     * Get username for API key
+     * Get username for API app secret and API key
      *
+     * @param  string $apiAppSecret
      * @param  string $apiKey
      * @return string
      */
-    public function getUsernameForApiKey($apiKey)
+    public function getUsernameForApiAppSecretAndApiKey($apiAppSecret, $apiKey)
     {
-        try {
-            $user = $this->tokenRepository->findOneByToken($apiKey)->getUser();
-        } catch (NoResultException $e) {
+        if ( ! $application = $this->appRepository->findOneByToken($apiAppSecret)) {
             return false;
         }
 
-        return $user->getUsername();
+        $token = $this->tokenRepository->findOneBy([
+            'application' => $application->getId(),
+            'token'       => $apiKey
+        ]);
+
+        if ( ! $token) {
+            return false;
+        }
+
+        return $token->getUser()->getUsername();
     }
 
     /**

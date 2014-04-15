@@ -12,6 +12,7 @@
 namespace PropertyPrivately\SecurityBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use SeerUK\RestBundle\Controller\RestController;
 
 /**
@@ -21,11 +22,17 @@ class UsersController extends RestController
 {
     public function getAction($id)
     {
-        $userRepo  = $this->get('pp_security.user_repository');
-        $assembler = $this->get('pp_security.resource_assembler.users.get_assembler');
-        $assembler->setVariable('user', $userRepo->findOneBy(array(
+        $userRepo = $this->get('pp_security.user_repository');
+        $user     = $userRepo->findOneBy(array(
             'id' => $id
-        )));
+        ));
+
+        if ( ! $user) {
+            throw new NotFoundHttpException('User not found.');
+        }
+
+        $assembler = $this->get('pp_security.resource_assembler.users.get_assembler');
+        $assembler->setVariable('user', $user);
 
         return new JsonResponse($assembler->assemble());
     }

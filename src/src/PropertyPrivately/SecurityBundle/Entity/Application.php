@@ -22,7 +22,7 @@ use PropertyPrivately\SecurityBundle\Entity\User;
 /**
  * PropertyPrivately\SecurityBundle\Entity\Application
  *
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Repository\ApplicationRepository")
  * @ORM\Table(name="Application")
  */
 class Application implements \Serializable, \JsonSerializable, ArrayableInterface

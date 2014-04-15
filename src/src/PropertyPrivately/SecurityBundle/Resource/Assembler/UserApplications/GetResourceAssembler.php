@@ -46,9 +46,8 @@ class GetResourceAssembler extends AbstractResourceAssembler
      */
     private function assembleLinks()
     {
-        $application = $this->getVariable('application');
-
         $links = $this->getVariable('links');
+        $links['user'] = new Link($this->router->generate('pp_security_user_get'));
 
         return $links;
     }
