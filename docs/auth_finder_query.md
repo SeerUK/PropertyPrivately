@@ -13,5 +13,5 @@ Put in a username and it'll spit out some valid tokens combinations to use.
     INNER JOIN
         Application a ON a.id = t.applicationId
     WHERE
-        u.username = "SeerUK"
+        u.username = "Seer"
     ;

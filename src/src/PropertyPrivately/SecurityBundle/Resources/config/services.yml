@@ -16,6 +16,9 @@ parameters:
     pp_security.user_repository.class: PropertyPrivately\SecurityBundle\Repository\UserRepository
 
     # Resource Assemblers
+    # Applications
+    pp_security.resource_assembler.applications.directory_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\Applications\DirectoryResourceAssembler
+    pp_security.resource_assembler.applications.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\Applications\GetResourceAssembler
     # Users
     pp_security.resource_assembler.users.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\Users\GetResourceAssembler
     # User
@@ -76,6 +79,21 @@ services:
             - %pp_security.user.class%
 
     # Resource Assemblers
+    # Applications
+    pp_security.resource_assembler.applications.directory_assembler:
+        class: %pp_security.resource_assembler.applications.directory_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
+    pp_security.resource_assembler.applications.get_assembler:
+        class: %pp_security.resource_assembler.applications.get_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
     # Users
     pp_security.resource_assembler.users.get_assembler:
         class: %pp_security.resource_assembler.users.get_assembler.class%

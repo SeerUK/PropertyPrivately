@@ -1,3 +1,16 @@
+# Applications
+pp_security_applications_directory:
+    pattern: /applications
+    defaults: { _controller: PropertyPrivatelySecurityBundle:Applications:directory }
+    methods: [GET]
+
+pp_security_applications_get:
+    pattern: /applications/{id}
+    defaults: { _controller: PropertyPrivatelySecurityBundle:Applications:get }
+    methods: [GET]
+    requirements:
+        id: \d+
+
 # Users
 pp_security_users_get:
     pattern: /users/{id}

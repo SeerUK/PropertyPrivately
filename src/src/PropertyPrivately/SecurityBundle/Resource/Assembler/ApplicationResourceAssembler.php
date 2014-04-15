@@ -31,6 +31,10 @@ class ApplicationResourceAssembler extends AbstractResourceAssembler
         $this->rootResource->setVariables($application->toArray());
         $this->rootResource->addLinks($this->assembleLinks());
 
+        if ( ! $this->hasVariable('user') || ($this->getVariable('user')->getId() !== $application->getUser()->getId())) {
+            $this->rootResource->unsetVariable('token');
+        }
+
         if (in_array('user', $nested)) {
             $userAssembler = new UserResourceAssembler($this->router);
             $userAssembler->setVariable('user', $application->getUser());
@@ -52,7 +56,7 @@ class ApplicationResourceAssembler extends AbstractResourceAssembler
         $user        = $application->getUser();
 
         $links = array();
-        $links['self'] = new Link($this->router->generate('pp_security_user_applications_get', ['id' => $application->getId()]));
+        $links['self'] = new Link($this->router->generate('pp_security_applications_get', ['id' => $application->getId()]));
 
         return $links;
     }

@@ -21,4 +21,9 @@ final class ErrorMessages
 
     const MISSING_CREDENTIALS = 'Missing credentials.';
     const BAD_CREDENTIALS     = 'Bad credentials.';
+
+    // Security Entity Errors
+    const APPLICATION_NOT_FOUND = 'Application not found.';
+    const TOKEN_NOT_FOUND       = 'Token not found.';
+    const USER_NOT_FOUND        = 'User not found.';
 }

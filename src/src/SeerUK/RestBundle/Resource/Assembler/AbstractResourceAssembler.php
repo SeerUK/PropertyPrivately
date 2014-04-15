@@ -173,6 +173,14 @@ abstract class AbstractResourceAssembler implements VariableModelInterface
     }
 
     /**
+     * @see VariableModelInterface::hasVariable()
+     */
+    public function hasVariable($name)
+    {
+        return isset($this->variables[$name]);
+    }
+
+    /**
      * @see VariableModelInterface::unsetVariable()
      */
     public function unsetVariable($name)
@@ -208,7 +216,7 @@ abstract class AbstractResourceAssembler implements VariableModelInterface
      */
     public function generateRouteTemplate($route)
     {
-        $rawVars   = $this->router->getRouteCollection()->get('pp_security_user_tokens_application_get_all')->compile()->getVariables();
+        $rawVars   = $this->router->getRouteCollection()->get($route)->compile()->getVariables();
         $generator = clone $this->router->getGenerator();
         $generator->setStrictRequirements(null);
 

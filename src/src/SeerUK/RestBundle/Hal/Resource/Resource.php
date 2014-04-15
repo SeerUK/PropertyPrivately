@@ -328,6 +328,14 @@ class Resource implements \JsonSerializable, ResourceInterface, VariableModelInt
     }
 
     /**
+     * @see VariableModelInterface::hasVariable()
+     */
+    public function hasVariable($name)
+    {
+        return isset($this->variables[$name]);
+    }
+
+    /**
      * @see VariableModelInterface::unsetVariable()
      */
     public function unsetVariable($name)

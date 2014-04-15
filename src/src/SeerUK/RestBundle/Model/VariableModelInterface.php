@@ -49,6 +49,14 @@ interface VariableModelInterface
     public function setVariables(array $variables);
 
     /**
+     * Has variable?
+     *
+     * @param  string  $name
+     * @return boolean
+     */
+    public function hasVariable($name);
+
+    /**
      * Unset variable
      *
      * @param  string $name

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PropertyPrivately\SecurityBundle\Resource\Assembler\UserApplications;
+namespace PropertyPrivately\SecurityBundle\Resource\Assembler\Applications;
 
 use SeerUK\RestBundle\Hal\Link\Link;
 use SeerUK\RestBundle\Hal\Resource\Resource;
@@ -26,30 +26,14 @@ class GetResourceAssembler extends AbstractResourceAssembler
      */
     public function assemble(array $nested = array())
     {
-        $this->setVariable('links', $this->rootResource->getLinks());
-
         $appAssembler = new ApplicationResourceAssembler($this->router);
         $appAssembler->setVariable('application', $this->getVariable('application'));
-        $appAssembler->setVariable('user', $this->getVariable('user'));
         $appAssembler->setRootResource($this->getRootResource());
 
-        $resource =  $appAssembler->assemble();
-        $resource->removeLink('self');
-        $resource->addLinks($this->assembleLinks());
+        if ($this->hasVariable('user')) {
+            $appAssembler->setVariable('user', $this->getVariable('user'));
+        }
 
-        return $resource;
-    }
-
-    /**
-     * Assemble links
-     *
-     * @return array
-     */
-    private function assembleLinks()
-    {
-        $links = $this->getVariable('links');
-        $links['user'] = new Link($this->router->generate('pp_security_user_get'));
-
-        return $links;
+        return $appAssembler->assemble();
     }
 }
