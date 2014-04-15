@@ -199,4 +199,26 @@ abstract class AbstractResourceAssembler implements VariableModelInterface
     {
         return count($this->variables);
     }
+
+    /**
+     * Generate real template URL for route
+     *
+     * @param  string $route
+     * @return string
+     */
+    public function generateRouteTemplate($route)
+    {
+        $rawVars   = $this->router->getRouteCollection()->get('pp_security_user_tokens_application_get_all')->compile()->getVariables();
+        $generator = clone $this->router->getGenerator();
+        $generator->setStrictRequirements(null);
+
+        $variables = array();
+        foreach ($rawVars as $variable) {
+            $variables[$variable] = '{' . $variable . '}';
+        }
+
+        $link = urldecode($generator->generate($route, $variables));
+
+        return $link;
+    }
 }

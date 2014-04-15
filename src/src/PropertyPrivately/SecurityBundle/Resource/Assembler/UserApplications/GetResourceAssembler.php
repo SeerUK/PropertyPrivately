@@ -49,7 +49,6 @@ class GetResourceAssembler extends AbstractResourceAssembler
         $application = $this->getVariable('application');
 
         $links = $this->getVariable('links');
-        $links['tokens'] = new Link('/app_dev.php/user/applications/' . $application->getId() . '/tokens');
 
         return $links;
     }

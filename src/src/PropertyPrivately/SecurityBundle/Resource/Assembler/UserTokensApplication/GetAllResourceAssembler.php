@@ -9,11 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace PropertyPrivately\SecurityBundle\Resource\Assembler\UserTokens;
+namespace PropertyPrivately\SecurityBundle\Resource\Assembler\UserTokensApplication;
 
 use SeerUK\RestBundle\Hal\Link\Link;
 use SeerUK\RestBundle\Hal\Resource\Resource;
 use SeerUK\RestBundle\Resource\Assembler\AbstractResourceAssembler;
+use PropertyPrivately\SecurityBundle\Resource\Assembler\ApplicationResourceAssembler;
 use PropertyPrivately\SecurityBundle\Resource\Assembler\TokenResourceAssembler;
 
 /**
@@ -28,30 +29,34 @@ class GetAllResourceAssembler extends AbstractResourceAssembler
     {
         $tokens = $this->getVariable('tokens');
         $this->rootResource->setVariable('total', count($tokens));
-        $this->rootResource->addLinks($this->assembleLinks());
+        $this->rootResource->addResource('application', $this->assembleApplication());
 
+        // Create tokens
         $tokenAssembler = new TokenResourceAssembler($this->router);
-        $tokenAssembler->setVariable('user', $this->getVariable('user'));
 
         foreach ($tokens as $token) {
             $tokenAssembler->setRootResource(new Resource());
             $tokenAssembler->setVariable('token', $token);
 
-            $this->rootResource->addResource('tokens', $tokenAssembler->assemble(['application']), true);
+            $this->rootResource->addResource('tokens', $tokenAssembler->assemble(), true);
         }
 
         return $this->rootResource;
     }
 
-    private function assembleLinks()
+    /**
+     * Assemble application resource
+     *
+     * @return Resource
+     */
+    private function assembleApplication()
     {
-        $links     = array();
+        $appAssembler = new ApplicationResourceAssembler($this->router);
+        $appAssembler->setVariable('application', $this->getVariable('application'));
 
-        $appLink = new Link($this->generateRouteTemplate('pp_security_user_tokens_application_get_all'));
-        $appLink->setTemplated(true);
+        $application = $appAssembler->assemble();
+        $application->unsetVariable('token');
 
-        $links['application'] = $appLink;
-
-        return $links;
+        return $application;
     }
 }

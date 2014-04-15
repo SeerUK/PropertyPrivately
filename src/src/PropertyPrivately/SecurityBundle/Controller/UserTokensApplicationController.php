@@ -19,9 +19,9 @@ use PropertyPrivately\SecurityBundle\Exception\Utils\ErrorMessages;
 /**
  * User Applications Controller
  */
-class UserApplicationsController extends RestController
+class UserTokensApplicationController extends RestController
 {
-    public function getAllAction()
+    public function getAllAction($id)
     {
         if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
             throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
@@ -29,28 +29,14 @@ class UserApplicationsController extends RestController
 
         $user      = $this->get('security.context')->getToken()->getUser();
         $appRepo   = $this->get('pp_security.application_repository');
-        $assembler = $this->get('pp_security.resource_assembler.user_applications.get_all_assembler');
-        $assembler->setVariable('user', $user);
-        $assembler->setVariable('applications', $appRepo->findBy(array(
-            'user' => $user->getId()
-        )));
-
-        return new JsonResponse($assembler->assemble());
-    }
-
-    public function getAction($id)
-    {
-        if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
-        }
-
-        $user      = $this->get('security.context')->getToken()->getUser();
-        $appRepo   = $this->get('pp_security.application_repository');
-        $assembler = $this->get('pp_security.resource_assembler.user_applications.get_assembler');
-        $assembler->setVariable('user', $user);
+        $tokenRepo = $this->get('pp_security.token_repository');
+        $assembler = $this->get('pp_security.resource_assembler.user_tokens_application.get_all_assembler');
         $assembler->setVariable('application', $appRepo->findOneBy(array(
-            'id'   => $id,
-            'user' => $user->getId()
+            'id' => $id
+        )));
+        $assembler->setVariable('tokens', $tokenRepo->findBy(array(
+            'application' => $id,
+            'user'        => $user->getId()
         )));
 
         return new JsonResponse($assembler->assemble());

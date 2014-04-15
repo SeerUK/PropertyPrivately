@@ -1,33 +1,10 @@
-# Applications
-pp_security_applications_get_all:
-    pattern: /user/applications
-    defaults: { _controller: PropertyPrivatelySecurityBundle:UserApplications:getAll }
-    methods: [GET]
-
-pp_security_applications_get:
-    pattern: /user/applications/{id}
-    defaults: { _controller: PropertyPrivatelySecurityBundle:UserApplications:get }
+# Users
+pp_security_users_get:
+    pattern: /users/{id}
+    defaults: { _controller: PropertyPrivatelySecurityBundle:Users:get }
     methods: [GET]
     requirements:
         id: \d+
-
-# Tokens
-pp_security_tokens_get_all:
-    pattern: /user/tokens
-    defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:getAll }
-    methods: [GET]
-
-pp_security_tokens_get:
-    pattern: /user/tokens/{id}
-    defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:get }
-    methods: [GET]
-    requirements:
-        id: \d+
-
-pp_security_token_post:
-    pattern: /user/tokens
-    defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:post }
-    methods: [POST]
 
 # User
 pp_security_user_get:
@@ -35,10 +12,41 @@ pp_security_user_get:
     defaults: { _controller: PropertyPrivatelySecurityBundle:User:get }
     methods: [GET]
 
-# Users
-pp_security_users_get:
-    pattern: /users/{id}
-    defaults: { _controller: PropertyPrivatelySecurityBundle:Users:get }
+# User Applications
+pp_security_user_applications_get_all:
+    pattern: /user/applications
+    defaults: { _controller: PropertyPrivatelySecurityBundle:UserApplications:getAll }
+    methods: [GET]
+
+pp_security_user_applications_get:
+    pattern: /user/applications/{id}
+    defaults: { _controller: PropertyPrivatelySecurityBundle:UserApplications:get }
+    methods: [GET]
+    requirements:
+        id: \d+
+
+# User Tokens
+pp_security_user_tokens_get_all:
+    pattern: /user/tokens
+    defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:getAll }
+    methods: [GET]
+
+pp_security_user_tokens_get:
+    pattern: /user/tokens/{id}
+    defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:get }
+    methods: [GET]
+    requirements:
+        id: \d+
+
+pp_security_user_tokens_post:
+    pattern: /user/tokens
+    defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:post }
+    methods: [POST]
+
+# User Tokens Application
+pp_security_user_tokens_application_get_all:
+    pattern: /user/tokens/application/{id}
+    defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokensApplication:getAll }
     methods: [GET]
     requirements:
         id: \d+

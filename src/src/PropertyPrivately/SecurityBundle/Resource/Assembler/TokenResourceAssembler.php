@@ -35,7 +35,10 @@ class TokenResourceAssembler extends AbstractResourceAssembler
             $appAssembler = new ApplicationResourceAssembler($this->router);
             $appAssembler->setVariable('application', $token->getApplication());
 
-            $this->rootResource->addResource('application', $appAssembler->assemble());
+            $application = $appAssembler->assemble();
+            $application->unsetVariable('token');
+
+            $this->rootResource->addResource('application', $application);
         }
 
         return $this->rootResource;
@@ -50,12 +53,10 @@ class TokenResourceAssembler extends AbstractResourceAssembler
     {
         $token       = $this->getVariable('token');
         $application = $token->getApplication();
-        $user        = $token->getUser();
 
         $links = array();
-        $links['self']        = new Link($this->router->generate('pp_security_tokens_get', ['id' => $token->getId()]));
-        $links['application'] = new Link($this->router->generate('pp_security_applications_get', ['id' => $application->getId()]));
-        $links['user']        = new Link($this->router->generate('pp_security_users_get', ['id' => $user->getId()]));
+        $links['self']        = new Link($this->router->generate('pp_security_user_tokens_get', ['id' => $token->getId()]));
+        $links['application'] = new Link($this->router->generate('pp_security_user_applications_get', ['id' => $application->getId()]));
 
         return $links;
     }

@@ -52,8 +52,7 @@ class ApplicationResourceAssembler extends AbstractResourceAssembler
         $user        = $application->getUser();
 
         $links = array();
-        $links['self'] = new Link($this->router->generate('pp_security_applications_get', ['id' => $application->getId()]));
-        $links['user'] = new Link($this->router->generate('pp_security_users_get', ['id' => $user->getId()]));
+        $links['self'] = new Link($this->router->generate('pp_security_user_applications_get', ['id' => $application->getId()]));
 
         return $links;
     }
