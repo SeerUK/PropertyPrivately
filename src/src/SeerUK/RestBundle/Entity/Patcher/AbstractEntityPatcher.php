@@ -12,28 +12,24 @@
 namespace SeerUK\RestBundle\Entity\Patcher;
 
 use Symfony\Component\Validator\Validator;
-use SeerUK\RestBundle\Validator\Exception\ConstraintViolationException;
+use SeerUK\RestBundle\Entity\Patcher\Exception\InvalidOperationException;
+use SeerUK\RestBundle\Entity\Patcher\Exception\UnsupportedEntityException;
+use SeerUK\RestBundle\Entity\Patcher\Exception\UnsupportedOperationException;
 use SeerUK\RestBundle\Entity\Patcher\PatchableEntityInterface;
+use SeerUK\RestBundle\Validator\Exception\ConstraintViolationException;
 
 /**
  * Abstract Entity Patcher
+ *
+ * Designed to conform with JSON PATCH
+ * (http://tools.ietf.org/html/rfc6902)
  */
 abstract class AbstractEntityPatcher
 {
     /**
-     * @var Validator
+     * @var string
      */
-    protected $validator;
-
-    /**
-     * Constructor
-     *
-     * @param Validator $validator
-     */
-    public function __construct(Validator $validator)
-    {
-        $this->validator = $validator;
-    }
+    protected $lastError;
 
     /**
      * Process the patch request
@@ -45,17 +41,10 @@ abstract class AbstractEntityPatcher
     public function patch(PatchableEntityInterface $entity, array $operations)
     {
         if ( ! $this->isSupportedEntity($entity)) {
-            // Throw UnsupportedEntityException
+            throw new UnsupportedEntityException($entity, $this->supports());
         }
 
-        $entity = $this->applyOperation($entity, $operations);
-        $errors = $this->validate($entity);
-
-        if (count($errors) > 0) {
-            throw new ConstraintViolationException($errors);
-        }
-
-        return $entity;
+        return $this->applyOperations($entity, $operations);
     }
 
     /**
@@ -68,17 +57,15 @@ abstract class AbstractEntityPatcher
     protected function applyOperations(PatchableEntityInterface $entity, array $operations)
     {
         foreach ($operations as $operation) {
-            $method = strtolower($operation->op) . 'Operation');
-
-            if ( ! isset($operation->op) || ! isset($operation->path)
-                || ! method_exists($this, $method) {
-                // Throw InvalidOperationException
+            if ( ! $this->isValidOperation($operation)) {
+                throw new InvalidOperationException($this->getLastError());
             }
 
             if ( ! $this->isOperationSupportedByEntity($entity, $operation)) {
-                // Throw UnsupportedOperationException
+                throw new UnsupportedOperationException($entity, $operation);
             }
 
+            $method = strtolower($operation->op) . 'Operation';
             $entity = $this->$method($entity, $operation);
         }
 
@@ -119,6 +106,71 @@ abstract class AbstractEntityPatcher
         return in_array($operation->path, $entity->getPatchableProperties())
             ? true
             : false;
+    }
+
+    /**
+     * Is this operation valid?
+     *
+     * @param  stdClass $operation
+     * @return boolean
+     */
+    protected function isValidOperation($operation)
+    {
+        if ( ! isset($operation->op) || ! isset($operation->path)) {
+            $this->setLastError('Invalid operation definition.');
+            return false;
+        }
+
+        if ( ! method_exists($this, strtolower($operation->op) . 'Operation')) {
+            $this->setLastError(sprintf('Invalid operation "%s".', $operation->op));
+            return false;
+        }
+
+        switch ($operation->op) {
+            case 'add':
+            case 'replace':
+            case 'test':
+                if ( ! isset($operation->value)) {
+                    $this->setLastError(sprintf('Invalid "%s" operation, no "value" set.', $operation->op));
+                    return false;
+                }
+                break;
+            case 'move':
+            case 'copy':
+                if ( ! isset($operation->from)) {
+                    $this->setLastError(sprintf('Invalid "%s" operation, no "from" set.', $operation->op));
+                    return false;
+                }
+                break;
+            case 'remove':
+                break;
+            default:
+                return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Get last error
+     *
+     * @return string
+     */
+    public function getLastError()
+    {
+        return $this->lastError;
+    }
+
+    /**
+     * Set last error
+     *
+     * @param string $message
+     */
+    private function setLastError($message)
+    {
+        $this->lastError = $message;
+
+        return $this;
     }
 
     /**
@@ -167,18 +219,21 @@ abstract class AbstractEntityPatcher
     abstract protected function copyOperation(PatchableEntityInterface $entity, $operation);
 
     /**
-     * Execute 'test' operation
+     * Execute 'test' operation (has no relevance to entities)
      *
      * @param  PatchableEntityInterface $entity
      * @param  stdClass                 $operation
      * @return PatchableEntityInterface
      */
-    abstract protected function testOperation(PatchableEntityInterface $entity, $operation);
+    protected function testOperation(PatchableEntityInterface $entity, $operation)
+    {
+        return $entity;
+    }
 
     /**
      * Return full class name of supported entity
      *
      * @return string
      */
-    abstract function supports();
+    abstract protected function supports();
 }

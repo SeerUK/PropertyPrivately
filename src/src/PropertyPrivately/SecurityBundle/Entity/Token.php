@@ -48,12 +48,14 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
 
     /**
      * @ORM\Column(name="description", type="string", length=50)
+     * @Assert\NotNull()
      * @Assert\Length(
      *      min = "0",
      *      max = "50",
      *      minMessage = "Your description must be at least {{ limit }} characters.",
      *      maxMessage = "Your description cannot be longer than {{ limit }} characters."
      * )
+     * @Assert\Type(type="string", message="Your description value is not a valid {{ type }}.")
      */
     protected $description;
 
@@ -69,7 +71,8 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
 
     /**
      * @ORM\Column(name="enabled", type="boolean")
-     * @Assert\Type(type="boolean", message="The value {{ value }} is not a valid {{ type }}.")
+     * @Assert\NotBlank()
+     * @Assert\Type(type="boolean", message="Your enabled value is not a valid {{ type }}.")
      */
     protected $enabled;
 
@@ -268,7 +271,10 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
      */
     public function getPatchableProperties()
     {
-        return array('description', 'enabled');
+        return array(
+            'description',
+            'enabled'
+        );
     }
 
     /**
