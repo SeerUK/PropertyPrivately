@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace PropertyPrivately\SecurityBundle\Repository;
+namespace PropertyPrivately\SecurityBundle\Entity\Repository;
 
-use PropertyPrivately\CoreBundle\Repository\PersistentEntityRepository;
+use PropertyPrivately\CoreBundle\Entity\Repository\PersistentEntityRepository;
 
 /**
  * Application Repository

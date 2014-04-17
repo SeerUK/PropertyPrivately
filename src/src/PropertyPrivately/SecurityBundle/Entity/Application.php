@@ -22,7 +22,7 @@ use PropertyPrivately\SecurityBundle\Entity\User;
 /**
  * PropertyPrivately\SecurityBundle\Entity\Application
  *
- * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Repository\ApplicationRepository")
+ * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Entity\Repository\ApplicationRepository")
  * @ORM\Table(name="Application")
  */
 class Application implements \Serializable, \JsonSerializable, ArrayableInterface
@@ -35,7 +35,7 @@ class Application implements \Serializable, \JsonSerializable, ArrayableInterfac
     protected $id;
 
     /**
-     * @ManyToOne(targetEntity="User", cascade={"all"}, fetch="EAGER", inversedBy="applications")
+     * @ManyToOne(targetEntity="User", fetch="EAGER", inversedBy="applications")
      * @JoinColumn(name="userId", referencedColumnName="id")
      */
     protected $user;
@@ -66,7 +66,7 @@ class Application implements \Serializable, \JsonSerializable, ArrayableInterfac
     protected $enabled;
 
     /**
-     * @OneToMany(targetEntity="Token", mappedBy="application", cascade={"all"})
+     * @OneToMany(targetEntity="Token", mappedBy="application")
      */
     protected $tokens;
 

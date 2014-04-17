@@ -15,9 +15,9 @@ use Doctrine\ORM\EntityRepository;
 use PropertyPrivately\CoreBundle\Exception\MissingMandatoryParametersException;
 use PropertyPrivately\SecurityBundle\Entity\Token;
 use PropertyPrivately\SecurityBundle\Exception\BadCredentialsException;
-use PropertyPrivately\SecurityBundle\Repository\ApplicationRepository;
-use PropertyPrivately\SecurityBundle\Repository\TokenRepository;
-use PropertyPrivately\SecurityBundle\Repository\UserRepository;
+use PropertyPrivately\SecurityBundle\Entity\Repository\ApplicationRepository;
+use PropertyPrivately\SecurityBundle\Entity\Repository\TokenRepository;
+use PropertyPrivately\SecurityBundle\Entity\Repository\UserRepository;
 use PropertyPrivately\SecurityBundle\Validator\UserValidator;
 use PropertyPrivately\SecurityBundle\Token\Utils\TokenGenerator;
 

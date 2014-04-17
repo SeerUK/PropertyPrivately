@@ -116,7 +116,7 @@ class ExceptionWrapper
             foreach ($exception->getConstraintViolationList() as $error) {
                 $errors[] = array(
                     'code'    => $error->getCode(),
-                    'field'   => $error->getRoot(),
+                    'field'   => $error->getPropertyPath(),
                     'message' => $error->getMessage(),
                 );
             }

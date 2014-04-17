@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PropertyPrivately\CoreBundle\Repository;
+namespace PropertyPrivately\CoreBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 

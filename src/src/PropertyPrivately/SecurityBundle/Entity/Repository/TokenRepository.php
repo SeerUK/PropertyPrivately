@@ -9,9 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace PropertyPrivately\SecurityBundle\Repository;
+namespace PropertyPrivately\SecurityBundle\Entity\Repository;
 
-use PropertyPrivately\CoreBundle\Repository\PersistentEntityRepository;
+use PropertyPrivately\CoreBundle\Entity\Repository\PersistentEntityRepository;
 
 /**
  * Token Repository
@@ -28,7 +28,7 @@ class TokenRepository extends PersistentEntityRepository
     {
         $query = $this->createQueryBuilder('t')
             ->select('t, u')
-            ->leftJoin('t.user', 'u')
+            ->innerJoin('t.user', 'u')
             ->where('t.token = :token')
             ->setParameter('token', $token)
             ->getQuery();

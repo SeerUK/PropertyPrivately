@@ -11,12 +11,13 @@
 
 namespace SeerUK\RestBundle\Validator\Exception;
 
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
  * Validation Exception Interface
  */
-class ConstraintViolationException extends \RuntimeException
+class ConstraintViolationException extends HttpException
 {
     /**
      * @var ConstraintViolationList
@@ -30,7 +31,7 @@ class ConstraintViolationException extends \RuntimeException
      */
     public function __construct(ConstraintViolationList $constraintViolations, \Exception $previous = null)
     {
-        parent::__construct(sprintf('Constraint violation, %d error(s).', count($constraintViolations)), 400, $previous);
+        parent::__construct(400, sprintf('Constraint violation, %d error(s).', count($constraintViolations)), $previous, array());
 
         $this->constraintViolations = $constraintViolations;
     }

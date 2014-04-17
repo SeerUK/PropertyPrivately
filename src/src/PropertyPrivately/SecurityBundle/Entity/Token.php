@@ -11,19 +11,21 @@
 
 namespace PropertyPrivately\SecurityBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
+use SeerUK\RestBundle\Entity\Patcher\PatchableEntityInterface;
 use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
 
 /**
  * PropertyPrivately\SecurityBundle\Entity\Token
  *
- * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Repository\TokenRepository")
+ * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Entity\Repository\TokenRepository")
  * @ORM\Table(name="Token")
  */
-class Token implements \Serializable, \JsonSerializable, ArrayableInterface
+class Token implements \Serializable, \JsonSerializable, ArrayableInterface, PatchableEntityInterface
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -33,19 +35,25 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface
     protected $id;
 
     /**
-     * @ManyToOne(targetEntity="Application", cascade={"all"}, fetch="EAGER", inversedBy="tokens")
+     * @ManyToOne(targetEntity="Application", fetch="EAGER", inversedBy="tokens")
      * @JoinColumn(name="applicationId", referencedColumnName="id")
      */
     protected $application;
 
     /**
-     * @ManyToOne(targetEntity="User", cascade={"all"}, fetch="EAGER")
+     * @ManyToOne(targetEntity="User", fetch="EAGER")
      * @JoinColumn(name="userId", referencedColumnName="id")
      */
     protected $user;
 
     /**
      * @ORM\Column(name="description", type="string", length=50)
+     * @Assert\Length(
+     *      min = "0",
+     *      max = "50",
+     *      minMessage = "Your description must be at least {{ limit }} characters.",
+     *      maxMessage = "Your description cannot be longer than {{ limit }} characters."
+     * )
      */
     protected $description;
 
@@ -61,6 +69,7 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface
 
     /**
      * @ORM\Column(name="enabled", type="boolean")
+     * @Assert\Type(type="boolean", message="The value {{ value }} is not a valid {{ type }}.")
      */
     protected $enabled;
 
@@ -252,6 +261,14 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface
     public function jsonSerialize()
     {
         return $this->toArray();
+    }
+
+    /**
+     * @see PatchableEntityInterface::getPatchableProperties()
+     */
+    public function getPatchableProperties()
+    {
+        return array('description', 'enabled');
     }
 
     /**

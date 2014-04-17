@@ -22,7 +22,7 @@ use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
 /**
  * PropertyPrivately\SecurityBundle\Entity\User
  *
- * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Repository\UserRepository")
+ * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Entity\Repository\UserRepository")
  * @ORM\Table(name="User")
  */
 class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, ArrayableInterface
@@ -64,7 +64,7 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
     protected $roles;
 
     /**
-     * @OneToMany(targetEntity="Application", mappedBy="user", cascade={"all"})
+     * @OneToMany(targetEntity="Application", mappedBy="user")
      */
     protected $applications;
 

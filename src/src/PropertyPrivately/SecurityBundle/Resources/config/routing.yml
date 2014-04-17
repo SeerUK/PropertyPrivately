@@ -56,6 +56,25 @@ pp_security_user_tokens_post:
     defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:post }
     methods: [POST]
 
+pp_security_user_tokens_patch:
+    pattern: /user/tokens/{id}
+    defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:patch }
+    methods: [PATCH]
+    requirements:
+        id: \d+
+
+pp_security_user_tokens_delete_all:
+    pattern: /user/tokens
+    defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:deleteAll }
+    methods: [DELETE]
+
+pp_security_user_tokens_delete:
+    pattern: /user/tokens/{id}
+    defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:delete }
+    methods: [DELETE]
+    requirements:
+        id: \d+
+
 # User Tokens Application
 pp_security_user_tokens_application_get_all:
     pattern: /user/tokens/application/{id}

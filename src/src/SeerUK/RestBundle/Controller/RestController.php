@@ -12,6 +12,7 @@
 namespace SeerUK\RestBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
@@ -30,7 +31,7 @@ class RestController extends Controller
      * @param  array   $query
      * @return Symfony\Component\HttpFoundation\Response
      */
-    protected function createInternalRequest($route, array $path = array(), $statusCode = 200,
+    public function createInternalRequest($route, array $path = array(), $statusCode = 200,
         array $requestHeaders = null, array $query = array())
     {
         $routes = $this->get('router')->getRouteCollection();
@@ -51,8 +52,39 @@ class RestController extends Controller
         // Get the response
         $response = $this->get('http_kernel')->handle($subRequest);
         $response->setStatusCode($statusCode);
+
+        return $response;
+    }
+
+    /**
+     * Simplified call to create an internal request, conforming to RESTs POST
+     * expectations
+     *
+     * @param  string $route
+     * @param  array  $path
+     * @param  array  $requestHeaders
+     * @return Response
+     */
+    public function getPostResponse($route, array $path = array(), array $requestHeaders = array())
+    {
+        $response = $this->createInternalRequest($route, $path, Response::HTTP_CREATED, $requestHeaders);
         $response->headers->set('Location', $this->generateUrl($route, $path, true));
 
         return $response;
+    }
+
+
+    /**
+     * Simplified call to create an internal request, conforming to RESTs PATCH
+     * expectations
+     *
+     * @param  string $route
+     * @param  array  $path
+     * @param  array  $requestHeaders
+     * @return Response
+     */
+    public function getPatchResponse($route, array $path = array(), array $requestHeaders = array())
+    {
+        return $this->createInternalRequest($route, $path, Response::HTTP_OK, $requestHeaders);
     }
 }

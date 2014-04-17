@@ -15,8 +15,8 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Doctrine\ORM\NoResultException;
-use PropertyPrivately\SecurityBundle\Repository\ApplicationRepository;
-use PropertyPrivately\SecurityBundle\Repository\TokenRepository;
+use PropertyPrivately\SecurityBundle\Entity\Repository\ApplicationRepository;
+use PropertyPrivately\SecurityBundle\Entity\Repository\TokenRepository;
 use PropertyPrivately\SecurityBundle\User\UserProvider;
 
 /**

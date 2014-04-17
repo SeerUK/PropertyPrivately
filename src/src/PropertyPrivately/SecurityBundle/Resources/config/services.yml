@@ -7,13 +7,16 @@ parameters:
     pp_security.token.class: PropertyPrivately\SecurityBundle\Entity\Token
     pp_security.user.class: PropertyPrivately\SecurityBundle\Entity\User
 
+    # Gateways
+    pp_security.token_gateway.class: PropertyPrivately\SecurityBundle\Gateway\TokenGateway
+
     # Generators
     pp_security.token_generator.class: PropertyPrivately\SecurityBundle\Token\Utils\TokenGenerator
 
     # Repos
-    pp_security.application_repository.class: PropertyPrivately\SecurityBundle\Repository\ApplicationRepository
-    pp_security.token_repository.class: PropertyPrivately\SecurityBundle\Repository\TokenRepository
-    pp_security.user_repository.class: PropertyPrivately\SecurityBundle\Repository\UserRepository
+    pp_security.application_repository.class: PropertyPrivately\SecurityBundle\Entity\Repository\ApplicationRepository
+    pp_security.token_repository.class: PropertyPrivately\SecurityBundle\Entity\Repository\TokenRepository
+    pp_security.user_repository.class: PropertyPrivately\SecurityBundle\Entity\Repository\UserRepository
 
     # Resource Assemblers
     # Applications
@@ -51,6 +54,12 @@ services:
             - "@pp_security.user_repository"
             - "@pp_security.user_validator"
             - "@pp_security.token_generator"
+
+    # Gateways
+    pp_security.token_gateway:
+        class: %pp_security.token_gateway.class%
+        arguments:
+            conn: '@doctrine.dbal.default_connection'
 
     # Generators
     pp_security.token_generator:

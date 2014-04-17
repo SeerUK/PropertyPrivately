@@ -17,7 +17,7 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Doctrine\ORM\NoResultException;
 use PropertyPrivately\SecurityBundle\Entity\User;
-use PropertyPrivately\SecurityBundle\Repository\UserRepository;
+use PropertyPrivately\SecurityBundle\Entity\Repository\UserRepository;
 
 /**
  * User Provider
