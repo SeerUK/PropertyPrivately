@@ -1,9 +1,9 @@
 
 # TODO List
 
+* Check security of Patcher, make sure copy and move FROM paths are only allowed to be patchable properties.
 * Implement DELETE actions
 * Implement POST actions
 * Implement PATCH actions
 * Implement PUT actions (if any)
-
 

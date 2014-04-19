@@ -37,6 +37,13 @@ CREATE TABLE IF NOT EXISTS Role (
     UNIQUE KEY (role)
 ) COMMENT="User roles";
 
+INSERT IGNORE INTO
+    Role (name, role)
+VALUES
+    ('User', 'ROLE_USER'),
+    ('Administrator', 'ROLE_ADMIN'),
+    ('Super Administrator', 'ROLE_SUPER_ADMIN');
+
 CREATE TABLE IF NOT EXISTS UserRoleMap (
     userId int UNSIGNED NOT NULL,
     roleId int UNSIGNED NOT NULL,
