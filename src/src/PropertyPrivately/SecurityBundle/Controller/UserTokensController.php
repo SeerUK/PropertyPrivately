@@ -231,7 +231,6 @@ class UserTokensController extends RestController
 
     }
 
-
     /**
      * Requires user to be granted: IS_AUTHENTICATED_FULLY
      *
@@ -256,8 +255,6 @@ class UserTokensController extends RestController
 
         return new Response(null, 204);
     }
-
-
 
     /**
      * Requires user to be granted: IS_AUTHENTICATED_FULLY
