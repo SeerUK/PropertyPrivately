@@ -229,8 +229,7 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
             'id'       => $this->id,
             'username' => $this->username,
             'email'    => $this->email,
-            'enabled'  => $this->enabled,
-            'roles'    => $this->roles
+            'enabled'  => $this->enabled
         );
     }
 

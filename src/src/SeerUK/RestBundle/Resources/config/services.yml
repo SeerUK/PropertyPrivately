@@ -12,11 +12,6 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 
-    seer_uk_rest.api_doc.extractor.json_request_annotation_handler:
-        class: SeerUK\RestBundle\AnnotationHandler\JsonRequestAnnotationHandler
-        tags:
-            - { name: nelmio_api_doc.extractor.handler }
-
     # HAL
     seer_uk_rest.hal_root_resource_factory:
         class: "%seer_uk_rest.hal_root_resource_factory.class%"

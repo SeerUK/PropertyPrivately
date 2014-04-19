@@ -35,8 +35,6 @@ parameters:
     # User Tokens
     pp_security.resource_assembler.user_tokens.get_all_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\UserTokens\GetAllResourceAssembler
     pp_security.resource_assembler.user_tokens.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\UserTokens\GetResourceAssembler
-    # User Tokens Application
-    pp_security.resource_assembler.user_tokens_application.get_all_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\UserTokensApplication\GetAllResourceAssembler
 
     # Security
     pp_security.user_provider.class: PropertyPrivately\SecurityBundle\User\UserProvider
@@ -151,14 +149,6 @@ services:
 
     pp_security.resource_assembler.user_tokens.get_assembler:
         class: %pp_security.resource_assembler.user_tokens.get_assembler.class%
-        arguments:
-            - "@router"
-        calls:
-            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
-
-    # User Tokens Application
-    pp_security.resource_assembler.user_tokens_application.get_all_assembler:
-        class: %pp_security.resource_assembler.user_tokens_application.get_all_assembler.class%
         arguments:
             - "@router"
         calls:

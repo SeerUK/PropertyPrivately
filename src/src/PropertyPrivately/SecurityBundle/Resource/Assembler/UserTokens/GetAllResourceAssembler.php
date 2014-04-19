@@ -52,12 +52,16 @@ class GetAllResourceAssembler extends AbstractResourceAssembler
     {
         $links     = array();
 
-        $appLink = new Link($this->generateRouteTemplate('pp_security_user_tokens_application_get_all'));
-        $appLink->setName('Current user tokens for an application');
+        $appLink = new Link($this->generateRouteTemplate('pp_security_user_tokens_get_all') . '?application={id}');
         $appLink->setTemplated(true);
+        $appLink->setName('Tokens filtered by Application');
 
-        $links['application'] = $appLink;
-        $links['user']        = new Link($this->router->generate('pp_security_user_get'));
+        $tokenLink = new Link($this->generateRouteTemplate('pp_security_user_tokens_get'));
+        $tokenLink->setTemplated(true);
+        $tokenLink->setName('Specific Token');
+
+        $links['tokens:application'] = $appLink;
+        $links['tokens:token']       = $tokenLink;
 
         return $links;
     }

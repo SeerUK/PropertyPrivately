@@ -11,6 +11,12 @@ pp_security_applications_get:
     requirements:
         id: \d+
 
+# Authentication
+pp_security_authentication_post:
+    pattern: /auth
+    defaults: { _controller: PropertyPrivatelySecurityBundle:Authentication:post }
+    methods: [POST]
+
 # Users
 pp_security_users_get:
     pattern: /users/{id}
@@ -51,11 +57,6 @@ pp_security_user_tokens_get:
     requirements:
         id: \d+
 
-pp_security_user_tokens_post:
-    pattern: /user/tokens
-    defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:post }
-    methods: [POST]
-
 pp_security_user_tokens_patch:
     pattern: /user/tokens/{id}
     defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:patch }
@@ -72,13 +73,5 @@ pp_security_user_tokens_delete:
     pattern: /user/tokens/{id}
     defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:delete }
     methods: [DELETE]
-    requirements:
-        id: \d+
-
-# User Tokens Application
-pp_security_user_tokens_application_get_all:
-    pattern: /user/tokens/application/{id}
-    defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokensApplication:getAll }
-    methods: [GET]
     requirements:
         id: \d+

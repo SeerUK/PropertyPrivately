@@ -253,7 +253,7 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
             'id'          => $this->id,
             'description' => $this->description,
             'token'       => $this->token,
-            'created'     => $this->created,
+            'created'     => $this->created->format(\DateTime::ISO8601),
             'enabled'     => $this->enabled
         );
     }

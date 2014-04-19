@@ -52,19 +52,19 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
      */
     public function createToken(Request $request, $providerKey)
     {
-        if ( ! $request->headers->has('X-API-App-Secret') || empty($request->headers->get('X-API-App-Secret'))) {
-            throw new BadCredentialsException('No API app secret found.');
+        if ( ! $request->headers->has('X-API-App-Token') || empty($request->headers->get('X-API-App-Token'))) {
+            throw new BadCredentialsException('No API app token found.');
         }
 
-        if ( ! $request->headers->has('X-API-Key') || empty($request->headers->get('X-API-Key'))) {
-            throw new BadCredentialsException('No API key found.');
+        if ( ! $request->headers->has('X-API-User-Token') || empty($request->headers->get('X-API-User-Token'))) {
+            throw new BadCredentialsException('No API user token found.');
         }
 
         return new PreAuthenticatedToken(
             'anon.',
             [
-                'apiAppSecret' => $request->headers->get('X-API-App-Secret'),
-                'apiKey'       => $request->headers->get('X-API-Key')
+                'apiAppToken'  => $request->headers->get('X-API-App-Token'),
+                'apiUserToken' => $request->headers->get('X-API-User-Token')
             ],
             $providerKey
         );
@@ -83,15 +83,15 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
     public function authenticateToken(TokenInterface $token, UserProviderInterface $userProvider, $providerKey)
     {
         $credentials  = $token->getCredentials();
-        $apiKey       = $credentials['apiKey'];
-        $apiAppSecret = $credentials['apiAppSecret'];
+        $apiUserToken = $credentials['apiUserToken'];
+        $apiAppToken  = $credentials['apiAppToken'];
 
 
-        $username = $this->userProvider->getUsernameForApiAppSecretAndApiKey($apiAppSecret, $apiKey);
+        $username = $this->userProvider->getUsernameForApiAppSecretAndApiKey($apiAppToken, $apiUserToken);
 
         if ( ! $username) {
             throw new AuthenticationException(
-                sprintf('API Key "%s" does not exist.', $apiKey)
+                sprintf('API Key "%s" does not exist.', $apiUserToken)
             );
         }
 
@@ -99,7 +99,7 @@ class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface
 
         return new PreAuthenticatedToken(
             $user,
-            $apiKey,
+            $apiUserToken,
             $providerKey,
             $user->getRoles()
         );

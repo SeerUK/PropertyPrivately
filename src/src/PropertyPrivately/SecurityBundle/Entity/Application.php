@@ -261,7 +261,7 @@ class Application implements \Serializable, \JsonSerializable, ArrayableInterfac
             'name'        => $this->name,
             'description' => $this->description,
             'token'       => $this->token,
-            'created'     => $this->created,
+            'created'     => $this->created->format(\DateTime::ISO8601),
             'enabled'     => $this->enabled
         );
     }
