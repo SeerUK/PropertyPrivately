@@ -1,9 +1,11 @@
 parameters:
     # Builders
     pp_security.token_builder.class: PropertyPrivately\SecurityBundle\Token\Builder\TokenBuilder
+    pp_security.user_builder.class: PropertyPrivately\SecurityBundle\Entity\Builder\UserBuilder
 
     # Entities
     pp_security.application.class: PropertyPrivately\SecurityBundle\Entity\Application
+    pp_security.role.class: PropertyPrivately\SecurityBundle\Entity\Role
     pp_security.token.class: PropertyPrivately\SecurityBundle\Entity\Token
     pp_security.user.class: PropertyPrivately\SecurityBundle\Entity\User
 
@@ -19,6 +21,7 @@ parameters:
 
     # Repos
     pp_security.application_repository.class: PropertyPrivately\SecurityBundle\Entity\Repository\ApplicationRepository
+    pp_security.role_repository.class: Doctrine\ORM\EntityRepository
     pp_security.token_repository.class: PropertyPrivately\SecurityBundle\Entity\Repository\TokenRepository
     pp_security.user_repository.class: PropertyPrivately\SecurityBundle\Entity\Repository\UserRepository
 
@@ -57,6 +60,11 @@ services:
             - "@pp_security.user_validator"
             - "@pp_security.token_generator"
 
+    pp_security.user_builder:
+        class: %pp_security.user_builder.class%
+        arguments:
+            - "@security.encoder_factory"
+
     # Gateways
     pp_security.token_gateway:
         class: %pp_security.token_gateway.class%
@@ -81,6 +89,13 @@ services:
         factory_method: getRepository
         arguments:
             - %pp_security.application.class%
+
+    pp_security.role_repository:
+        class: %pp_security.role_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %pp_security.role.class%
 
     pp_security.token_repository:
         class: %pp_security.token_repository.class%

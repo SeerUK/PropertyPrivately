@@ -12,8 +12,13 @@
 namespace PropertyPrivately\SecurityBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use SeerUK\RestBundle\Controller\RestController;
+use SeerUK\RestBundle\Validator\Exception\ConstraintViolationException;
+use PropertyPrivately\CoreBundle\Exception\MissingMandatoryParametersException;
+use PropertyPrivately\SecurityBundle\Exception\Utils\ErrorMessages;
 
 /**
  * Users Controller
@@ -42,5 +47,38 @@ class UsersController extends RestController
         $assembler->setVariable('user', $user);
 
         return new JsonResponse($assembler->assemble());
+    }
+
+    public function postAction()
+    {
+        if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_ANONYMOUSLY')) {
+            throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_ANONYMOUSLY);
+        }
+
+        $request   = $this->get('request');
+        $validator = $this->get('validator');
+        $roleRepo  = $this->get('pp_security.role_repository');
+        $userRepo  = $this->get('pp_security.user_repository');
+        $builder   = $this->get('pp_security.user_builder');
+        $builder->setVariable('credentials', json_decode($request->getContent()));
+
+        try {
+            $user = $builder->build();
+            $user->addRole($roleRepo->findOneByRole('ROLE_USER'));
+        } catch (MissingMandatoryParametersException $e) {
+            throw new BadRequestHttpException('Missing user credentials.', $e);
+        }
+
+        $errors = $validator->validate($user);
+
+        if (count($errors) > 0) {
+            throw new ConstraintViolationException($errors);
+        }
+
+        $userRepo->persist($user);
+
+        return $this->getPostResponse('pp_security_users_get', array(
+            'username' => $user->getUsername()
+        ));
     }
 }

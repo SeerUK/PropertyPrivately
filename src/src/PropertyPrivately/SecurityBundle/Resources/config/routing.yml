@@ -23,6 +23,11 @@ pp_security_users_directory:
     defaults: { _controller: PropertyPrivatelySecurityBundle:Users:directory }
     methods: [GET]
 
+pp_security_users_post:
+    pattern: /users
+    defaults: { _controller: PropertyPrivatelySecurityBundle:Users:post }
+    methods: [POST]
+
 pp_security_users_get:
     pattern: /users/{username}
     defaults: { _controller: PropertyPrivatelySecurityBundle:Users:get }

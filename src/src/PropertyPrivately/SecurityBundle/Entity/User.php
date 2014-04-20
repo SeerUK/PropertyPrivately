@@ -11,7 +11,9 @@
 
 namespace PropertyPrivately\SecurityBundle\Entity;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
@@ -20,11 +22,14 @@ use Doctrine\ORM\Mapping\OneToMany;
 use SeerUK\RestBundle\Entity\Patcher\PatchableEntityInterface;
 use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
 
+
 /**
  * PropertyPrivately\SecurityBundle\Entity\User
  *
  * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Entity\Repository\UserRepository")
  * @ORM\Table(name="User")
+ * @UniqueEntity(fields="username", message="That username is already taken.")
+ * @UniqueEntity(fields="email", message="That email address is already in use.")
  */
 class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, ArrayableInterface, PatchableEntityInterface
 {
@@ -37,6 +42,14 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
 
     /**
      * @ORM\Column(name="username", type="string", length=25, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *  min="2",
+     *  max="25",
+     *  minMessage="Your username must be at least {{ limit }} characters long.",
+     *  maxMessage="Your username cannot be longer than {{ limit }} characters long."
+     * )
+     * @Assert\Type(type="string", message="The username entered is not a valid {{ type }}.")
      */
     protected $username;
 
@@ -62,6 +75,14 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
 
     /**
      * @ORM\Column(name="email", type="string", length=255, unique=true)
+     * @Assert\Email(message="That email address is not valid.")
+     * @Assert\Length(
+     *  min="3",
+     *  max="255",
+     *  minMessage="Your email must be at least {{ limit }} characters long.",
+     *  maxMessage="Your email cannot be longer than {{ limit }} characters long."
+     * )
+     * @Assert\NotBlank()
      */
     protected $email;
 
@@ -86,6 +107,8 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
 
     /**
      * @ORM\Column(name="enabled", type="boolean")
+     * @Assert\NotBlank()
+     * @Assert\Type(type="boolean", message="Your enabled value is not a valid {{ type }}.")
      */
     protected $enabled;
 
@@ -239,6 +262,16 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
     public function setEnabled($enabled)
     {
         $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addRole(Role $role)
+    {
+        $this->roles->add($role);
 
         return $this;
     }

@@ -48,7 +48,6 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
 
     /**
      * @ORM\Column(name="description", type="string", length=50)
-     * @Assert\NotNull()
      * @Assert\Length(
      *      min = "0",
      *      max = "50",

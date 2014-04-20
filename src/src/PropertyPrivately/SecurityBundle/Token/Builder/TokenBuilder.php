@@ -50,7 +50,7 @@ class TokenBuilder
      * Build a token entity
      *
      * @param  string   $appSecret
-     * @param  StdClass $credentials
+     * @param  stdClass $credentials
      * @return Token
      */
     public function build($appSecret, $credentials)
