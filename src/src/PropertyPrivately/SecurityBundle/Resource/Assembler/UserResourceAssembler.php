@@ -55,7 +55,7 @@ class UserResourceAssembler extends AbstractResourceAssembler
         $user = $this->getVariable('user');
 
         $links = array();
-        $links['self'] = new Link($this->router->generate('pp_security_users_get', ['id' => $user->getId()]));
+        $links['self'] = new Link($this->router->generate('pp_security_users_get', ['username' => $user->getUsername()]));
 
         return $links;
     }

@@ -27,11 +27,11 @@ class UsersController extends RestController
         return new JsonResponse($assembler->assemble());
     }
 
-    public function getAction($id)
+    public function getAction($username)
     {
         $userRepo = $this->get('pp_security.user_repository');
         $user     = $userRepo->findOneBy(array(
-            'id' => $id
+            'username' => $username
         ));
 
         if ( ! $user) {

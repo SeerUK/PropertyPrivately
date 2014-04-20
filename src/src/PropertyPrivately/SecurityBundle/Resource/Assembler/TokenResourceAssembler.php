@@ -53,11 +53,12 @@ class TokenResourceAssembler extends AbstractResourceAssembler
     {
         $token       = $this->getVariable('token');
         $application = $token->getApplication();
+        $user        = $token->getUser();
 
         $links = array();
         $links['self']              = new Link($this->router->generate('pp_security_user_tokens_get', ['id' => $token->getId()]));
         $links['token:application'] = new Link($this->router->generate('pp_security_applications_get', ['id' => $application->getId()]));
-        $links['token:user']        = new Link($this->router->generate('pp_security_user_get'));
+        $links['token:user']        = new Link($this->router->generate('pp_security_users_get', ['username' => $user->getUsername()]));
 
         return $links;
     }

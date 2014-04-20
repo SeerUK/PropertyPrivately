@@ -36,13 +36,20 @@ class UserTokensController extends RestController
             throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
         }
 
+        $request   = $this->get('request');
         $user      = $this->get('security.context')->getToken()->getUser();
         $tokenRepo = $this->get('pp_security.token_repository');
+
+        $findBy = array();
+        $findBy['user'] = $user->getId();
+
+        if ($request->query->has('application')) {
+            $findBy['application'] = $request->query->get('application');
+        }
+
         $assembler = $this->get('pp_security.resource_assembler.user_tokens.get_all_assembler');
         $assembler->setVariable('user', $user);
-        $assembler->setVariable('tokens', $tokenRepo->findBy(array(
-            'user' => $user->getId()
-        )));
+        $assembler->setVariable('tokens', $tokenRepo->findBy($findBy));
 
         return new JsonResponse($assembler->assemble());
     }

@@ -24,11 +24,9 @@ pp_security_users_directory:
     methods: [GET]
 
 pp_security_users_get:
-    pattern: /users/{id}
+    pattern: /users/{username}
     defaults: { _controller: PropertyPrivatelySecurityBundle:Users:get }
     methods: [GET]
-    requirements:
-        id: \d+
 
 # User
 pp_security_user_get:
