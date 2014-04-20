@@ -1,6 +1,6 @@
 parameters:
     # Builders
-    pp_security.token_builder.class: PropertyPrivately\SecurityBundle\Token\Builder\TokenBuilder
+    pp_security.token_builder.class: PropertyPrivately\SecurityBundle\Entity\Builder\TokenBuilder
     pp_security.user_builder.class: PropertyPrivately\SecurityBundle\Entity\Builder\UserBuilder
 
     # Entities
@@ -13,7 +13,7 @@ parameters:
     pp_security.token_gateway.class: PropertyPrivately\SecurityBundle\Gateway\TokenGateway
 
     # Generators
-    pp_security.token_generator.class: PropertyPrivately\SecurityBundle\Token\Utils\TokenGenerator
+    pp_security.token_generator.class: PropertyPrivately\SecurityBundle\Utils\TokenGenerator
 
     # Patchers
     pp_security.token_patcher.class: PropertyPrivately\SecurityBundle\Entity\Patcher\TokenPatcher
@@ -53,12 +53,6 @@ services:
     # Builders
     pp_security.token_builder:
         class: %pp_security.token_builder.class%
-        arguments:
-            - "@pp_security.application_repository"
-            - "@pp_security.token_repository"
-            - "@pp_security.user_repository"
-            - "@pp_security.user_validator"
-            - "@pp_security.token_generator"
 
     pp_security.user_builder:
         class: %pp_security.user_builder.class%

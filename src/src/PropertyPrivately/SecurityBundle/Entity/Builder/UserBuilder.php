@@ -11,9 +11,8 @@
 
 namespace PropertyPrivately\SecurityBundle\Entity\Builder;
 
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
-use PropertyPrivately\CoreBundle\Entity\Builder\AbstractEntityBuilder;
+use PropertyPrivately\CoreBundle\Entity\Builder\EntityBuilderInterface;
 use PropertyPrivately\CoreBundle\Exception\MissingMandatoryParametersException;
 use PropertyPrivately\SecurityBundle\Entity\Role;
 use PropertyPrivately\SecurityBundle\Entity\User;
@@ -21,7 +20,7 @@ use PropertyPrivately\SecurityBundle\Entity\User;
 /**
  * User Builder
  */
-class UserBuilder extends AbstractEntityBuilder
+class UserBuilder implements EntityBuilderInterface
 {
     /**
      * @var EncoderFactory
@@ -35,15 +34,13 @@ class UserBuilder extends AbstractEntityBuilder
      */
     public function __construct(EncoderFactory $encoderFactory)
     {
-        parent::__construct();
-
         $this->encoder = $encoderFactory->getEncoder(new User());
     }
 
     /**
-     * @see AbstractEntityBuilder::build()
+     * @see EntityBuilderInterface::build()
      */
-    public function build()
+    public function build($elements)
     {
         $credentials = $this->getVariable('credentials');
 

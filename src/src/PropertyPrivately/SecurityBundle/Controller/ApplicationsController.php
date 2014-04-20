@@ -30,22 +30,35 @@ class ApplicationsController extends RestController
 
     public function getAction($id)
     {
-        $appRepo = $this->get('pp_security.application_repository');
-        $app     = $appRepo->findOneBy(array(
+        $appRepo     = $this->get('pp_security.application_repository');
+        $application = $appRepo->findOneBy(array(
             'id' => $id
         ));
 
-        if ( ! $app) {
+        if ( ! $application) {
             throw new NotFoundHttpException(ErrorMessages::APPLICATION_NOT_FOUND);
         }
 
         $assembler = $this->get('pp_security.resource_assembler.applications.get_assembler');
-        $assembler->setVariable('application', $app);
+        $assembler->setVariable('application', $application);
 
         if ($this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
             $assembler->setVariable('user', $this->get('security.context')->getToken()->getUser());
         }
 
         return new JsonResponse($assembler->assemble());
+    }
+
+    public function postAction()
+    {
+        if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
+        }
+
+        $request   = $this->get('request');
+        $validator = $this->get('validator');
+        $appRepo   = $this->get('pp_security.application_repository');
+        $builder   = $this->get('pp_security.application_builder');
+        $builder->setVariable('');
     }
 }

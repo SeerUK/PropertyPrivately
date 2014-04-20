@@ -60,10 +60,9 @@ class UsersController extends RestController
         $roleRepo  = $this->get('pp_security.role_repository');
         $userRepo  = $this->get('pp_security.user_repository');
         $builder   = $this->get('pp_security.user_builder');
-        $builder->setVariable('credentials', json_decode($request->getContent()));
 
         try {
-            $user = $builder->build();
+            $user = $builder->build(json_decode($request->getContent()));
             $user->addRole($roleRepo->findOneByRole('ROLE_USER'));
         } catch (MissingMandatoryParametersException $e) {
             throw new BadRequestHttpException('Missing user credentials.', $e);

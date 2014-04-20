@@ -11,6 +11,11 @@ pp_security_applications_get:
     requirements:
         id: \d+
 
+pp_security_applications_post:
+    pattern: /applications
+    defaults: { _controller: PropertyPrivatelySecurityBundle:Applications:post }
+    methods: [POST]
+
 # Authentication
 pp_security_authentication_post:
     pattern: /auth

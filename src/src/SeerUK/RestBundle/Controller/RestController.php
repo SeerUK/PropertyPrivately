@@ -12,9 +12,12 @@
 namespace SeerUK\RestBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
  * Rest Controller
@@ -86,5 +89,34 @@ class RestController extends Controller
     public function getPatchResponse($route, array $path = array(), array $requestHeaders = array())
     {
         return $this->createInternalRequest($route, $path, Response::HTTP_OK, $requestHeaders);
+    }
+
+
+    public function getFormErrors(Form $form)
+    {
+        $errors = new ConstraintViolationList();
+
+        foreach ($form->getIterator() as $property => $child) {
+            foreach ($child->getErrors() as $formError) {
+                var_dump('start');
+                var_dump($property);
+                var_dump($formError);
+                var_dump($child->getViewData());
+                var_dump('end');
+
+
+                // $errors->add(new ConstraintViolation(
+                //     $formError->getMessage(),
+                //     $formError->getMessageTemplate(),
+                //     $formError->getMessageParameters(),
+                //     $child,
+                //     $property,
+                //     'test',
+                //     $formError->getMessagePluralization()
+                // ));
+            }
+        }
+
+        return $errors;
     }
 }

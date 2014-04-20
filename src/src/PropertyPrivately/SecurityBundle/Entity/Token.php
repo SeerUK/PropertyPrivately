@@ -37,12 +37,14 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
     /**
      * @ManyToOne(targetEntity="Application", fetch="EAGER", inversedBy="tokens")
      * @JoinColumn(name="applicationId", referencedColumnName="id")
+     * @Assert\NotNull()
      */
     protected $application;
 
     /**
      * @ManyToOne(targetEntity="User", fetch="EAGER")
      * @JoinColumn(name="userId", referencedColumnName="id")
+     * @Assert\NotNull()
      */
     protected $user;
 
@@ -60,6 +62,7 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
 
     /**
      * @ORM\Column(name="token", type="string", length=64, unique=true)
+     * @Assert\NotBlank()
      */
     protected $token;
 
@@ -82,7 +85,6 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
      */
     public function __construct()
     {
-        $this->description = '';
         $this->created     = new \DateTime();
         $this->enabled     = true;
     }

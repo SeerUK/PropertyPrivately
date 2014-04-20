@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PropertyPrivately\SecurityBundle\Token\Utils;
+namespace PropertyPrivately\SecurityBundle\Utils;
 
 /**
  * Token Generator
