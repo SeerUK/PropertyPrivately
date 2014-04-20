@@ -1,11 +1,3 @@
 property_privately_directory_index:
     pattern:  /
     defaults: { _controller: PropertyPrivatelyDirectoryBundle:Directory:index }
-
-property_privately_directory_user_test:
-    pattern:  /users
-    defaults: { _controller: PropertyPrivatelyDirectoryBundle:Directory:userTest }
-
-property_privately_directory_view_user_test:
-    pattern:  /user/login
-    defaults: { _controller: PropertyPrivatelyDirectoryBundle:Directory:userLoginTest }

@@ -20,6 +20,13 @@ use SeerUK\RestBundle\Controller\RestController;
  */
 class UsersController extends RestController
 {
+    public function directoryAction()
+    {
+        $assembler = $this->get('pp_security.resource_assembler.users.directory_assembler');
+
+        return new JsonResponse($assembler->assemble());
+    }
+
     public function getAction($id)
     {
         $userRepo = $this->get('pp_security.user_repository');

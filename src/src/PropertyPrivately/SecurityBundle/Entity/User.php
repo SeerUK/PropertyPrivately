@@ -17,6 +17,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\OneToMany;
+use SeerUK\RestBundle\Entity\Patcher\PatchableEntityInterface;
 use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
 
 /**
@@ -25,7 +26,7 @@ use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
  * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Entity\Repository\UserRepository")
  * @ORM\Table(name="User")
  */
-class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, ArrayableInterface
+class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, ArrayableInterface, PatchableEntityInterface
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -38,6 +39,16 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
      * @ORM\Column(name="username", type="string", length=25, unique=true)
      */
     protected $username;
+
+    /**
+     * @ORM\Column(name="name", type="string", length=50)
+     */
+    protected $name;
+
+    /**
+     * @ORM\Column(name="location", type="string", length=50)
+     */
+    protected $location;
 
     /**
      * @ORM\Column(name="password", type="string", length=128)
@@ -69,14 +80,20 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
     protected $applications;
 
     /**
+     * @ORM\Column(name="created", type="datetime")
+     */
+    protected $created;
+
+    /**
      * @ORM\Column(name="enabled", type="boolean")
      */
     protected $enabled;
 
     public function __construct()
     {
-        $this->roles = new ArrayCollection();
-        $this->salt  = '';
+        $this->created = new \DateTime();
+        $this->roles   = new ArrayCollection();
+        $this->salt    = '';
     }
 
     /**
@@ -101,6 +118,42 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
     public function setUsername($username)
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
 
         return $this;
     }
@@ -140,11 +193,34 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
     }
 
     /**
-     * @inheritcDoc
+     * @inheritDoc
      */
     public function setPassword($password)
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * Get created
+     *
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * Set created
+     *
+     * @param  \DateTime $created
+     * @return Token
+     */
+    public function setCreated(\DateTime $created)
+    {
+        $this->created = $created;
 
         return $this;
     }
@@ -158,7 +234,7 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
     }
 
     /**
-     * @inheritcDoc
+     * @inheritDoc
      */
     public function setEnabled($enabled)
     {
@@ -228,7 +304,10 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
         return array(
             'id'       => $this->id,
             'username' => $this->username,
+            'name'     => $this->name,
+            'location' => $this->location,
             'email'    => $this->email,
+            'created'  => $this->created->format(\DateTime::ISO8601),
             'enabled'  => $this->enabled
         );
     }
@@ -239,6 +318,17 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
     public function jsonSerialize()
     {
         return $this->toArray();
+    }
+
+    /**
+     * @see PatchableEntityInterface::getPatchableProperties()
+     */
+    public function getPatchableProperties()
+    {
+        return array(
+            'name',
+            'location'
+        );
     }
 
     /**

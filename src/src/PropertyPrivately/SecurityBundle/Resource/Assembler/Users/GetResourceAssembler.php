@@ -26,10 +26,29 @@ class GetResourceAssembler extends AbstractResourceAssembler
      */
     public function assemble(array $nested = array())
     {
+        $this->setVariable('links', $this->rootResource->getLinks());
+
         $userAssembler = new UserResourceAssembler($this->router);
         $userAssembler->setVariable('user', $this->getVariable('user'));
         $userAssembler->setRootResource($this->getRootResource());
 
-        return $userAssembler->assemble(['roles']);
+        $resource =  $userAssembler->assemble(['roles']);
+        $resource->removeLink('self');
+        $resource->addLinks($this->assembleLinks());
+
+        return $resource;
+    }
+
+    /**
+     * Assemble links
+     *
+     * @return array
+     */
+    private function assembleLinks()
+    {
+        $links = $this->getVariable('links');
+        $links['users:properties'] = new Link('/users/USER_USERNAME/properties');
+
+        return $links;
     }
 }

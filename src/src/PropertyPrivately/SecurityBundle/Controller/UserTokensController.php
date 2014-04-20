@@ -114,7 +114,6 @@ class UserTokensController extends RestController
         return $this->getPatchResponse('pp_security_user_tokens_get', array(
             'id' => $token->getId()
         ));
-
     }
 
     public function deleteAllAction()

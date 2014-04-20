@@ -15,6 +15,7 @@ parameters:
 
     # Patchers
     pp_security.token_patcher.class: PropertyPrivately\SecurityBundle\Entity\Patcher\TokenPatcher
+    pp_security.user_patcher.class: PropertyPrivately\SecurityBundle\Entity\Patcher\UserPatcher
 
     # Repos
     pp_security.application_repository.class: PropertyPrivately\SecurityBundle\Entity\Repository\ApplicationRepository
@@ -26,12 +27,12 @@ parameters:
     pp_security.resource_assembler.applications.directory_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\Applications\DirectoryResourceAssembler
     pp_security.resource_assembler.applications.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\Applications\GetResourceAssembler
     # Users
+    pp_security.resource_assembler.users.directory_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\Users\DirectoryResourceAssembler
     pp_security.resource_assembler.users.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\Users\GetResourceAssembler
     # User
     pp_security.resource_assembler.user.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\User\GetResourceAssembler
     # User Applications
     pp_security.resource_assembler.user_applications.get_all_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\UserApplications\GetAllResourceAssembler
-    pp_security.resource_assembler.user_applications.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\UserApplications\GetResourceAssembler
     # User Tokens
     pp_security.resource_assembler.user_tokens.get_all_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\UserTokens\GetAllResourceAssembler
     pp_security.resource_assembler.user_tokens.get_assembler.class: PropertyPrivately\SecurityBundle\Resource\Assembler\UserTokens\GetResourceAssembler
@@ -69,6 +70,9 @@ services:
     # Patcher
     pp_security.token_patcher:
         class: %pp_security.token_patcher.class%
+
+    pp_security.user_patcher:
+        class: %pp_security.user_patcher.class%
 
     # Repos
     pp_security.application_repository:
@@ -109,6 +113,13 @@ services:
             - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
 
     # Users
+    pp_security.resource_assembler.users.directory_assembler:
+        class: %pp_security.resource_assembler.users.directory_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
     pp_security.resource_assembler.users.get_assembler:
         class: %pp_security.resource_assembler.users.get_assembler.class%
         arguments:
@@ -127,13 +138,6 @@ services:
     # User Applications
     pp_security.resource_assembler.user_applications.get_all_assembler:
         class: %pp_security.resource_assembler.user_applications.get_all_assembler.class%
-        arguments:
-            - "@router"
-        calls:
-            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
-
-    pp_security.resource_assembler.user_applications.get_assembler:
-        class: %pp_security.resource_assembler.user_applications.get_assembler.class%
         arguments:
             - "@router"
         calls:

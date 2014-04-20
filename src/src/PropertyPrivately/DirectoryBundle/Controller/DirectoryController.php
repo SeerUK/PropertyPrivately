@@ -38,11 +38,4 @@ class DirectoryController extends Controller
 
         return new JsonResponse($resource);
     }
-
-    public function userTestAction()
-    {
-        $assembler = $this->get('pp_directory.user_test_resource_assembler');
-
-        return new JsonResponse($assembler->assemble());
-    }
 }

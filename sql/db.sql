@@ -16,6 +16,8 @@ USE PP;
 CREATE TABLE IF NOT EXISTS User (
     id int UNSIGNED NOT NULL AUTO_INCREMENT,
     username varchar(25) NOT NULL,
+    name varchar(50) NOT NULL,
+    location varchar(50) NOT NULL,
     password varchar(128) NOT NULL,
     email varchar(255) NOT NULL,
     created datetime NOT NULL,

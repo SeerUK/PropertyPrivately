@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PropertyPrivately\SecurityBundle\Resource\Assembler\Applications;
+namespace PropertyPrivately\SecurityBundle\Resource\Assembler\Users;
 
 use SeerUK\RestBundle\Hal\Link\Link;
 use SeerUK\RestBundle\Hal\Resource\Resource;
@@ -17,7 +17,7 @@ use SeerUK\RestBundle\Resource\Assembler\AbstractResourceAssembler;
 use PropertyPrivately\SecurityBundle\Resource\Assembler\ApplicationResourceAssembler;
 
 /**
- * Directory Action Assembler
+ * Users Action Assembler
  */
 class DirectoryResourceAssembler extends AbstractResourceAssembler
 {
@@ -40,10 +40,10 @@ class DirectoryResourceAssembler extends AbstractResourceAssembler
     {
         $links = array();
 
-        $appLink = new Link($this->generateRouteTemplate('pp_security_applications_get'));
-        $appLink->setTemplated(true);
+        $userLink = new Link($this->generateRouteTemplate('pp_security_users_get'));
+        $userLink->setTemplated(true);
 
-        $links['applications:application'] = $appLink;
+        $links['users:user'] = $userLink;
 
         return $links;
     }

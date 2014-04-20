@@ -18,6 +18,11 @@ pp_security_authentication_post:
     methods: [POST]
 
 # Users
+pp_security_users_directory:
+    pattern: /users
+    defaults: { _controller: PropertyPrivatelySecurityBundle:Users:directory }
+    methods: [GET]
+
 pp_security_users_get:
     pattern: /users/{id}
     defaults: { _controller: PropertyPrivatelySecurityBundle:Users:get }
@@ -31,18 +36,16 @@ pp_security_user_get:
     defaults: { _controller: PropertyPrivatelySecurityBundle:User:get }
     methods: [GET]
 
+pp_security_user_patch:
+    pattern: /user
+    defaults: { _controller: PropertyPrivatelySecurityBundle:User:patch }
+    methods: [PATCH]
+
 # User Applications
 pp_security_user_applications_get_all:
     pattern: /user/applications
     defaults: { _controller: PropertyPrivatelySecurityBundle:UserApplications:getAll }
     methods: [GET]
-
-pp_security_user_applications_get:
-    pattern: /user/applications/{id}
-    defaults: { _controller: PropertyPrivatelySecurityBundle:UserApplications:get }
-    methods: [GET]
-    requirements:
-        id: \d+
 
 # User Tokens
 pp_security_user_tokens_get_all:

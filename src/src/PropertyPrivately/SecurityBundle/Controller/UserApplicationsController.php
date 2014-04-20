@@ -38,28 +38,4 @@ class UserApplicationsController extends RestController
 
         return new JsonResponse($assembler->assemble());
     }
-
-    public function getAction($id)
-    {
-        if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
-        }
-
-        $user        = $this->get('security.context')->getToken()->getUser();
-        $appRepo     = $this->get('pp_security.application_repository');
-        $application = $appRepo->findOneBy(array(
-            'id'   => $id,
-            'user' => $user->getId()
-        ));
-
-        if ( ! $application) {
-            throw new NotFoundHttpException('Application not found.');
-        }
-
-        $assembler = $this->get('pp_security.resource_assembler.user_applications.get_assembler');
-        $assembler->setVariable('user', $user);
-        $assembler->setVariable('application', $application);
-
-        return new JsonResponse($assembler->assemble());
-    }
 }

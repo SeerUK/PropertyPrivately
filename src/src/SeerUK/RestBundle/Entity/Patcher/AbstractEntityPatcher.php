@@ -103,6 +103,12 @@ abstract class AbstractEntityPatcher
      */
     protected function isOperationSupportedByEntity(PatchableEntityInterface $entity, $operation)
     {
+        if ('copy' === $operation->op || 'move' === $operation) {
+            if ( ! in_array($operation->from, $entity->getPatchableProperties())) {
+                return false;
+            }
+        }
+
         return in_array($operation->path, $entity->getPatchableProperties())
             ? true
             : false;
