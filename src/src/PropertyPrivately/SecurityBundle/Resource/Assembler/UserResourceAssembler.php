@@ -14,6 +14,7 @@ namespace PropertyPrivately\SecurityBundle\Resource\Assembler;
 use SeerUK\RestBundle\Hal\Link\Link;
 use SeerUK\RestBundle\Hal\Resource\Resource;
 use SeerUK\RestBundle\Resource\Assembler\AbstractResourceAssembler;
+use PropertyPrivately\SecurityBundle\Entity\Person;
 
 /**
  * User Assembler
@@ -29,6 +30,18 @@ class UserResourceAssembler extends AbstractResourceAssembler
 
         $this->rootResource->addLinks($this->assembleLinks());
         $this->rootResource->setVariables($user->toArray());
+
+        if (in_array('person', $nested)) {
+            $person = $user->getPerson();
+            if ( ! $person) {
+                $person = new Person();
+            }
+
+            $person = $person->toArray();
+
+            $this->rootResource->setVariable('name', $person['name']);
+            $this->rootResource->setVariable('location', $person['location']);
+        }
 
         if (in_array('roles', $nested)) {
             $roles = array();

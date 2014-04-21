@@ -16,8 +16,6 @@ USE PP;
 CREATE TABLE IF NOT EXISTS User (
     id int UNSIGNED NOT NULL AUTO_INCREMENT,
     username varchar(25) NOT NULL,
-    name varchar(50),
-    location varchar(50),
     password varchar(128) NOT NULL,
     email varchar(255) NOT NULL,
     created datetime NOT NULL,
@@ -28,6 +26,18 @@ CREATE TABLE IF NOT EXISTS User (
     UNIQUE KEY (username),
     UNIQUE KEY (email)
 ) COMMENT="Users";
+
+CREATE TABLE IF NOT EXISTS Person (
+    id int UNSIGNED NOT NULL AUTO_INCREMENT,
+    userId int UNSIGNED NOT NULL,
+    name varchar(50),
+    location varchar(50),
+    lastModified timestamp NOT NULL,
+
+    PRIMARY KEY (id),
+    UNIQUE KEY (userId),
+    FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE ON UPDATE CASCADE
+) COMMENT="Person linked to user";
 
 CREATE TABLE IF NOT EXISTS Role (
     id int UNSIGNED NOT NULL AUTO_INCREMENT,

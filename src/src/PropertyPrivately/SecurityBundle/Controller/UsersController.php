@@ -18,7 +18,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use SeerUK\RestBundle\Controller\RestController;
 use SeerUK\RestBundle\Validator\Exception\ConstraintViolationException;
 use PropertyPrivately\CoreBundle\Exception\MissingMandatoryParametersException;
+use PropertyPrivately\SecurityBundle\Entity\User;
 use PropertyPrivately\SecurityBundle\Exception\Utils\ErrorMessages;
+use PropertyPrivately\SecurityBundle\Form\Type\UserType;
+use PropertyPrivately\CoreBundle\Form\FormErrorOriginHandler;
 
 /**
  * Users Controller
@@ -59,21 +62,18 @@ class UsersController extends RestController
         $validator = $this->get('validator');
         $roleRepo  = $this->get('pp_security.role_repository');
         $userRepo  = $this->get('pp_security.user_repository');
-        $builder   = $this->get('pp_security.user_builder');
 
-        try {
-            $user = $builder->build(json_decode($request->getContent()));
-            $user->addRole($roleRepo->findOneByRole('ROLE_USER'));
-        } catch (MissingMandatoryParametersException $e) {
-            throw new BadRequestHttpException('Missing user credentials.', $e);
+        $form = $this->createForm(new UserType(), new User());
+        $form->submit(json_decode($request->getContent(), true));
+
+        if ( ! $form->isValid()) {
+            throw new ConstraintViolationException(
+                $this->getFormConstraintViolationList($form)
+            );
         }
 
-        $errors = $validator->validate($user);
-
-        if (count($errors) > 0) {
-            throw new ConstraintViolationException($errors);
-        }
-
+        $user = $form->getData();
+        $user->addRole($roleRepo->findOneBy(['role' => 'ROLE_USER']));
         $userRepo->persist($user);
 
         return $this->getPostResponse('pp_security_users_get', array(

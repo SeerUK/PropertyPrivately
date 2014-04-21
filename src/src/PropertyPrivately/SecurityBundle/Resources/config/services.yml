@@ -1,13 +1,12 @@
 parameters:
-    # Builders
-    pp_security.token_builder.class: PropertyPrivately\SecurityBundle\Entity\Builder\TokenBuilder
-    pp_security.user_builder.class: PropertyPrivately\SecurityBundle\Entity\Builder\UserBuilder
-
     # Entities
     pp_security.application.class: PropertyPrivately\SecurityBundle\Entity\Application
     pp_security.role.class: PropertyPrivately\SecurityBundle\Entity\Role
     pp_security.token.class: PropertyPrivately\SecurityBundle\Entity\Token
     pp_security.user.class: PropertyPrivately\SecurityBundle\Entity\User
+
+    # Entity Event Listener
+    pp_security.entity_event_listener.user.class: PropertyPrivately\SecurityBundle\Entity\EventListener\UserEventListener
 
     # Gateways
     pp_security.token_gateway.class: PropertyPrivately\SecurityBundle\Gateway\TokenGateway
@@ -50,14 +49,14 @@ parameters:
     pp_security.user_validator.class: PropertyPrivately\SecurityBundle\Validator\UserValidator
 
 services:
-    # Builders
-    pp_security.token_builder:
-        class: %pp_security.token_builder.class%
-
-    pp_security.user_builder:
-        class: %pp_security.user_builder.class%
+    # Entity Event Managers
+    pp_security.entity_event_listener.user:
+        class: %pp_security.entity_event_listener.user.class%
         arguments:
-            - "@security.encoder_factory"
+            - @security.encoder_factory
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }
 
     # Gateways
     pp_security.token_gateway:

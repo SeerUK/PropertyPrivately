@@ -18,6 +18,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
+use PropertyPrivately\CoreBundle\Form\FormErrorOriginHandler;
 
 /**
  * Rest Controller
@@ -91,30 +92,31 @@ class RestController extends Controller
         return $this->createInternalRequest($route, $path, Response::HTTP_OK, $requestHeaders);
     }
 
-
-    public function getFormErrors(Form $form)
+    /**
+     * Get errors from a form in a ConstraintViolationList
+     *
+     * @param  Form $form
+     * @return ConstraintViolationList
+     */
+    public function getFormConstraintViolationList(Form $form)
     {
+        // Set origins of all form errors to associate input fields with their
+        // related error
+        $feoh = new FormErrorOriginHandler();
+        $feoh->decorate($form);
+
         $errors = new ConstraintViolationList();
 
-        foreach ($form->getIterator() as $property => $child) {
-            foreach ($child->getErrors() as $formError) {
-                var_dump('start');
-                var_dump($property);
-                var_dump($formError);
-                var_dump($child->getViewData());
-                var_dump('end');
-
-
-                // $errors->add(new ConstraintViolation(
-                //     $formError->getMessage(),
-                //     $formError->getMessageTemplate(),
-                //     $formError->getMessageParameters(),
-                //     $child,
-                //     $property,
-                //     'test',
-                //     $formError->getMessagePluralization()
-                // ));
-            }
+        // Construct new ConstraintViolations for each error
+        foreach ($form->getErrors(true) as $error) {
+            $errors->add(new ConstraintViolation(
+                $error->getMessage(),
+                $error->getMessageTemplate(),
+                $error->getMessageParameters(),
+                $form,
+                $error->getOrigin()->getConfig()->getName(),
+                $error->getCause()->getInvalidValue()
+            ));
         }
 
         return $errors;

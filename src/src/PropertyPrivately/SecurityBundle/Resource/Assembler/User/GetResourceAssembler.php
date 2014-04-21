@@ -32,7 +32,7 @@ class GetResourceAssembler extends AbstractResourceAssembler
         $userAssembler->setVariable('user', $this->getVariable('user'));
         $userAssembler->setRootResource($this->getRootResource());
 
-        $resource =  $userAssembler->assemble(['roles']);
+        $resource =  $userAssembler->assemble(['person', 'roles']);
         $resource->removeLink('self');
         $resource->addLinks($this->assembleLinks());
 

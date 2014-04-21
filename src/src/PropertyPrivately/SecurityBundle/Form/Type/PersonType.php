@@ -14,12 +14,12 @@ namespace PropertyPrivately\SecurityBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use PropertyPrivately\SecurityBundle\Form\Type\PersonType;
+use PropertyPrivately\SecurityBundle\Form\Type\UserPersonalType;
 
 /**
- * Token Type
+ * Person Type
  */
-class TokenType extends AbstractType
+class PersonType extends AbstractType
 {
     /**
      * @see AbstractType::buildForm()
@@ -27,15 +27,8 @@ class TokenType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('application', 'entity', array(
-                'class'    => 'PropertyPrivatelySecurityBundle:Application',
-                'property' => 'name'
-            ))
-            ->add('user', 'entity', array(
-                'class'    => 'PropertyPrivatelySecurityBundle:User',
-                'property' => 'username'
-            ))
-            ->add('token');
+            ->add('name')
+            ->add('location');
     }
 
     /**
@@ -44,8 +37,8 @@ class TokenType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'        => 'PropertyPrivately\SecurityBundle\Entity\Token',
-            'csrf_protection'   => false,
+            'data_class'      => 'PropertyPrivately\SecurityBundle\Entity\Person',
+            'csrf_protection' => false
         ));
     }
 
@@ -54,6 +47,6 @@ class TokenType extends AbstractType
      */
     public function getName()
     {
-        return 'pp_security_entity_type_token';
+        return 'pp_security_entity_type_person';
     }
 }

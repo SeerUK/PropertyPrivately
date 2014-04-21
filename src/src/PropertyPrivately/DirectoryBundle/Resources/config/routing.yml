@@ -1,3 +1,4 @@
 property_privately_directory_index:
     pattern:  /
     defaults: { _controller: PropertyPrivatelyDirectoryBundle:Directory:index }
+    methods: [GET]

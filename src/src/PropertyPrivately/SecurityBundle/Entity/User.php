@@ -19,8 +19,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\OneToMany;
-use SeerUK\RestBundle\Entity\Patcher\PatchableEntityInterface;
+use Doctrine\ORM\Mapping\OneToOne;
 use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
+use PropertyPrivately\SecurityBundle\Entity\Person;
+use PropertyPrivately\SecurityBundle\Entity\Role;
 
 
 /**
@@ -31,7 +33,7 @@ use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
  * @UniqueEntity(fields="username", message="That username is already taken.")
  * @UniqueEntity(fields="email", message="That email address is already in use.")
  */
-class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, ArrayableInterface, PatchableEntityInterface
+class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, ArrayableInterface
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -49,24 +51,26 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
      *  minMessage="Your username must be at least {{ limit }} characters long.",
      *  maxMessage="Your username cannot be longer than {{ limit }} characters long."
      * )
-     * @Assert\Type(type="string", message="The username entered is not a valid {{ type }}.")
+     * @Assert\Type(type="string", message="That username is not a valid {{ type }}.")
      */
     protected $username;
-
-    /**
-     * @ORM\Column(name="name", type="string", length=50)
-     */
-    protected $name;
-
-    /**
-     * @ORM\Column(name="location", type="string", length=50)
-     */
-    protected $location;
 
     /**
      * @ORM\Column(name="password", type="string", length=128)
      */
     protected $password;
+
+    /**
+     * @Assert\Length(
+     *  min="6",
+     *  max="128",
+     *  minMessage="Your password must be at least {{ limit }} characters long.",
+     *  maxMessage="Your password cannot be longer than {{ limit }} characters long."
+     * )
+     * @Assert\NotBlank()
+     * @Assert\Type(type="string", message="That password is not a valid {{ type }}.")
+     */
+    protected $plainPassword;
 
     /**
      * @inheritDoc
@@ -85,6 +89,11 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
      * @Assert\NotBlank()
      */
     protected $email;
+
+    /**
+     * @OneToOne(targetEntity="Person", mappedBy="user")
+     */
+    protected $person;
 
     /**
      * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
@@ -117,6 +126,7 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
         $this->created = new \DateTime();
         $this->roles   = new ArrayCollection();
         $this->salt    = '';
+        $this->enabled = true;
     }
 
     /**
@@ -141,42 +151,6 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
     public function setUsername($username)
     {
         $this->username = $username;
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getLocation()
-    {
-        return $this->location;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function setLocation($location)
-    {
-        $this->location = $location;
 
         return $this;
     }
@@ -226,6 +200,25 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+        $this->setPassword(null);
+
+        return $this;
+    }
+
+    /**
      * Get created
      *
      * @return \DateTime
@@ -269,6 +262,24 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
     /**
      * @inheritDoc
      */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setPerson(Person $person)
+    {
+        $this->person = $person;
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function addRole(Role $role)
     {
         $this->roles->add($role);
@@ -299,6 +310,7 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
      */
     public function eraseCredentials()
     {
+        $this->plainPassword = null;
     }
 
     public function isAccountNonExpired()
@@ -337,8 +349,6 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
         return array(
             'id'       => $this->id,
             'username' => $this->username,
-            'name'     => $this->name,
-            'location' => $this->location,
             'email'    => $this->email,
             'created'  => $this->created->format(\DateTime::ISO8601),
             'enabled'  => $this->enabled
@@ -351,17 +361,6 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
     public function jsonSerialize()
     {
         return $this->toArray();
-    }
-
-    /**
-     * @see PatchableEntityInterface::getPatchableProperties()
-     */
-    public function getPatchableProperties()
-    {
-        return array(
-            'name',
-            'location'
-        );
     }
 
     /**

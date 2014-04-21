@@ -37,7 +37,7 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
     /**
      * @ManyToOne(targetEntity="Application", fetch="EAGER", inversedBy="tokens")
      * @JoinColumn(name="applicationId", referencedColumnName="id")
-     * @Assert\NotNull()
+     * @Assert\NotNull(message="Well tits.")
      */
     protected $application;
 
