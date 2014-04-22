@@ -29,10 +29,9 @@ abstract class AbstractGateway
      * Constructor
      *
      * @param Connection    $conn
-     * @param CacheProvider $cache
      */
     public function __construct(Connection $conn)
     {
-        $this->conn  = $conn;
+        $this->conn = $conn;
     }
 }

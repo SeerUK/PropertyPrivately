@@ -21,7 +21,7 @@ class TokenGateway extends AbstractGateway
     /**
      * Remove ALL tokens for the given user id
      *
-     * @param  interger $id
+     * @param  integer $id
      * @return boolean
      */
     public function removeAllByUserId($id)

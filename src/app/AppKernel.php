@@ -25,6 +25,7 @@ class AppKernel extends Kernel
             new PropertyPrivately\DirectoryBundle\PropertyPrivatelyDirectoryBundle(),
             new PropertyPrivately\SecurityBundle\PropertyPrivatelySecurityBundle(),
             new PropertyPrivately\CoreBundle\PropertyPrivatelyCoreBundle(),
+            new PropertyPrivately\PropertyBundle\PropertyPrivatelyPropertyBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

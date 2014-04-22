@@ -1,3 +1,7 @@
+property_privately_property:
+    resource: "@PropertyPrivatelyPropertyBundle/Resources/config/routing.yml"
+    prefix:   /
+
 property_privately_core:
     resource: "@PropertyPrivatelyCoreBundle/Resources/config/routing.yml"
     prefix:   /
