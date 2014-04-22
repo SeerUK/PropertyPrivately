@@ -1,7 +1,28 @@
 parameters:
-#    property_privately_property.example.class: PropertyPrivately\PropertyBundle\Example
+    # Entities
+    pp_property.property.class: PropertyPrivately\PropertyBundle\Entity\Property
+
+    # Repos
+    pp_property.property_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\PropertyRepository
+
+    # Resource Assemblers
+    # Properties
+    pp_property.resource_assembler.properties.get_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\Properties\GetResourceAssembler
 
 services:
-#    property_privately_property.example:
-#        class: %property_privately_property.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    # Repos
+    pp_property.property_repository:
+        class: %pp_property.property_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %pp_property.property.class%
+
+    # Resource Assemblers
+    # Properties
+    pp_property.resource_assembler.properties.get_assembler:
+        class: %pp_property.resource_assembler.properties.get_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]

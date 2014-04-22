@@ -110,6 +110,11 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
     protected $applications;
 
     /**
+     * @OneToMany(targetEntity="PropertyPrivately\PropertyBundle\Entity\Property", mappedBy="user")
+     */
+    protected $properties;
+
+    /**
      * @ORM\Column(name="created", type="datetime")
      */
     protected $created;

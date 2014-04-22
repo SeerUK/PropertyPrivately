@@ -113,6 +113,7 @@ CREATE TABLE IF NOT EXISTS Property (
     userId int UNSIGNED NOT NULL,
     title varchar(50) NOT NULL,
     description varchar(1000) NOT NULL,
+    created datetime NOT NULL,
     lastModified timestamp NOT NULL,
 ) COMMENT="Properties (houses etc)";
 

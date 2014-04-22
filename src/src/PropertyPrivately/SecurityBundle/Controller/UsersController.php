@@ -13,15 +13,14 @@ namespace PropertyPrivately\SecurityBundle\Controller;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use SeerUK\RestBundle\Controller\RestController;
 use SeerUK\RestBundle\Validator\Exception\ConstraintViolationException;
 use PropertyPrivately\CoreBundle\Exception\MissingMandatoryParametersException;
+use PropertyPrivately\CoreBundle\Form\FormErrorOriginHandler;
 use PropertyPrivately\SecurityBundle\Entity\User;
 use PropertyPrivately\SecurityBundle\Exception\Utils\ErrorMessages;
 use PropertyPrivately\SecurityBundle\Form\Type\UserType;
-use PropertyPrivately\CoreBundle\Form\FormErrorOriginHandler;
 
 /**
  * Users Controller

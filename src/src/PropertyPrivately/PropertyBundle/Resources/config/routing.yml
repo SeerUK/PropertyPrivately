@@ -1,3 +1,19 @@
-property_privately_property_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: PropertyPrivatelyPropertyBundle:Default:index }
+# Properties
+pp_property_properties_get:
+    pattern:  /properties/{id}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:Properties:get }
+    methods: [GET]
+    requirements:
+        id: \d+
+
+pp_property_properties_post:
+    pattern:  /properties
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:Properties:post }
+    methods: [POST]
+
+pp_property_properties_delete:
+    pattern:  /properties/{id}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:Properties:delete }
+    methods: [DELETE]
+    requirements:
+        id: \d+

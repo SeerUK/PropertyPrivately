@@ -11,37 +11,65 @@
 
 namespace PropertyPrivately\PropertyBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
+use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
+use PropertyPrivately\SecurityBundle\Entity\User;
 
 /**
  * PropertyPrivately\PropertyBundle\Entity\Property
+ *
+ * @ORM\Entity(repositoryClass="PropertyPrivately\PropertyBundle\Entity\Repository\PropertyRepository")
+ * @ORM\Table(name="PPProperty.Property")
+ * @ORM\HasLifecycleCallbacks
  */
-class Property
+class Property implements ArrayableInterface
 {
     /**
-     * @var integer
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
-     * @var string
+     * @ORM\Column(name="title", type="string", length=25, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *  min="10",
+     *  max="50",
+     *  minMessage="Your title must be at least {{ limit }} characters long.",
+     *  maxMessage="Your title cannot be longer than {{ limit }} characters long."
+     * )
+     * @Assert\Type(type="string", message="That title is not a valid {{ type }}.")
      */
-    private $title;
+    protected $title;
 
     /**
-     * @var string
+     * @ORM\Column(name="description", type="string", length=25, unique=true)
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *  min="50",
+     *  max="1000",
+     *  minMessage="Your description must be at least {{ limit }} characters long.",
+     *  maxMessage="Your description cannot be longer than {{ limit }} characters long."
+     * )
+     * @Assert\Type(type="string", message="That description is not a valid {{ type }}.")
      */
-    private $description;
+    protected $description;
 
     /**
-     * @var \DateTime
+     * @ORM\Column(name="created", type="datetime")
      */
-    private $lastmodified;
+    protected $created;
 
     /**
-     * @var \PropertyPrivately\PropertyBundle\Entity\User
+     * @ManyToOne(targetEntity="PropertyPrivately\SecurityBundle\Entity\User", fetch="EAGER", inversedBy="properties")
+     * @JoinColumn(name="userId", referencedColumnName="id")
      */
-    private $userid;
+    protected $user;
 
 
     /**
@@ -101,48 +129,69 @@ class Property
     }
 
     /**
-     * Set lastmodified
-     *
-     * @param \DateTime $lastmodified
-     * @return Property
-     */
-    public function setLastmodified($lastmodified)
-    {
-        $this->lastmodified = $lastmodified;
-
-        return $this;
-    }
-
-    /**
-     * Get lastmodified
+     * Get created
      *
      * @return \DateTime
      */
-    public function getLastmodified()
+    public function getCreated()
     {
-        return $this->lastmodified;
+        return $this->created;
     }
 
     /**
-     * Set userid
+     * Set created
      *
-     * @param \PropertyPrivately\PropertyBundle\Entity\User $userid
-     * @return Property
+     * @param  \DateTime $created
+     * @return Token
      */
-    public function setUserid(\PropertyPrivately\PropertyBundle\Entity\User $userid = null)
+    public function setCreated(\DateTime $created)
     {
-        $this->userid = $userid;
+        $this->created = $created;
 
         return $this;
     }
 
     /**
-     * Get userid
+     * Set user
      *
-     * @return \PropertyPrivately\PropertyBundle\Entity\User
+     * @param User $user
+     * @return Property
      */
-    public function getUserid()
+    public function setUser(User $user = null)
     {
-        return $this->userid;
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function prePersist()
+    {
+        $this->setCreated(new \DateTime());
+    }
+
+    /**
+     * @see ArrayableInterface::toArray()
+     */
+    public function toArray()
+    {
+        return array(
+            'id'          => $this->id,
+            'title'       => $this->title,
+            'description' => $this->description,
+            'created'     => $this->created->format(\DateTime::ISO8601)
+        );
     }
 }
