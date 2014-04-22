@@ -31,8 +31,7 @@ class UserType extends AbstractType
             ->add('email', 'email')
             ->add('password', 'password', array(
                 'property_path' => 'plainPassword'
-            ))
-            ->add('person', new PersonType());
+            ));
     }
 
     /**
@@ -41,8 +40,9 @@ class UserType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'      => 'PropertyPrivately\SecurityBundle\Entity\User',
-            'csrf_protection' => false
+            'cascade_validation' => true,
+            'csrf_protection'    => false,
+            'data_class'         => 'PropertyPrivately\SecurityBundle\Entity\User'
         ));
     }
 

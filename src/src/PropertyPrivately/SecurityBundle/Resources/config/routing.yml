@@ -68,13 +68,6 @@ pp_security_user_tokens_get:
     requirements:
         id: \d+
 
-pp_security_user_tokens_patch:
-    pattern: /user/tokens/{id}
-    defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:patch }
-    methods: [PATCH]
-    requirements:
-        id: \d+
-
 pp_security_user_tokens_delete_all:
     pattern: /user/tokens
     defaults: { _controller: PropertyPrivatelySecurityBundle:UserTokens:deleteAll }

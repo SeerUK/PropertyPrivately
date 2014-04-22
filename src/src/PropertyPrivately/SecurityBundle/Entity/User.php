@@ -91,7 +91,7 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
     protected $email;
 
     /**
-     * @OneToOne(targetEntity="Person", mappedBy="user")
+     * @OneToOne(targetEntity="Person", mappedBy="user", cascade={"persist"})
      */
     protected $person;
 

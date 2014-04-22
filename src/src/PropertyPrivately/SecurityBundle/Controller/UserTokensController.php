@@ -24,6 +24,7 @@ use SeerUK\RestBundle\Validator\Exception\ConstraintViolationException;
 use PropertyPrivately\CoreBundle\Exception\MissingMandatoryParametersException;
 use PropertyPrivately\SecurityBundle\Exception\BadCredentialsException;
 use PropertyPrivately\SecurityBundle\Exception\Utils\ErrorMessages;
+use PropertyPrivately\SecurityBundle\Form\Type\TokenType;
 
 /**
  * User Tokens Controller
@@ -76,51 +77,6 @@ class UserTokensController extends RestController
         $assembler->setVariable('token', $token);
 
         return new JsonResponse($assembler->assemble());
-    }
-
-    public function patchAction($id)
-    {
-        if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
-            throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
-        }
-
-        $operations = json_decode($this->get('request')->getContent());
-        $user       = $this->get('security.context')->getToken()->getUser();
-        $validator  = $this->get('validator');
-        $tokenRepo  = $this->get('pp_security.token_repository');
-        $token      = $tokenRepo->findOneBy(array(
-            'id'   => $id,
-            'user' => $user->getId()
-        ));
-
-        if ( ! $token) {
-            throw new NotFoundHttpException('Token not found.');
-        }
-
-        if ( ! $operations) {
-            throw new BadRequestHttpException('Missing PATCH operations.');
-        }
-
-        try {
-            $patcher = $this->get('pp_security.token_patcher');
-            $token   = $patcher->patch($token, $operations);
-        } catch (InvalidOperationException $e) {
-            throw new BadRequestHttpException($e->getMessage(), $e);
-        } catch (UnsupportedOperationException $e) {
-            throw new BadRequestHttpException($e->getMessage(), $e);
-        }
-
-        $errors = $validator->validate($token);
-
-        if (count($errors) > 0) {
-            throw new ConstraintViolationException($errors);
-        }
-
-        $tokenRepo->update($token);
-
-        return $this->getPatchResponse('pp_security_user_tokens_get', array(
-            'id' => $token->getId()
-        ));
     }
 
     public function deleteAllAction()

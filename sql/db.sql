@@ -86,7 +86,6 @@ CREATE TABLE IF NOT EXISTS Token (
     id int UNSIGNED NOT NULL AUTO_INCREMENT,
     applicationId int UNSIGNED NOT NULL,
     userId int UNSIGNED NOT NULL,
-    description varchar(50),
     token varchar(64) NOT NULL,
     created datetime NOT NULL,
     enabled boolean NOT NULL,

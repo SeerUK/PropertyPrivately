@@ -49,18 +49,6 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
     protected $user;
 
     /**
-     * @ORM\Column(name="description", type="string", length=50)
-     * @Assert\Length(
-     *      min = "0",
-     *      max = "50",
-     *      minMessage = "Your description must be at least {{ limit }} characters.",
-     *      maxMessage = "Your description cannot be longer than {{ limit }} characters."
-     * )
-     * @Assert\Type(type="string", message="Your description value is not a valid {{ type }}.")
-     */
-    protected $description;
-
-    /**
      * @ORM\Column(name="token", type="string", length=64, unique=true)
      * @Assert\NotBlank()
      */
@@ -141,28 +129,6 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
     public function setUser(User $user)
     {
         $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return string
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Set description
-     *
-     * @param string $description
-     */
-    public function setDescription($description)
-    {
-        $this->description = $description;
 
         return $this;
     }
@@ -252,7 +218,6 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
     {
         return array(
             'id'          => $this->id,
-            'description' => $this->description,
             'token'       => $this->token,
             'created'     => $this->created->format(\DateTime::ISO8601),
             'enabled'     => $this->enabled
@@ -285,7 +250,6 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
     {
         return serialize(array(
             $this->id,
-            $this->description,
             $this->token,
             $this->created,
             $this->enabled
@@ -299,7 +263,6 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
     {
         list (
             $this->id,
-            $this->description,
             $this->token,
             $this->created,
             $this->enabled

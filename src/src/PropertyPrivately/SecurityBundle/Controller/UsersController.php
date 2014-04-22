@@ -59,7 +59,6 @@ class UsersController extends RestController
         }
 
         $request   = $this->get('request');
-        $validator = $this->get('validator');
         $roleRepo  = $this->get('pp_security.role_repository');
         $userRepo  = $this->get('pp_security.user_repository');
 

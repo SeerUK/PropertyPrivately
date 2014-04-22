@@ -18,6 +18,8 @@ use SeerUK\RestBundle\Controller\RestController;
 use SeerUK\RestBundle\Entity\Patcher\Exception\InvalidOperationException;
 use SeerUK\RestBundle\Entity\Patcher\Exception\UnsupportedOperationException;
 use SeerUK\RestBundle\Validator\Exception\ConstraintViolationException;
+use PropertyPrivately\SecurityBundle\Entity\Person;
+use PropertyPrivately\SecurityBundle\Form\Type\PersonType;
 use PropertyPrivately\SecurityBundle\Exception\Utils\ErrorMessages;
 
 /**
@@ -44,30 +46,27 @@ class UserController extends RestController
             throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
         }
 
-        $operations = json_decode($this->get('request')->getContent());
-        $user       = $this->get('security.context')->getToken()->getUser();
-        $validator  = $this->get('validator');
-        $userRepo   = $this->get('pp_security.user_repository');
+        $request  = $this->get('request');
+        $userRepo = $this->get('pp_security.user_repository');
+        $user     = $this->get('security.context')->getToken()->getUser();
 
-        if ( ! $operations) {
-            throw new BadRequestHttpException('Missing PATCH operations.');
+        $person = $user->getPerson();
+        if ( ! $person) {
+            $person = new Person();
+            $person->setUser($user);
         }
 
-        try {
-            $patcher = $this->get('pp_security.user_patcher');
-            $user    = $patcher->patch($user, $operations);
-        } catch (InvalidOperationException $e) {
-            throw new BadRequestHttpException($e->getMessage(), $e);
-        } catch (UnsupportedOperationException $e) {
-            throw new BadRequestHttpException($e->getMessage(), $e);
+        $form = $this->createForm(new PersonType(), $person);
+        $form->submit(json_decode($request->getContent(), true), false);
+
+        if ( ! $form->isValid()) {
+            throw new ConstraintViolationException(
+                $this->getFormConstraintViolationList($form)
+            );
         }
 
-        $errors = $validator->validate($user);
-
-        if (count($errors) > 0) {
-            throw new ConstraintViolationException($errors);
-        }
-
+        $person = $form->getData();
+        $user->setPerson($person);
         $userRepo->update($user);
 
         return $this->getPatchResponse('pp_security_user_get');
