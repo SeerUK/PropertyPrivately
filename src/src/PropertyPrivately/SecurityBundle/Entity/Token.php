@@ -25,7 +25,7 @@ use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
  * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Entity\Repository\TokenRepository")
  * @ORM\Table(name="Token")
  */
-class Token implements \Serializable, \JsonSerializable, ArrayableInterface, PatchableEntityInterface
+class Token implements \JsonSerializable, ArrayableInterface, PatchableEntityInterface
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -241,31 +241,5 @@ class Token implements \Serializable, \JsonSerializable, ArrayableInterface, Pat
             'description',
             'enabled'
         );
-    }
-
-    /**
-     * @see \Serializable::serialize()
-     */
-    public function serialize()
-    {
-        return serialize(array(
-            $this->id,
-            $this->token,
-            $this->created,
-            $this->enabled
-        ));
-    }
-
-    /**
-     * @see \Serializable::unserialize()
-     */
-    public function unserialize($serialized)
-    {
-        list (
-            $this->id,
-            $this->token,
-            $this->created,
-            $this->enabled
-        ) = unserialize($serialized);
     }
 }

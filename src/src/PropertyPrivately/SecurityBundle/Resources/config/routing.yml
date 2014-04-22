@@ -16,6 +16,20 @@ pp_security_applications_post:
     defaults: { _controller: PropertyPrivatelySecurityBundle:Applications:post }
     methods: [POST]
 
+pp_security_applications_patch:
+    pattern: /applications/{id}
+    defaults: { _controller: PropertyPrivatelySecurityBundle:Applications:patch }
+    methods: [PATCH]
+    requirements:
+        id: \d+
+
+pp_security_applications_delete:
+    pattern: /applications/{id}
+    defaults: { _controller: PropertyPrivatelySecurityBundle:Applications:delete }
+    methods: [DELETE]
+    requirements:
+        id: \d+
+
 # Authentication
 pp_security_authentication_post:
     pattern: /auth

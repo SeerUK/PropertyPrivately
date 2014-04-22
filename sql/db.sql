@@ -70,14 +70,13 @@ CREATE TABLE IF NOT EXISTS Application (
     id int UNSIGNED NOT NULL AUTO_INCREMENT,
     userId int UNSIGNED NOT NULL,
     name varchar(50) NOT NULL,
-    description varchar(500) NOT NULL,
+    description varchar(500),
     token varchar(64) NOT NULL,
     created datetime NOT NULL,
     enabled boolean NOT NULL,
     lastModified timestamp NOT NULL,
 
     PRIMARY KEY (id),
-    UNIQUE KEY (name),
     UNIQUE KEY (token),
     FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) COMMENT="Registered applications";

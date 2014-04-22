@@ -11,6 +11,7 @@
 
 namespace PropertyPrivately\SecurityBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
@@ -25,7 +26,7 @@ use PropertyPrivately\SecurityBundle\Entity\User;
  * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Entity\Repository\ApplicationRepository")
  * @ORM\Table(name="Application")
  */
-class Application implements \Serializable, \JsonSerializable, ArrayableInterface
+class Application implements \JsonSerializable, ArrayableInterface
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -41,12 +42,27 @@ class Application implements \Serializable, \JsonSerializable, ArrayableInterfac
     protected $user;
 
     /**
-     * @ORM\Column(name="name", type="string", length=50, unique=true)
+     * @ORM\Column(name="name", type="string", length=50)
+     * @Assert\Length(
+     *  min="1",
+     *  max="50",
+     *  minMessage="Your name must be at least {{ limit }} characters long.",
+     *  maxMessage="Your name cannot be longer than {{ limit }} characters long."
+     * )
+     * @Assert\NotBlank()
+     * @Assert\Type(type="string", message="That name is not a valid {{ type }}.")
      */
     protected $name;
 
     /**
      * @ORM\Column(name="description", type="string", length=500)
+     * @Assert\Length(
+     *  min="1",
+     *  max="500",
+     *  minMessage="Your description must be at least {{ limit }} characters long.",
+     *  maxMessage="Your description cannot be longer than {{ limit }} characters long."
+     * )
+     * @Assert\Type(type="string", message="That description is not a valid {{ type }}.")
      */
     protected $description;
 
@@ -75,12 +91,10 @@ class Application implements \Serializable, \JsonSerializable, ArrayableInterfac
      *
      * @param string $token
      */
-    public function __construct($token)
+    public function __construct()
     {
-        $this->token       = $token;
-        $this->description = '';
-        $this->created     = new \DateTime();
-        $this->enabled     = true;
+        $this->created = new \DateTime();
+        $this->enabled = true;
     }
 
     /**
@@ -272,35 +286,5 @@ class Application implements \Serializable, \JsonSerializable, ArrayableInterfac
     public function jsonSerialize()
     {
         return $this->toArray();
-    }
-
-    /**
-     * @see \Serializable::serialize()
-     */
-    public function serialize()
-    {
-        return serialize(array(
-            $this->id,
-            $this->name,
-            $this->description,
-            $this->token,
-            $this->created,
-            $this->enabled
-        ));
-    }
-
-    /**
-     * @see \Serializable::unserialize()
-     */
-    public function unserialize($serialized)
-    {
-        list (
-            $this->id,
-            $this->name,
-            $this->description,
-            $this->token,
-            $this->created,
-            $this->enabled
-        ) = unserialize($serialized);
     }
 }

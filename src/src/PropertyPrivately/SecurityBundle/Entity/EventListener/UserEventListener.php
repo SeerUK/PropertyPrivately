@@ -49,22 +49,6 @@ class UserEventListener
     }
 
     /**
-     * Update a user entity
-     *
-     * @param  User   $user
-     */
-    public function updateUser(User $user)
-    {
-        $plainPassword = $user->getPlainPassword();
-
-        if ( ! empty($plainPassword)) {
-            $encoder = $this->getEncoder($user);
-            $user->setPassword($encoder->encodePassword($plainPassword, $user->getSalt()));
-            $user->eraseCredentials();
-        }
-    }
-
-    /**
      * @inheritDoc
      */
     public function preUpdate(PreUpdateEventArgs $event)
@@ -91,5 +75,21 @@ class UserEventListener
         }
 
         $this->updateUser($user);
+    }
+
+    /**
+     * Update a User entity
+     *
+     * @param User $user
+     */
+    private function updateUser(User $user)
+    {
+        $plainPassword = $user->getPlainPassword();
+
+        if ( ! empty($plainPassword)) {
+            $encoder = $this->getEncoder($user);
+            $user->setPassword($encoder->encodePassword($plainPassword, $user->getSalt()));
+            $user->eraseCredentials();
+        }
     }
 }

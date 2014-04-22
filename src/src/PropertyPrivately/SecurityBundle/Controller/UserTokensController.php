@@ -69,7 +69,7 @@ class UserTokensController extends RestController
         ));
 
         if ( ! $token) {
-            throw new NotFoundHttpException('Token not found.');
+            throw new NotFoundHttpException(ErrorMessages::TOKEN_NOT_FOUND);
         }
 
         $assembler = $this->get('pp_security.resource_assembler.user_tokens.get_assembler');
@@ -106,7 +106,7 @@ class UserTokensController extends RestController
         ]);
 
         if ( ! $token) {
-            throw new NotFoundHttpException('Token not found.');
+            throw new NotFoundHttpException(ErrorMessages::TOKEN_NOT_FOUND);
         }
 
         $tokenRepo->remove($token);

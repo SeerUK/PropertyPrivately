@@ -24,7 +24,7 @@ use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
  * @ORM\Entity
  * @ORM\Table(name="Role")
  */
-class Role implements RoleInterface, \Serializable, \JsonSerializable, ArrayableInterface
+class Role implements RoleInterface, \JsonSerializable, ArrayableInterface
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -128,31 +128,5 @@ class Role implements RoleInterface, \Serializable, \JsonSerializable, Arrayable
     public function jsonSerialize()
     {
         return $this->toArray();
-    }
-
-    /**
-     * @see \Serializable::serialize()
-     */
-    public function serialize()
-    {
-        return serialize(array(
-            $this->id,
-            $this->name,
-            $this->role,
-            $this->users
-        ));
-    }
-
-    /**
-     * @see \Serializable::unserialize()
-     */
-    public function unserialize($serialized)
-    {
-        list (
-            $this->id,
-            $this->name,
-            $this->role,
-            $this->users
-        ) = unserialize($serialized);
     }
 }

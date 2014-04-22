@@ -11,10 +11,14 @@
 
 namespace PropertyPrivately\SecurityBundle\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use SeerUK\RestBundle\Controller\RestController;
+use SeerUK\RestBundle\Validator\Exception\ConstraintViolationException;
 use PropertyPrivately\SecurityBundle\Exception\Utils\ErrorMessages;
+use PropertyPrivately\SecurityBundle\Entity\Application;
+use PropertyPrivately\SecurityBundle\Form\Type\ApplicationType;
 
 /**
  * Applications Controller
@@ -55,10 +59,82 @@ class ApplicationsController extends RestController
             throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
         }
 
-        $request   = $this->get('request');
-        $validator = $this->get('validator');
-        $appRepo   = $this->get('pp_security.application_repository');
-        $builder   = $this->get('pp_security.application_builder');
-        $builder->setVariable('');
+        $request = $this->get('request');
+        $user    = $this->get('security.context')->getToken()->getUser();
+        $appRepo = $this->get('pp_security.application_repository');
+
+        $form = $this->createForm(new ApplicationType(), new Application());
+        $form->submit(json_decode($request->getContent(), true));
+
+        if ( ! $form->isValid()) {
+            throw new ConstraintViolationException(
+                $this->getFormConstraintViolationList($form)
+            );
+        }
+
+        $application = $form->getData();
+        $application->setUser($user);
+        $appRepo->persist($application);
+
+        return $this->getPostResponse('pp_security_applications_get', array(
+            'id' => $application->getId()
+        ));
+    }
+
+    public function patchAction($id)
+    {
+        if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
+        }
+
+        $request     = $this->get('request');
+        $user        = $this->get('security.context')->getToken()->getUser();
+        $appRepo     = $this->get('pp_security.application_repository');
+        $application = $appRepo->findOneBy([
+            'id'   => $id,
+            'user' => $user->getId()
+        ]);
+
+        if ( ! $application) {
+            throw new NotFoundHttpException(ErrorMessages::APPLICATION_NOT_FOUND);
+        }
+
+        $form = $this->createForm(new ApplicationType(), $application);
+        $form->submit(json_decode($request->getContent(), true), false);
+
+        if ( ! $form->isValid()) {
+            throw new ConstraintViolationException(
+                $this->getFormConstraintViolationList($form)
+            );
+        }
+
+        $application = $form->getData();
+        $appRepo->update($application);
+
+        return $this->getPatchResponse('pp_security_applications_get', array(
+            'id' => $application->getId()
+        ));
+    }
+
+    public function deleteAction($id)
+    {
+        if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
+        }
+
+        $user        = $this->get('security.context')->getToken()->getUser();
+        $appRepo     = $this->get('pp_security.application_repository');
+        $application = $appRepo->findOneBy([
+            'id'   => $id,
+            'user' => $user->getId()
+        ]);
+
+        if ( ! $application) {
+            throw new NotFoundHttpException(ErrorMessages::APPLICATION_NOT_FOUND);
+        }
+
+        $appRepo->remove($application);
+
+        return new Response(null, 204);
     }
 }

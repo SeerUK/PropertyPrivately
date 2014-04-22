@@ -6,6 +6,7 @@ parameters:
     pp_security.user.class: PropertyPrivately\SecurityBundle\Entity\User
 
     # Entity Event Listener
+    pp_security.entity_event_listener.application.class: PropertyPrivately\SecurityBundle\Entity\EventListener\ApplicationEventListener
     pp_security.entity_event_listener.user.class: PropertyPrivately\SecurityBundle\Entity\EventListener\UserEventListener
 
     # Gateways
@@ -49,7 +50,14 @@ parameters:
     pp_security.user_validator.class: PropertyPrivately\SecurityBundle\Validator\UserValidator
 
 services:
-    # Entity Event Managers
+    # Entity Event Listeners
+    pp_security.entity_event_listener.application:
+        class: %pp_security.entity_event_listener.application.class%
+        arguments:
+            - @pp_security.token_generator
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+
     pp_security.entity_event_listener.user:
         class: %pp_security.entity_event_listener.user.class%
         arguments:
