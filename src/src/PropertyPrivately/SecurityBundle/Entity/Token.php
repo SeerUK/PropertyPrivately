@@ -16,7 +16,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
-use SeerUK\RestBundle\Entity\Patcher\PatchableEntityInterface;
 use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
 
 /**
@@ -25,7 +24,7 @@ use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
  * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Entity\Repository\TokenRepository")
  * @ORM\Table(name="Token")
  */
-class Token implements \JsonSerializable, ArrayableInterface, PatchableEntityInterface
+class Token implements \JsonSerializable, ArrayableInterface
 {
     /**
      * @ORM\Column(name="id", type="integer")
@@ -230,16 +229,5 @@ class Token implements \JsonSerializable, ArrayableInterface, PatchableEntityInt
     public function jsonSerialize()
     {
         return $this->toArray();
-    }
-
-    /**
-     * @see PatchableEntityInterface::getPatchableProperties()
-     */
-    public function getPatchableProperties()
-    {
-        return array(
-            'description',
-            'enabled'
-        );
     }
 }
