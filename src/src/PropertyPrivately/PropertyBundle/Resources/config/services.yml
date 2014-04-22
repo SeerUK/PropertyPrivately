@@ -1,0 +1,7 @@
+parameters:
+#    property_privately_property.example.class: PropertyPrivately\PropertyBundle\Example
+
+services:
+#    property_privately_property.example:
+#        class: %property_privately_property.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

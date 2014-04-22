@@ -1,0 +1,3 @@
+property_privately_property_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:Default:index }
