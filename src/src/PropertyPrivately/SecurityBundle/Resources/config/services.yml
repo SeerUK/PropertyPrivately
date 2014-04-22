@@ -15,10 +15,6 @@ parameters:
     # Generators
     pp_security.token_generator.class: PropertyPrivately\SecurityBundle\Utils\TokenGenerator
 
-    # Patchers
-    pp_security.token_patcher.class: PropertyPrivately\SecurityBundle\Entity\Patcher\TokenPatcher
-    pp_security.user_patcher.class: PropertyPrivately\SecurityBundle\Entity\Patcher\UserPatcher
-
     # Repos
     pp_security.application_repository.class: PropertyPrivately\SecurityBundle\Entity\Repository\ApplicationRepository
     pp_security.role_repository.class: Doctrine\ORM\EntityRepository
@@ -75,13 +71,6 @@ services:
     # Generators
     pp_security.token_generator:
         class: %pp_security.token_generator.class%
-
-    # Patcher
-    pp_security.token_patcher:
-        class: %pp_security.token_patcher.class%
-
-    pp_security.user_patcher:
-        class: %pp_security.user_patcher.class%
 
     # Repos
     pp_security.application_repository:
