@@ -24,7 +24,7 @@ use PropertyPrivately\SecurityBundle\Entity\User;
  * PropertyPrivately\SecurityBundle\Entity\Application
  *
  * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Entity\Repository\ApplicationRepository")
- * @ORM\Table(name="Application")
+ * @ORM\Table(name="PPSecurity.Application")
  */
 class Application implements \JsonSerializable, ArrayableInterface
 {

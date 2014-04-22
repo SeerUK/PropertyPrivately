@@ -22,7 +22,7 @@ use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
  * PropertyPrivately\SecurityBundle\Entity\Token
  *
  * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Entity\Repository\TokenRepository")
- * @ORM\Table(name="Token")
+ * @ORM\Table(name="PPSecurity.Token")
  */
 class Token implements \JsonSerializable, ArrayableInterface
 {

@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
-use PropertyPrivately\CoreBundle\Form\FormErrorOriginHandler;
+use SeerUK\RestBundle\Form\FormErrorOriginHandler;
 
 /**
  * Rest Controller

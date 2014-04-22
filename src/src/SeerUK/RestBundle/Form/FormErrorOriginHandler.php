@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PropertyPrivately\CoreBundle\Form;
+namespace SeerUK\RestBundle\Form;
 
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormErrorIterator;

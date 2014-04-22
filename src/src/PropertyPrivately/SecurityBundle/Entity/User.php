@@ -29,7 +29,7 @@ use PropertyPrivately\SecurityBundle\Entity\Role;
  * PropertyPrivately\SecurityBundle\Entity\User
  *
  * @ORM\Entity(repositoryClass="PropertyPrivately\SecurityBundle\Entity\Repository\UserRepository")
- * @ORM\Table(name="User")
+ * @ORM\Table(name="PPSecurity.User")
  * @UniqueEntity(fields="username", message="That username is already taken.")
  * @UniqueEntity(fields="email", message="That email address is already in use.")
  */
@@ -97,7 +97,7 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
 
     /**
      * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
-     * @JoinTable(name="UserRoleMap",
+     * @JoinTable(name="PPSecurity.UserRoleMap",
      *     joinColumns={@JoinColumn(name="userId", referencedColumnName="id")},
      *     inverseJoinColumns={@JoinColumn(name="roleId", referencedColumnName="id")}
      * )

@@ -22,7 +22,7 @@ use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
  * DWI\SecurityBundle\Entity\Role
  *
  * @ORM\Entity
- * @ORM\Table(name="Role")
+ * @ORM\Table(name="PPSecurity.Role")
  */
 class Role implements RoleInterface, \JsonSerializable, ArrayableInterface
 {
@@ -45,7 +45,7 @@ class Role implements RoleInterface, \JsonSerializable, ArrayableInterface
 
     /**
      * @ORM\ManyToMany(targetEntity="User", mappedBy="roles")
-     * @JoinTable(name="UserRoleMap",
+     * @JoinTable(name="PPSecurity.UserRoleMap",
      *     joinColumns={@JoinColumn(name="roleId", referencedColumnName="id")},
      *     inverseJoinColumns={@JoinColumn(name="userId", referencedColumnName="id")}
      * )

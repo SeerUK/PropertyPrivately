@@ -1,11 +1,20 @@
 <?php
 
+/**
+ * Property Privately API
+ *
+ * (c) Elliot Wright, 2014 <wright.elliot@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PropertyPrivately\PropertyBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Property
+ * PropertyPrivately\PropertyBundle\Entity\Property
  */
 class Property
 {
@@ -38,7 +47,7 @@ class Property
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -61,7 +70,7 @@ class Property
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -84,7 +93,7 @@ class Property
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -107,7 +116,7 @@ class Property
     /**
      * Get lastmodified
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getLastmodified()
     {
@@ -130,7 +139,7 @@ class Property
     /**
      * Get userid
      *
-     * @return \PropertyPrivately\PropertyBundle\Entity\User 
+     * @return \PropertyPrivately\PropertyBundle\Entity\User
      */
     public function getUserid()
     {

@@ -22,7 +22,7 @@ use PropertyPrivately\SecurityBundle\Entity\User;
  * PropertyPrivately\SecurityBundle\Entity\Person
  *
  * @ORM\Entity
- * @ORM\Table(name="Person")
+ * @ORM\Table(name="PPSecurity.Person")
  */
 class Person implements \JsonSerializable, ArrayableInterface
 {
