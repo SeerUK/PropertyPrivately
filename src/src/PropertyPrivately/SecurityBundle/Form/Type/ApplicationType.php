@@ -28,7 +28,8 @@ class ApplicationType extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('description');
+            ->add('description')
+            ->add('enabled', 'checkbox');
     }
 
     /**

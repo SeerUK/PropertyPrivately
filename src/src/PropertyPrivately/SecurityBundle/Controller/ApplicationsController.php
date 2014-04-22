@@ -64,7 +64,7 @@ class ApplicationsController extends RestController
         $appRepo = $this->get('pp_security.application_repository');
 
         $form = $this->createForm(new ApplicationType(), new Application());
-        $form->submit(json_decode($request->getContent(), true));
+        $form->submit(json_decode($request->getContent(), true), false);
 
         if ( ! $form->isValid()) {
             throw new ConstraintViolationException(
