@@ -1,0 +1,55 @@
+PropertyPrivately\PropertyBundle\Entity\Sale:
+    type: entity
+    table: Sale
+    indexes:
+        propertyId:
+            columns:
+                - propertyId
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: true
+            comment: ''
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        price:
+            type: integer
+            nullable: false
+            unsigned: true
+            comment: ''
+        start:
+            type: datetime
+            nullable: false
+            comment: ''
+        end:
+            type: datetime
+            nullable: false
+            comment: ''
+        created:
+            type: datetime
+            nullable: false
+            comment: ''
+        enabled:
+            type: boolean
+            nullable: false
+            comment: ''
+        lastmodified:
+            type: datetime
+            nullable: false
+            comment: ''
+            default: CURRENT_TIMESTAMP
+            column: lastModified
+    manyToOne:
+        propertyid:
+            targetEntity: Property
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                propertyId:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

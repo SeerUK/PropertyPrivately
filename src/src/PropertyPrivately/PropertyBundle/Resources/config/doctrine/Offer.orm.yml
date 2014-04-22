@@ -1,0 +1,55 @@
+PropertyPrivately\PropertyBundle\Entity\Offer:
+    type: entity
+    table: Offer
+    indexes:
+        saleId:
+            columns:
+                - saleId
+        userId:
+            columns:
+                - userId
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: true
+            comment: ''
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        offer:
+            type: integer
+            nullable: false
+            unsigned: true
+            comment: ''
+        created:
+            type: datetime
+            nullable: false
+            comment: ''
+        lastmodified:
+            type: datetime
+            nullable: false
+            comment: ''
+            default: CURRENT_TIMESTAMP
+            column: lastModified
+    manyToOne:
+        saleid:
+            targetEntity: Sale
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                saleId:
+                    referencedColumnName: id
+            orphanRemoval: false
+        userid:
+            targetEntity: User
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                userId:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

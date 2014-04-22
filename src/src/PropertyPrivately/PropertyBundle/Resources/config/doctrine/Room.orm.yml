@@ -1,0 +1,61 @@
+PropertyPrivately\PropertyBundle\Entity\Room:
+    type: entity
+    table: Room
+    indexes:
+        propertyId:
+            columns:
+                - propertyId
+        roomTypeId:
+            columns:
+                - roomTypeId
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: true
+            comment: ''
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        width:
+            type: integer
+            nullable: false
+            unsigned: true
+            comment: ''
+        height:
+            type: integer
+            nullable: false
+            unsigned: true
+            comment: ''
+        length:
+            type: integer
+            nullable: false
+            unsigned: true
+            comment: ''
+        lastmodified:
+            type: datetime
+            nullable: false
+            comment: ''
+            default: CURRENT_TIMESTAMP
+            column: lastModified
+    manyToOne:
+        propertyid:
+            targetEntity: Property
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                propertyId:
+                    referencedColumnName: id
+            orphanRemoval: false
+        roomtypeid:
+            targetEntity: Roomtype
+            cascade: {  }
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                roomTypeId:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }
