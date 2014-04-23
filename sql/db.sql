@@ -115,6 +115,9 @@ CREATE TABLE IF NOT EXISTS Property (
     description varchar(1000) NOT NULL,
     created datetime NOT NULL,
     lastModified timestamp NOT NULL,
+
+    PRIMARY KEY (id),
+    FOREIGN KEY (userId) REFERENCES PPSecurity.User(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) COMMENT="Properties (houses etc)";
 
 CREATE TABLE IF NOT EXISTS Address (
@@ -124,7 +127,7 @@ CREATE TABLE IF NOT EXISTS Address (
     address1 varchar(100) NOT NULL,
     address2 varchar(50),
     town varchar(50),
-    postcode varchar(7)
+    postcode varchar(7),
     lastModified timestamp NOT NULL,
 
     PRIMARY KEY (id),
@@ -147,11 +150,11 @@ CREATE TABLE IF NOT EXISTS RoomType (
     id int UNSIGNED NOT NULL AUTO_INCREMENT,
     name varchar(30) NOT NULL,
     ref varchar(30) NOT NULL,
-    description varchar(100),
     lastModified timestamp NOT NULL,
 
     PRIMARY KEY (id),
-    UNIQUE KEY (name)
+    UNIQUE KEY (name),
+    UNIQUE KEY (ref)
 ) COMMENT="Various room types";
 
 INSERT IGNORE INTO
@@ -199,5 +202,5 @@ CREATE TABLE IF NOT EXISTS Offer (
 
     PRIMARY KEY (id),
     FOREIGN KEY (saleId) REFERENCES Sale(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (userId) REFERENCES PPSecurity.User(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) COMMENT="Offer made by a user on a sale";
