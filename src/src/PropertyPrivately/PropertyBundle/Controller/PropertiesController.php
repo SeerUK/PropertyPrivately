@@ -27,9 +27,11 @@ use PropertyPrivately\PropertyBundle\Form\Type\PropertyType;
  */
 class PropertiesController extends RestController
 {
-    public function directoryAction($name)
+    public function directoryAction()
     {
-        return $this->render('PropertyPrivatelyPropertyBundle:Default:index.html.twig', array('name' => $name));
+        $assembler = $this->get('pp_property.resource_assembler.properties.directory_assembler');
+
+        return new JsonResponse($assembler->assemble());
     }
 
     public function getAction($id)
@@ -71,6 +73,37 @@ class PropertiesController extends RestController
         $repository->persist($property);
 
         return $this->getPostResponse('pp_property_properties_get', array(
+            'id' => $property->getId()
+        ));
+    }
+
+    public function patchAction($id)
+    {
+        if ( ! $this->get('security.context')->isGranted('IS_AUTHENTICATED_FULLY')) {
+            throw new AccessDeniedHttpException(ErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
+        }
+
+        $request    = $this->get('request');
+        $user       = $this->get('security.context')->getToken()->getUser();
+        $repository = $this->get('pp_property.property_repository');
+        $property   = $repository->findOneBy([
+            'id'   => $id,
+            'user' => $user->getId()
+        ]);
+
+        $form = $this->createForm(new PropertyType(), $property);
+        $form->submit(json_decode($request->getContent(), true), false);
+
+        if ( ! $form->isValid()) {
+            throw new ConstraintViolationException(
+                $this->getFormConstraintViolationList($form)
+            );
+        }
+
+        $property = $form->getData();
+        $repository->update($property);
+
+        return $this->getPatchResponse('pp_property_properties_get', array(
             'id' => $property->getId()
         ));
     }

@@ -1,49 +1,95 @@
 <?php
 
+/**
+ * Property Privately API
+ *
+ * (c) Elliot Wright, 2014 <wright.elliot@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PropertyPrivately\PropertyBundle\Entity;
 
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\ManyToOne;
+use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
+use PropertyPrivately\PropertyBundle\Entity\Property;
 
 /**
- * Image
+ * PropertyPrivately\PropertyBundle\Entity\Property
+ *
+ * @ORM\Entity(repositoryClass="PropertyPrivately\PropertyBundle\Entity\Repository\ImageRepository")
+ * @ORM\Table(name="PPProperty.Image")
+ * @ORM\HasLifecycleCallbacks
  */
-class Image
+class Image implements ArrayableInterface
 {
     /**
-     * @var integer
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
-     * @var string
+     * @ORM\Column(name="description", type="string", length=250)
+     * @Assert\Length(
+     *  min="10",
+     *  max="250",
+     *  minMessage="Your description must be at least {{ limit }} characters long.",
+     *  maxMessage="Your description cannot be longer than {{ limit }} characters long."
+     * )
+     * @Assert\Type(type="string", message="That description is not a valid {{ type }}.")
+     *
+     * @Assert\Blank(groups={"POST"})
+     * @Assert\NotBlank(groups={"PATCH"})
      */
-    private $description;
+    protected $description;
 
     /**
-     * @var string
+     * @ORM\Column(name="path", type="string", length=250)
      */
-    private $path;
+    protected $path;
 
     /**
-     * @var integer
+     * @ORM\Column(name="displayOrder", type="integer")
      */
-    private $displayorder;
+    protected $displayOrder;
 
     /**
-     * @var \DateTime
+     * @ManyToOne(targetEntity="Property", fetch="EAGER", inversedBy="images")
+     * @JoinColumn(name="propertyId", referencedColumnName="id")
      */
-    private $lastmodified;
+    protected $property;
 
     /**
-     * @var \PropertyPrivately\PropertyBundle\Entity\Property
+     * @Assert\File(
+     *  maxSize="5242880",
+     *  mimeTypes={"image/jpeg"},
+     *  mimeTypesMessage="Please upload a valid JPEG."
+     * )
+     *
+     * @Assert\NotBlank(groups={"POST"})
+     * @Assert\Blank(groups={"PATCH"})
      */
-    private $propertyid;
+    protected $file;
+
+    /**
+     * @var UploadedFile
+     */
+    protected $temp;
 
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -66,7 +112,7 @@ class Image
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
@@ -89,7 +135,7 @@ class Image
     /**
      * Get path
      *
-     * @return string 
+     * @return string
      */
     public function getPath()
     {
@@ -97,71 +143,230 @@ class Image
     }
 
     /**
-     * Set displayorder
+     * Set display order
      *
-     * @param integer $displayorder
+     * @param integer $displayOrder
      * @return Image
      */
-    public function setDisplayorder($displayorder)
+    public function setDisplayOrder($displayOrder)
     {
-        $this->displayorder = $displayorder;
+        $this->displayOrder = $displayOrder;
 
         return $this;
     }
 
     /**
-     * Get displayorder
+     * Get display order
      *
-     * @return integer 
+     * @return integer
      */
-    public function getDisplayorder()
+    public function getDisplayOrder()
     {
-        return $this->displayorder;
+        return $this->displayOrder;
     }
 
     /**
-     * Set lastmodified
+     * Set property
      *
-     * @param \DateTime $lastmodified
+     * @param Property $property
      * @return Image
      */
-    public function setLastmodified($lastmodified)
+    public function setProperty(Property $property = null)
     {
-        $this->lastmodified = $lastmodified;
+        $this->property = $property;
 
         return $this;
     }
 
     /**
-     * Get lastmodified
+     * Get property
      *
-     * @return \DateTime 
+     * @return Property
      */
-    public function getLastmodified()
+    public function getProperty()
     {
-        return $this->lastmodified;
+        return $this->property;
     }
 
     /**
-     * Set propertyid
+     * Sets file.
      *
-     * @param \PropertyPrivately\PropertyBundle\Entity\Property $propertyid
+     * @param  UploadedFile $file
      * @return Image
      */
-    public function setPropertyid(\PropertyPrivately\PropertyBundle\Entity\Property $propertyid = null)
+    public function setFile(UploadedFile $file = null)
     {
-        $this->propertyid = $propertyid;
+        $this->file = $file;
+
+        if (isset($this->path)) {
+            $this->temp = $this->path;
+            $this->path = null;
+        } else {
+            $this->path = 'initial';
+        }
 
         return $this;
     }
 
     /**
-     * Get propertyid
+     * Gets file.
      *
-     * @return \PropertyPrivately\PropertyBundle\Entity\Property 
+     * @return UploadedFile
      */
-    public function getPropertyid()
+    public function getFile()
     {
-        return $this->propertyid;
+        return $this->file;
+    }
+
+    /**
+     * Get bundle directory
+     *
+     * @return string
+     */
+    protected function getBundleDir()
+    {
+        return 'bundles/propertyprivatelyproperty';
+    }
+
+    /**
+     * Get public directory
+     *
+     * @return string
+     */
+    protected function getPublicDir()
+    {
+        return __DIR__ . '/../Resources/public';
+    }
+
+    /**
+     * Get web directory
+     *
+     * @return string
+     */
+    protected function getWebDir()
+    {
+        return __DIR__ . '/../../../../web';
+    }
+
+    /**
+     * Get upload directory
+     *
+     * @return string
+     */
+    protected function getUploadDir()
+    {
+        return '/images/properties/' . $this->getProperty()->getId();
+    }
+
+    /**
+     * Get upload root directory
+     *
+     * @return string
+     */
+    protected function getUploadRootDir()
+    {
+        return $this->getPublicDir() . $this->getUploadDir();
+    }
+
+    /**
+     * Get absolute path
+     *
+     * @return string
+     */
+    public function getAbsolutePath()
+    {
+        return null === $this->path
+            ? null
+            : $this->getUploadRootDir() . '/' . $this->path;
+    }
+
+    /**
+     * Get web root path
+     *
+     * @return string
+     */
+    public function getWebPath()
+    {
+        return null === $this->path
+            ? null
+            : $this->getBundleDir() . $this->getUploadDir() . '/' . $this->path;
+    }
+
+    /**
+     * Upload file
+     *
+     * @return Image
+     */
+    private function upload()
+    {
+        if (null !== $this->getFile()) {
+            $filename   = sha1(uniqid(mt_rand(), true));
+            $this->path = $filename . '.' . $this->getFile()->guessExtension();
+
+            $this->getFile()->move($this->getUploadRootDir(), $this->path);
+
+            if (isset($this->temp)) {
+                unlink($this->getUploadRootDir() . '/' . $this->temp);
+
+                $this->temp = null;
+            }
+
+            $this->file = null;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clean up this entities files
+     *
+     * @return Image
+     */
+    private function removeUpload()
+    {
+        $fs = new Filesystem();
+
+        if ($fs->exists($this->getAbsolutePath())) {
+            $fs->remove($this->getAbsolutePath());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function prePersist()
+    {
+        $this->upload();
+    }
+
+    /**
+     * @ORM\PreUpdate()
+     */
+    public function preUpdate()
+    {
+        $this->upload();
+    }
+
+    /**
+     * @ORM\PostRemove()
+     */
+    public function postRemove()
+    {
+        $this->removeUpload();
+    }
+
+    /**
+     * @see ArrayableInterface::toArray()
+     */
+    public function toArray()
+    {
+        return array(
+            'id'           => $this->id,
+            'description'  => $this->description,
+            'path'         => $this->path,
+            'displayOrder' => $this->displayOrder
+        );
     }
 }

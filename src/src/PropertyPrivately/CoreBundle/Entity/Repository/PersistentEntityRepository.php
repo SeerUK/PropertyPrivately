@@ -111,7 +111,7 @@ class PersistentEntityRepository extends EntityRepository
      * @param  mixed   $entity
      * @return boolean
      */
-    public function isEntitySupported($entity)
+    protected function isEntitySupported($entity)
     {
         return (get_class($entity) === $this->getEntityName())
             ? true

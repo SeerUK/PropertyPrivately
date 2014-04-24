@@ -15,6 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToMany;
 use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
 use PropertyPrivately\SecurityBundle\Entity\User;
 
@@ -70,6 +71,11 @@ class Property implements ArrayableInterface
      * @JoinColumn(name="userId", referencedColumnName="id")
      */
     protected $user;
+
+    /**
+     * @OneToMany(targetEntity="Image", mappedBy="property")
+     */
+    protected $images;
 
 
     /**
@@ -172,6 +178,16 @@ class Property implements ArrayableInterface
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Get images
+     *
+     * @return array
+     */
+    public function getImages()
+    {
+        return $this->images;
     }
 
     /**

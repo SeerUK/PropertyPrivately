@@ -1,16 +1,29 @@
 parameters:
     # Entities
+    pp_property.image.class: PropertyPrivately\PropertyBundle\Entity\Image
     pp_property.property.class: PropertyPrivately\PropertyBundle\Entity\Property
 
     # Repos
+    pp_property.image_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\ImageRepository
     pp_property.property_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\PropertyRepository
 
     # Resource Assemblers
     # Properties
+    pp_property.resource_assembler.properties.directory_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\Properties\DirectoryResourceAssembler
     pp_property.resource_assembler.properties.get_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\Properties\GetResourceAssembler
+    # Properties Images
+    pp_property.resource_assembler.properties_images.get_all_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\PropertiesImages\GetAllResourceAssembler
+    pp_property.resource_assembler.properties_images.get_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\PropertiesImages\GetResourceAssembler
 
 services:
     # Repos
+    pp_property.image_repository:
+        class: %pp_property.image_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %pp_property.image.class%
+
     pp_property.property_repository:
         class: %pp_property.property_repository.class%
         factory_service: doctrine.orm.entity_manager
@@ -20,8 +33,30 @@ services:
 
     # Resource Assemblers
     # Properties
+    pp_property.resource_assembler.properties.directory_assembler:
+        class: %pp_property.resource_assembler.properties.directory_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
     pp_property.resource_assembler.properties.get_assembler:
         class: %pp_property.resource_assembler.properties.get_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
+    # Properties Images
+    pp_property.resource_assembler.properties_images.get_all_assembler:
+        class: %pp_property.resource_assembler.properties_images.get_all_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
+    pp_property.resource_assembler.properties_images.get_assembler:
+        class: %pp_property.resource_assembler.properties_images.get_assembler.class%
         arguments:
             - "@router"
         calls:

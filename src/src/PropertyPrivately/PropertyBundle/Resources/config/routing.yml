@@ -1,4 +1,9 @@
 # Properties
+pp_property_properties_directory:
+    pattern: /properties
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:Properties:directory }
+    methods: [GET]
+
 pp_property_properties_get:
     pattern:  /properties/{id}
     defaults: { _controller: PropertyPrivatelyPropertyBundle:Properties:get }
@@ -11,9 +16,55 @@ pp_property_properties_post:
     defaults: { _controller: PropertyPrivatelyPropertyBundle:Properties:post }
     methods: [POST]
 
+pp_property_properties_patch:
+    pattern:  /properties/{id}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:Properties:patch }
+    methods: [PATCH]
+    requirements:
+        id: \d+
+
 pp_property_properties_delete:
     pattern:  /properties/{id}
     defaults: { _controller: PropertyPrivatelyPropertyBundle:Properties:delete }
     methods: [DELETE]
     requirements:
         id: \d+
+
+# Properties Images
+pp_property_properties_images_get_all:
+    pattern: /properties/{propId}/images
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:PropertiesImages:getAll }
+    methods: [GET]
+    requirements:
+        propId: \d+
+
+pp_property_properties_images_get:
+    pattern: /properties/{propId}/images/{imageId}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:PropertiesImages:get }
+    methods: [GET]
+    requirements:
+        propId: \d+
+        imageId: \d+
+
+pp_property_properties_images_post:
+    pattern: /properties/{propId}/images
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:PropertiesImages:post }
+    methods: [POST]
+    requirements:
+        propId: \d+
+
+pp_property_properties_images_patch:
+    pattern: /properties/{propId}/images/{imageId}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:PropertiesImages:patch }
+    methods: [PATCH]
+    requirements:
+        propId: \d+
+        imageId: \d+
+
+pp_property_properties_images_delete:
+    pattern: /properties/{propId}/images/{imageId}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:PropertiesImages:delete }
+    methods: [DELETE]
+    requirements:
+        propId: \d+
+        imageId: \d+

@@ -50,7 +50,7 @@ class ApplicationResourceAssembler extends AbstractResourceAssembler
      *
      * @return array
      */
-    public function assembleLinks()
+    private function assembleLinks()
     {
         $application = $this->getVariable('application');
         $user        = $application->getUser();

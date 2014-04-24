@@ -49,7 +49,7 @@ class TokenResourceAssembler extends AbstractResourceAssembler
      *
      * @return array
      */
-    public function assembleLinks()
+    private function assembleLinks()
     {
         $token       = $this->getVariable('token');
         $application = $token->getApplication();
