@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace PropertyPrivately\PropertyBundle\Resource\Assembler\PropertiesImages;
+namespace PropertyPrivately\PropertyBundle\Resource\Assembler\UserPropertiesImages;
 
 use SeerUK\RestBundle\Hal\Link\Link;
 use SeerUK\RestBundle\Hal\Resource\Resource;

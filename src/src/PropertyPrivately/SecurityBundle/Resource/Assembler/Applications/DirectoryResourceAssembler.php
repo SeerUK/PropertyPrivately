@@ -14,7 +14,6 @@ namespace PropertyPrivately\SecurityBundle\Resource\Assembler\Applications;
 use SeerUK\RestBundle\Hal\Link\Link;
 use SeerUK\RestBundle\Hal\Resource\Resource;
 use SeerUK\RestBundle\Resource\Assembler\AbstractResourceAssembler;
-use PropertyPrivately\SecurityBundle\Resource\Assembler\ApplicationResourceAssembler;
 
 /**
  * Directory Action Assembler

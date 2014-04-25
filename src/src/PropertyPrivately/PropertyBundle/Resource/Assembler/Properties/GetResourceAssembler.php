@@ -17,7 +17,7 @@ use SeerUK\RestBundle\Resource\Assembler\AbstractResourceAssembler;
 use PropertyPrivately\PropertyBundle\Resource\Assembler\PropertyResourceAssembler;
 
 /**
- * Properties Get Resource Assembler
+ * Get Resource Assembler
  */
 class GetResourceAssembler extends AbstractResourceAssembler
 {
@@ -48,7 +48,7 @@ class GetResourceAssembler extends AbstractResourceAssembler
     {
         $property = $this->getVariable('property');
         $links    = $this->getVariable('links');
-        $links['property:images'] = new Link($this->router->generate('pp_property_properties_images_get_all', ['propId' => $property->getId()]));
+        $links['property:images'] = new Link($this->router->generate('pp_property_user_properties_images_get_all', ['propId' => $property->getId()]));
 
         return $links;
     }

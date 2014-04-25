@@ -43,7 +43,7 @@ class PropertyResourceAssembler extends AbstractResourceAssembler
         $property = $this->getVariable('property');
 
         $links = array();
-        $links['self'] = new Link($this->router->generate('pp_property_properties_get', ['id' => $property->getId()]));
+        $links['self'] = new Link($this->router->generate('pp_property_user_properties_get', ['id' => $property->getId()]));
 
         return $links;
     }

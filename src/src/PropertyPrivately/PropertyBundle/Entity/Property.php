@@ -77,6 +77,10 @@ class Property implements ArrayableInterface
      */
     protected $images;
 
+    /**
+     * @OneToMany(targetEntity="Sale", mappedBy="property")
+     */
+    protected $sales;
 
     /**
      * Get id
@@ -188,6 +192,16 @@ class Property implements ArrayableInterface
     public function getImages()
     {
         return $this->images;
+    }
+
+    /**
+     * Get sales
+     *
+     * @return array
+     */
+    public function getSales()
+    {
+        return $this->sales;
     }
 
     /**

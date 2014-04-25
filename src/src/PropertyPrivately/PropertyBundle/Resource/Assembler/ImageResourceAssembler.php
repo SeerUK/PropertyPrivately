@@ -54,7 +54,7 @@ class ImageResourceAssembler extends AbstractResourceAssembler
         $property = $image->getProperty();
 
         $links = array();
-        $links['self'] = new Link($this->router->generate('pp_property_properties_images_get', ['propId' => $property->getId(), 'imageId' => $image->getId()]));
+        $links['self'] = new Link($this->router->generate('pp_property_user_properties_images_get', ['propId' => $property->getId(), 'imageId' => $image->getId()]));
 
         return $links;
     }

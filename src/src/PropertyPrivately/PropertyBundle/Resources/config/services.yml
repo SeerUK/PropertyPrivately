@@ -2,10 +2,12 @@ parameters:
     # Entities
     pp_property.image.class: PropertyPrivately\PropertyBundle\Entity\Image
     pp_property.property.class: PropertyPrivately\PropertyBundle\Entity\Property
+    pp_property.sale.class: PropertyPrivately\PropertyBundle\Entity\Sale
 
     # Repos
     pp_property.image_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\ImageRepository
     pp_property.property_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\PropertyRepository
+    pp_property.sale_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\SaleRepository
 
     # Resource Assemblers
     # Properties
@@ -14,6 +16,12 @@ parameters:
     # Properties Images
     pp_property.resource_assembler.properties_images.get_all_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\PropertiesImages\GetAllResourceAssembler
     pp_property.resource_assembler.properties_images.get_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\PropertiesImages\GetResourceAssembler
+    # User Properties
+    pp_property.resource_assembler.user_properties.get_all_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\UserProperties\GetAllResourceAssembler
+    pp_property.resource_assembler.user_properties.get_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\UserProperties\GetResourceAssembler
+    # User Properties Images
+    pp_property.resource_assembler.user_properties_images.get_all_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\UserPropertiesImages\GetAllResourceAssembler
+    pp_property.resource_assembler.user_properties_images.get_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\UserPropertiesImages\GetResourceAssembler
 
 services:
     # Repos
@@ -30,6 +38,13 @@ services:
         factory_method: getRepository
         arguments:
             - %pp_property.property.class%
+
+    pp_property.sale_repository:
+        class: %pp_property.sale_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %pp_property.sale.class%
 
     # Resource Assemblers
     # Properties
@@ -57,6 +72,36 @@ services:
 
     pp_property.resource_assembler.properties_images.get_assembler:
         class: %pp_property.resource_assembler.properties_images.get_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
+    # User Properties
+    pp_property.resource_assembler.user_properties.get_all_assembler:
+        class: %pp_property.resource_assembler.user_properties.get_all_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
+    pp_property.resource_assembler.user_properties.get_assembler:
+        class: %pp_property.resource_assembler.user_properties.get_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
+    # User Properties Images
+    pp_property.resource_assembler.user_properties_images.get_all_assembler:
+        class: %pp_property.resource_assembler.user_properties_images.get_all_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
+    pp_property.resource_assembler.user_properties_images.get_assembler:
+        class: %pp_property.resource_assembler.user_properties_images.get_assembler.class%
         arguments:
             - "@router"
         calls:

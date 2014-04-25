@@ -1,59 +1,83 @@
 <?php
 
+/**
+ * Property Privately API
+ *
+ * (c) Elliot Wright, 2014 <wright.elliot@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PropertyPrivately\PropertyBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
+use PropertyPrivately\PropertyBundle\Entity\Property;
 
 /**
- * Sale
+ * PropertyPrivately\PropertyBundle\Entity\Sale
+ *
+ * @ORM\Entity(repositoryClass="PropertyPrivately\PropertyBundle\Entity\Repository\SaleRepository")
+ * @ORM\Table(name="PPProperty.Sale")
  */
-class Sale
+class Sale implements ArrayableInterface
 {
     /**
-     * @var integer
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
-     * @var integer
+     * @ORM\Column(name="price", type="integer")
      */
-    private $price;
+    protected $price;
 
     /**
-     * @var \DateTime
+     * @ORM\Column(name="start", type="datetime")
      */
-    private $start;
+    protected $start;
 
     /**
-     * @var \DateTime
+     * @ORM\Column(name="end", type="datetime")
      */
-    private $end;
+    protected $end;
 
     /**
-     * @var \DateTime
+     * @ORM\Column(name="created", type="datetime")
      */
-    private $created;
+    protected $created;
 
     /**
-     * @var boolean
+     * @ORM\Column(name="enabled", type="boolean")
+     * @Assert\Type(type="boolean", message="Your enabled value is not a valid {{ type }}.")
+     *
+     * @Assert\NotBlank(groups={"POST"})
      */
-    private $enabled;
+    protected $enabled;
 
     /**
-     * @var \DateTime
+     * @ORM\ManyToOne(targetEntity="Property", fetch="EAGER", inversedBy="sales")
+     * @ORM\JoinColumn(name="propertyId", referencedColumnName="id")
      */
-    private $lastmodified;
+    protected $property;
 
-    /**
-     * @var \PropertyPrivately\PropertyBundle\Entity\Property
-     */
-    private $propertyid;
 
+    public function __construct()
+    {
+        $this->start   = new \DateTime();
+        $this->end     = new \DateTime();
+        $this->created = new \DateTime();
+        $this->enabled = true;
+    }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -76,7 +100,7 @@ class Sale
     /**
      * Get price
      *
-     * @return integer 
+     * @return integer
      */
     public function getPrice()
     {
@@ -99,7 +123,7 @@ class Sale
     /**
      * Get start
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getStart()
     {
@@ -122,7 +146,7 @@ class Sale
     /**
      * Get end
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getEnd()
     {
@@ -145,7 +169,7 @@ class Sale
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -160,7 +184,7 @@ class Sale
      */
     public function setEnabled($enabled)
     {
-        $this->enabled = $enabled;
+        $this->enabled = (bool) $enabled;
 
         return $this;
     }
@@ -168,56 +192,48 @@ class Sale
     /**
      * Get enabled
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getEnabled()
     {
-        return $this->enabled;
+        return (bool) $this->enabled;
     }
 
     /**
-     * Set lastmodified
+     * Set property
      *
-     * @param \DateTime $lastmodified
+     * @param \PropertyPrivately\PropertyBundle\Entity\Property $property
      * @return Sale
      */
-    public function setLastmodified($lastmodified)
+    public function setProperty(Property $property = null)
     {
-        $this->lastmodified = $lastmodified;
+        $this->property = $property;
 
         return $this;
     }
 
     /**
-     * Get lastmodified
+     * Get property
      *
-     * @return \DateTime 
+     * @return \PropertyPrivately\PropertyBundle\Entity\Property
      */
-    public function getLastmodified()
+    public function getProperty()
     {
-        return $this->lastmodified;
+        return $this->property;
     }
 
     /**
-     * Set propertyid
-     *
-     * @param \PropertyPrivately\PropertyBundle\Entity\Property $propertyid
-     * @return Sale
+     * @see ArrayableInterface::toArray()
      */
-    public function setPropertyid(\PropertyPrivately\PropertyBundle\Entity\Property $propertyid = null)
+    public function toArray()
     {
-        $this->propertyid = $propertyid;
-
-        return $this;
-    }
-
-    /**
-     * Get propertyid
-     *
-     * @return \PropertyPrivately\PropertyBundle\Entity\Property 
-     */
-    public function getPropertyid()
-    {
-        return $this->propertyid;
+        return array(
+            'id'          => $this->id,
+            'price'       => $this->price,
+            'start'       => $this->start->format(\DateTime::ISO8601),
+            'end'         => $this->end->format(\DateTime::ISO8601),
+            'created'     => $this->created->format(\DateTime::ISO8601),
+            'enabled'     => $this->enabled
+        );
     }
 }

@@ -126,6 +126,7 @@ class User implements AdvancedUserInterface, \Serializable, \JsonSerializable, A
      */
     protected $enabled;
 
+
     public function __construct()
     {
         $this->created = new \DateTime();

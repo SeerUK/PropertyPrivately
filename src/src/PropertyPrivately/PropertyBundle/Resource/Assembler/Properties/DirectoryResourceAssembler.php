@@ -41,6 +41,7 @@ class DirectoryResourceAssembler extends AbstractResourceAssembler
 
         $propertyLink = new Link($this->generateRouteTemplate('pp_property_properties_get'));
         $propertyLink->setTemplated(true);
+        $propertyLink->setName('Specific Property');
 
         $links['properties:property'] = $propertyLink;
 

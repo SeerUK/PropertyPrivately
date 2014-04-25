@@ -9,12 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace PropertyPrivately\PropertyBundle\Resource\Assembler\PropertiesImages;
+namespace PropertyPrivately\PropertyBundle\Resource\Assembler\UserProperties;
 
 use SeerUK\RestBundle\Hal\Link\Link;
 use SeerUK\RestBundle\Hal\Resource\Resource;
 use SeerUK\RestBundle\Resource\Assembler\AbstractResourceAssembler;
-use PropertyPrivately\PropertyBundle\Resource\Assembler\ImageResourceAssembler;
+use PropertyPrivately\PropertyBundle\Resource\Assembler\PropertyResourceAssembler;
 
 /**
  * Get Resource Assembler
@@ -28,11 +28,11 @@ class GetResourceAssembler extends AbstractResourceAssembler
     {
         $this->setVariable('links', $this->rootResource->getLinks());
 
-        $imgAssembler = new ImageResourceAssembler($this->router);
-        $imgAssembler->setVariable('image', $this->getVariable('image'));
-        $imgAssembler->setRootResource($this->getRootResource());
+        $propAssembler = new PropertyResourceAssembler($this->router);
+        $propAssembler->setVariable('property', $this->getVariable('property'));
+        $propAssembler->setRootResource($this->getRootResource());
 
-        $resource = $imgAssembler->assemble(['property']);
+        $resource = $propAssembler->assemble();
         $resource->removeLink('self');
         $resource->addLinks($this->assembleLinks());
 
@@ -46,9 +46,9 @@ class GetResourceAssembler extends AbstractResourceAssembler
      */
     private function assembleLinks()
     {
-        $property = $this->getVariable('image')->getProperty();
+        $property = $this->getVariable('property');
         $links    = $this->getVariable('links');
-        $links['image:property'] = new Link($this->router->generate('pp_property_user_properties_get', ['id' => $property->getId()]));
+        $links['property:images'] = new Link($this->router->generate('pp_property_user_properties_images_get_all', ['propId' => $property->getId()]));
 
         return $links;
     }
