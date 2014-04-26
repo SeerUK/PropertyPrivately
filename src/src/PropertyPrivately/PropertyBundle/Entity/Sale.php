@@ -36,7 +36,7 @@ class Sale implements ArrayableInterface
      * @ORM\Column(name="price", type="integer")
      * @Assert\Type(type="integer", message="Your price value is not a valid {{ type }}.")
      *
-     * @Assert\NotBlank(groups={"POST"})
+     * @Assert\NotBlank(groups={"CREATE"})
      */
     protected $price;
 
@@ -241,10 +241,11 @@ class Sale implements ArrayableInterface
     public function prePersist()
     {
         $now = new \DateTime();
+        $end = new \DateTime();
 
         $this->setCreated($now);
         $this->setStart($now);
-        $this->setEnd($now->add(new \DateInterval('P30D')));
+        $this->setEnd($end->add(new \DateInterval('P30D')));
     }
 
     /**

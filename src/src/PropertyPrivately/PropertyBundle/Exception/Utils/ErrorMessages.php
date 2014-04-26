@@ -16,7 +16,9 @@ namespace PropertyPrivately\PropertyBundle\Exception\Utils;
  */
 final class ErrorMessages
 {
-    const IMAGE_NOT_FOUND    = 'Image not found.';
-    const PROPERTY_NOT_FOUND = 'Property not found.';
-    const SALE_NOT_FOUND     = 'Sale not found.';
+    const IMAGE_NOT_FOUND      = 'Image not found.';
+    const PROPERTY_NOT_FOUND   = 'Property not found.';
+    const SALE_NOT_FOUND       = 'Sale not found.';
+    const SALE_CREATE_CONFLICT = 'You may only have one [potentially] active sale at a time. If you wish to create another, you must first delete your [potentially] active sale, or instead edit it.';
+    const SALE_UPDATE_INACTIVE = 'You may only edit active sales.';
 }

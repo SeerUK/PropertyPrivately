@@ -20,6 +20,21 @@ use PropertyPrivately\PropertyBundle\Entity\Sale;
 class SaleInputDictionary implements InputDictionaryInterface
 {
     /**
+     * @var boolean
+     */
+    private $isUpdate;
+
+    /**
+     * Constructor
+     *
+     * @param boolean $isUpdate
+     */
+    public function __construct($isUpdate = false)
+    {
+        $this->isUpdate = (bool) $isUpdate;
+    }
+
+    /**
      * @see InputDictionaryInterface::getDefinitions()
      */
     public function getDefinitions()
@@ -37,6 +52,14 @@ class SaleInputDictionary implements InputDictionaryInterface
      */
     public function getValidationGroups()
     {
-        return ['Default'];
+        $validationGroups = ['Default'];
+
+        if ( ! $this->isUpdate) {
+            $validationGroups[] = 'CREATE';
+        } else {
+            $validationGroups[] = 'UPDATE';
+        }
+
+        return $validationGroups;
     }
 }

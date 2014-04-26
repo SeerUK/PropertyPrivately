@@ -11,6 +11,7 @@
 
 namespace SeerUK\RestBundle\Input;
 
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -103,7 +104,7 @@ class InputFilter
                     $property = $path;
                 }
 
-                if ( ! empty($data[$property])) {
+                if (isset($data[$property])) {
                     $modelsData[$model][$path] = $data[$property];
                 } else {
                     if ($clearMissing) {
@@ -158,6 +159,16 @@ class InputFilter
     }
 
     /**
+     * Handle request dispatch
+     *
+     * @param  Request $request
+     */
+    public function handleRequest(Request $request, $clearMissing = false)
+    {
+        $this->dispatch(json_decode($request->getContent(), true), $clearMissing);
+    }
+
+    /**
      * Did this data pass this filter's validation?
      *
      * @return boolean
@@ -187,12 +198,17 @@ class InputFilter
 
         foreach ($errors as $error)
         {
+            $property = array_search($error->getPropertyPath(), $definition);
+            if ( ! $property) {
+                $property = get_class($model) . '::' . $error->getPropertyPath();
+            }
+
             $this->errors->add(new ConstraintViolation(
                 $error->getMessage(),
                 $error->getMessageTemplate(),
                 $error->getParameters(),
                 $error->getRoot(),
-                array_search($error->getPropertyPath(), $definition),
+                $property,
                 $error->getInvalidValue(),
                 $error->getPlural(),
                 $error->getCode()

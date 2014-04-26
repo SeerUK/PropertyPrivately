@@ -148,6 +148,31 @@ class SaleRepository extends PersistentEntityRepository
     }
 
     /**
+     * Find active sales of a given property
+     *
+     * @param  integer $id
+     * @return array
+     */
+    public function findPotentiallyActiveByPropertyId($id)
+    {
+        $qb   = $this->getEntityManager()->createQueryBuilder();
+        $date = new \DateTime();
+
+        $query = $qb
+            ->select('s')
+            ->from('PropertyPrivatelyPropertyBundle:Sale', 's')
+            ->innerJoin('s.property', 'p')
+            ->where('p.id = :id')
+            ->andWhere('s.start <= :now')
+            ->andWhere('s.end > :now')
+            ->setParameter('id', $id)
+            ->setParameter('now', $date)
+            ->getQuery();
+
+        return $query->getResult();
+    }
+
+    /**
      * Get supported entity name
      *
      * @return string
