@@ -21,6 +21,7 @@ use PropertyPrivately\PropertyBundle\Entity\Property;
  *
  * @ORM\Entity(repositoryClass="PropertyPrivately\PropertyBundle\Entity\Repository\SaleRepository")
  * @ORM\Table(name="PPProperty.Sale")
+ * @ORM\HasLifecycleCallbacks
  */
 class Sale implements ArrayableInterface
 {
@@ -33,6 +34,9 @@ class Sale implements ArrayableInterface
 
     /**
      * @ORM\Column(name="price", type="integer")
+     * @Assert\Type(type="integer", message="Your price value is not a valid {{ type }}.")
+     *
+     * @Assert\NotBlank(groups={"POST"})
      */
     protected $price;
 
@@ -54,8 +58,6 @@ class Sale implements ArrayableInterface
     /**
      * @ORM\Column(name="enabled", type="boolean")
      * @Assert\Type(type="boolean", message="Your enabled value is not a valid {{ type }}.")
-     *
-     * @Assert\NotBlank(groups={"POST"})
      */
     protected $enabled;
 
@@ -68,9 +70,6 @@ class Sale implements ArrayableInterface
 
     public function __construct()
     {
-        $this->start   = new \DateTime();
-        $this->end     = new \DateTime();
-        $this->created = new \DateTime();
         $this->enabled = true;
     }
 
@@ -223,17 +222,44 @@ class Sale implements ArrayableInterface
     }
 
     /**
+     * Is this Sale active?
+     *
+     * @return boolean
+     */
+    public function isActive()
+    {
+        $now   = new \DateTime();
+        $start = new \DateTime($this->getStart()->format(\DateTime::ISO8601));
+        $end   = new \DateTime($this->getEnd()->format(\DateTime::ISO8601));
+
+        return $this->getEnabled() && ($start <= $now) && ($end > $now);
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function prePersist()
+    {
+        $now = new \DateTime();
+
+        $this->setCreated($now);
+        $this->setStart($now);
+        $this->setEnd($now->add(new \DateInterval('P30D')));
+    }
+
+    /**
      * @see ArrayableInterface::toArray()
      */
     public function toArray()
     {
         return array(
-            'id'          => $this->id,
-            'price'       => $this->price,
-            'start'       => $this->start->format(\DateTime::ISO8601),
-            'end'         => $this->end->format(\DateTime::ISO8601),
-            'created'     => $this->created->format(\DateTime::ISO8601),
-            'enabled'     => $this->enabled
+            'id'      => $this->id,
+            'price'   => $this->price,
+            'start'   => $this->start->format(\DateTime::ISO8601),
+            'end'     => $this->end->format(\DateTime::ISO8601),
+            'created' => $this->created->format(\DateTime::ISO8601),
+            'enabled' => $this->enabled,
+            'active'  => $this->isActive()
         );
     }
 }

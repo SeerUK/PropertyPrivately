@@ -1527,12 +1527,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-                "reference": "e50dfb32776bb0cd51dfb3989d5a9c77989b4bb2"
+                "reference": "3f87e5039d8cfcee292a6553e0069254cb0208b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/e50dfb32776bb0cd51dfb3989d5a9c77989b4bb2",
-                "reference": "e50dfb32776bb0cd51dfb3989d5a9c77989b4bb2",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/3f87e5039d8cfcee292a6553e0069254cb0208b7",
+                "reference": "3f87e5039d8cfcee292a6553e0069254cb0208b7",
                 "shasum": ""
             },
             "require": {
@@ -1569,7 +1569,7 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2014-04-21 12:21:39"
+            "time": "2014-04-25 14:48:23"
         },
         {
             "name": "sensio/framework-extra-bundle",
@@ -1964,12 +1964,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "aa5d62d8bc7f85948190bfd7125be5a40c42b5fe"
+                "reference": "9d0de5b57b7435bf6bad4d0e2b6d844370e62fc2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/aa5d62d8bc7f85948190bfd7125be5a40c42b5fe",
-                "reference": "aa5d62d8bc7f85948190bfd7125be5a40c42b5fe",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/9d0de5b57b7435bf6bad4d0e2b6d844370e62fc2",
+                "reference": "9d0de5b57b7435bf6bad4d0e2b6d844370e62fc2",
                 "shasum": ""
             },
             "require": {
@@ -2072,7 +2072,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2014-04-23 15:17:21"
+            "time": "2014-04-25 12:08:25"
         },
         {
             "name": "twig/extensions",

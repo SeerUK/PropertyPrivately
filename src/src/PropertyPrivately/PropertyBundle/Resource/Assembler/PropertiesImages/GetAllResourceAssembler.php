@@ -51,7 +51,7 @@ class GetAllResourceAssembler extends AbstractResourceAssembler
     {
         $links = array();
 
-        $imgLink = new Link($this->generateRouteTemplate('pp_property_user_properties_images_get'));
+        $imgLink = new Link($this->generateRouteTemplate('pp_property_properties_images_get'));
         $imgLink->setName('Specific Image');
         $imgLink->setTemplated(true);
 

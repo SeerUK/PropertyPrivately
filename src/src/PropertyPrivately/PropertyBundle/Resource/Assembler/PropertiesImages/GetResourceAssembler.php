@@ -48,7 +48,7 @@ class GetResourceAssembler extends AbstractResourceAssembler
     {
         $property = $this->getVariable('image')->getProperty();
         $links    = $this->getVariable('links');
-        $links['image:property'] = new Link($this->router->generate('pp_property_user_properties_get', ['id' => $property->getId()]));
+        $links['image:property'] = new Link($this->router->generate('pp_property_properties_get', ['id' => $property->getId()]));
 
         return $links;
     }

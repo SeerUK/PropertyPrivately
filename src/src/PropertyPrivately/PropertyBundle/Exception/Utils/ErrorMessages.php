@@ -18,4 +18,5 @@ final class ErrorMessages
 {
     const IMAGE_NOT_FOUND    = 'Image not found.';
     const PROPERTY_NOT_FOUND = 'Property not found.';
+    const SALE_NOT_FOUND     = 'Sale not found.';
 }

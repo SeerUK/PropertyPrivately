@@ -11,6 +11,25 @@ pp_property_properties_get:
     requirements:
         id: \d+
 
+pp_property_properties_post:
+    pattern: /properties
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:Properties:post }
+    methods: [POST]
+
+pp_property_properties_patch:
+    pattern: /properties/{id}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:Properties:patch }
+    methods: [PATCH]
+    requirements:
+        id: \d+
+
+pp_property_properties_delete:
+    pattern: /properties/{id}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:Properties:delete }
+    methods: [DELETE]
+    requirements:
+        id: \d+
+
 # Properties Images
 pp_property_properties_images_get_all:
     pattern: /properties/{propId}/images
@@ -27,73 +46,95 @@ pp_property_properties_images_get:
         propId: \d+
         imageId: \d+
 
+pp_property_properties_images_post:
+    pattern: /properties/{propId}/images
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:PropertiesImages:post }
+    methods: [POST]
+    requirements:
+        propId: \d+
+
+pp_property_properties_images_patch:
+    pattern: /properties/{propId}/images/{imageId}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:PropertiesImages:patch }
+    methods: [PATCH]
+    requirements:
+        propId: \d+
+        imageId: \d+
+
+pp_property_properties_images_delete:
+    pattern: /properties/{propId}/images/{imageId}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:PropertiesImages:delete }
+    methods: [DELETE]
+    requirements:
+        propId: \d+
+        imageId: \d+
+
+# Properties Sales
+pp_property_properties_sales_get_all:
+    pattern: /properties/{propId}/sales
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:PropertiesSales:getAll }
+    methods: [GET]
+    requirements:
+        propId: \d+
+
+pp_property_properties_sales_get:
+    pattern: /properties/{propId}/sales/{saleId}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:PropertiesSales:get }
+    methods: [GET]
+    requirements:
+        propId: \d+
+        saleId: \d+
+
+pp_property_properties_sales_post:
+    pattern: /properties/{propId}/sales
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:PropertiesSales:post }
+    methods: [POST]
+    requirements:
+        propId: \d+
+
+pp_property_properties_sales_patch:
+    pattern: /properties/{propId}/sales/{saleId}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:PropertiesSales:patch }
+    methods: [PATCH]
+    requirements:
+        propId: \d+
+        saleId: \d+
+
+pp_property_properties_sales_delete:
+    pattern: /properties/{propId}/sales/{saleId}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:PropertiesSales:delete }
+    methods: [DELETE]
+    requirements:
+        propId: \d+
+        saleId: \d+
+
+# Sales
+pp_property_sales_directory:
+    pattern: /sales
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:Sales:directory }
+    methods: [GET]
+
+pp_property_sales_get:
+    pattern: /sales/{id}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:Sales:get }
+    methods: [GET]
+    requirements:
+        id: \d+
+
 # User Properties
 pp_property_user_properties_get_all:
     pattern: /user/properties
     defaults: { _controller: PropertyPrivatelyPropertyBundle:UserProperties:getAll }
     methods: [GET]
 
-pp_property_user_properties_get:
-    pattern: /user/properties/{id}
-    defaults: { _controller: PropertyPrivatelyPropertyBundle:UserProperties:get }
+# User Sales
+pp_property_user_sales_get_all:
+    pattern: /user/sales
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:UserSales:getAll }
     methods: [GET]
-    requirements:
-        id: \d+
 
-pp_property_user_properties_post:
-    pattern: /user/properties
-    defaults: { _controller: PropertyPrivatelyPropertyBundle:UserProperties:post }
-    methods: [POST]
-
-pp_property_user_properties_patch:
-    pattern: /user/properties/{id}
-    defaults: { _controller: PropertyPrivatelyPropertyBundle:UserProperties:patch }
-    methods: [PATCH]
-    requirements:
-        id: \d+
-
-pp_property_user_properties_delete:
-    pattern: /user/properties/{id}
-    defaults: { _controller: PropertyPrivatelyPropertyBundle:UserProperties:delete }
-    methods: [DELETE]
-    requirements:
-        id: \d+
-
-# User Properties Images
-pp_property_user_properties_images_get_all:
-    pattern: /user/properties/{propId}/images
-    defaults: { _controller: PropertyPrivatelyPropertyBundle:UserPropertiesImages:getAll }
+# Users Sales
+pp_property_users_sales_get_all:
+    pattern: /users/{username}/sales
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:UsersSales:getAll }
     methods: [GET]
-    requirements:
-        propId: \d+
-
-pp_property_user_properties_images_get:
-    pattern: /user/properties/{propId}/images/{imageId}
-    defaults: { _controller: PropertyPrivatelyPropertyBundle:UserPropertiesImages:get }
-    methods: [GET]
-    requirements:
-        propId: \d+
-        imageId: \d+
-
-pp_property_user_properties_images_post:
-    pattern: /user/properties/{propId}/images
-    defaults: { _controller: PropertyPrivatelyPropertyBundle:UserPropertiesImages:post }
-    methods: [POST]
-    requirements:
-        propId: \d+
-
-pp_property_user_properties_images_patch:
-    pattern: /user/properties/{propId}/images/{imageId}
-    defaults: { _controller: PropertyPrivatelyPropertyBundle:UserPropertiesImages:patch }
-    methods: [PATCH]
-    requirements:
-        propId: \d+
-        imageId: \d+
-
-pp_property_user_properties_images_delete:
-    pattern: /user/properties/{propId}/images/{imageId}
-    defaults: { _controller: PropertyPrivatelyPropertyBundle:UserPropertiesImages:delete }
-    methods: [DELETE]
-    requirements:
-        propId: \d+
-        imageId: \d+

@@ -18,9 +18,9 @@ use PropertyPrivately\PropertyBundle\Exception\Utils\ErrorMessages;
 use PropertyPrivately\SecurityBundle\Exception\Utils\ErrorMessages as SecurityErrorMessages;
 
 /**
- * User Properties Controller
+ * User Sales Controller
  */
-class UserPropertiesController extends RestController
+class UserSalesController extends RestController
 {
     public function getAllAction()
     {
@@ -28,12 +28,10 @@ class UserPropertiesController extends RestController
             throw new AccessDeniedHttpException(SecurityErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
         }
 
-        $user       = $this->get('security.context')->getToken()->getUser();
-        $repository = $this->get('pp_property.property_repository');
-        $assembler  = $this->get('pp_property.resource_assembler.user_properties.get_all_assembler');
-        $assembler->setVariable('properties', $repository->findBy([
-            'user' => $user->getId()
-        ]));
+        $user      = $this->get('security.context')->getToken()->getUser();
+        $saleRepo  = $this->get('pp_property.sale_repository');
+        $assembler = $this->get('pp_property.resource_assembler.user_sales.get_all_assembler');
+        $assembler->setVariable('sales', $saleRepo->findByUserId($user->getId()));
 
         return new JsonResponse($assembler->assemble());
     }

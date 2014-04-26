@@ -51,9 +51,9 @@ class GetAllResourceAssembler extends AbstractResourceAssembler
     {
         $links = array();
 
-        $propertyLink = new Link($this->generateRouteTemplate('pp_property_user_properties_get'));
+        $propertyLink = new Link($this->generateRouteTemplate('pp_property_properties_get'));
         $propertyLink->setTemplated(true);
-        $propertyLink->setName('Specific User Property');
+        $propertyLink->setName('Specific Property');
 
         $links['properties:property'] = $propertyLink;
 

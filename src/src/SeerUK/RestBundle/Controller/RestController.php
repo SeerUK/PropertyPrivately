@@ -19,12 +19,26 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use SeerUK\RestBundle\Form\FormErrorOriginHandler;
+use SeerUK\RestBundle\Input\InputDictionaryInterface;
+use SeerUK\RestBundle\Input\InputFilter;
 
 /**
  * Rest Controller
  */
 class RestController extends Controller
 {
+    /**
+     * Create an input filter
+     *
+     * @param  InputDictionaryInterface $dictionary
+     * @param  array                    $models
+     * @return InputFilter
+     */
+    public function createInputFilter(InputDictionaryInterface $dictionary, array $models)
+    {
+        return new InputFilter($this->get('validator'), $dictionary, $models);
+    }
+
     /**
      * Make an internal master-request to the given route name, with parameters
      *

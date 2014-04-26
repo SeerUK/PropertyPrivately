@@ -16,18 +16,18 @@ use SeerUK\RestBundle\Hal\Resource\Resource;
 use SeerUK\RestBundle\Resource\Assembler\AbstractResourceAssembler;
 
 /**
- * Property Resource Assembler
+ * Sale Resource Assembler
  */
-class PropertyResourceAssembler extends AbstractResourceAssembler
+class SaleResourceAssembler extends AbstractResourceAssembler
 {
     /**
      * @see AbstractResourceAssemlber::assemble()
      */
     public function assemble(array $nested = array())
     {
-        $property = $this->getVariable('property');
+        $sale = $this->getVariable('sale');
 
-        $this->rootResource->setVariables($property->toArray());
+        $this->rootResource->setVariables($sale->toArray());
         $this->rootResource->addLinks($this->assembleLinks());
 
         return $this->rootResource;
@@ -40,10 +40,10 @@ class PropertyResourceAssembler extends AbstractResourceAssembler
      */
     private function assembleLinks()
     {
-        $property = $this->getVariable('property');
+        $sale = $this->getVariable('sale');
 
         $links = array();
-        $links['self'] = new Link($this->router->generate('pp_property_properties_get', ['id' => $property->getId()]));
+        $links['self'] = new Link($this->router->generate('pp_property_sales_get', ['id' => $sale->getId()]));
 
         return $links;
     }
