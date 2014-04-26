@@ -1,11 +1,13 @@
 parameters:
     # Entities
     pp_property.image.class: PropertyPrivately\PropertyBundle\Entity\Image
+    pp_property.offer.class: PropertyPrivately\PropertyBundle\Entity\Offer
     pp_property.property.class: PropertyPrivately\PropertyBundle\Entity\Property
     pp_property.sale.class: PropertyPrivately\PropertyBundle\Entity\Sale
 
     # Repos
     pp_property.image_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\ImageRepository
+    pp_property.offer_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\OfferRepository
     pp_property.property_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\PropertyRepository
     pp_property.sale_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\SaleRepository
 
@@ -22,6 +24,9 @@ parameters:
     # Sales
     pp_property.resource_assembler.sales.directory_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\Sales\DirectoryResourceAssembler
     pp_property.resource_assembler.sales.get_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\Sales\GetResourceAssembler
+    # Sales Offers
+    pp_property.resource_assembler.sales_offers.get_all_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\SalesOffers\GetAllResourceAssembler
+    pp_property.resource_assembler.sales_offers.get_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\SalesOffers\GetResourceAssembler
     # User Properties
     pp_property.resource_assembler.user_properties.get_all_assembler.class: PropertyPrivately\PropertyBundle\Resource\Assembler\UserProperties\GetAllResourceAssembler
     # Users Sale
@@ -37,6 +42,13 @@ services:
         factory_method: getRepository
         arguments:
             - %pp_property.image.class%
+
+    pp_property.offer_repository:
+        class: %pp_property.offer_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %pp_property.offer.class%
 
     pp_property.property_repository:
         class: %pp_property.property_repository.class%
@@ -108,6 +120,21 @@ services:
 
     pp_property.resource_assembler.sales.get_assembler:
         class: %pp_property.resource_assembler.sales.get_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
+    # Sales Offers
+    pp_property.resource_assembler.sales_offers.get_all_assembler:
+        class: %pp_property.resource_assembler.sales_offers.get_all_assembler.class%
+        arguments:
+            - "@router"
+        calls:
+            - [setRootResource, ["@seer_uk_rest.hal_root_resource"]]
+
+    pp_property.resource_assembler.sales_offers.get_assembler:
+        class: %pp_property.resource_assembler.sales_offers.get_assembler.class%
         arguments:
             - "@router"
         calls:

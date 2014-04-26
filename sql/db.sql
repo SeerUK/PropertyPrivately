@@ -146,38 +146,6 @@ CREATE TABLE IF NOT EXISTS Image (
     FOREIGN KEY (propertyId) REFERENCES Property(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) COMMENT="Property images";
 
-CREATE TABLE IF NOT EXISTS RoomType (
-    id int UNSIGNED NOT NULL AUTO_INCREMENT,
-    name varchar(30) NOT NULL,
-    ref varchar(30) NOT NULL,
-    lastModified timestamp NOT NULL,
-
-    PRIMARY KEY (id),
-    UNIQUE KEY (name),
-    UNIQUE KEY (ref)
-) COMMENT="Various room types";
-
-INSERT IGNORE INTO
-    RoomType (name, ref)
-VALUES
-    ('Kitchen', 'ROOM_KITCHEN'),
-    ('Bedroom', 'ROOM_BEDROOM'),
-    ('Bathroom', 'ROOM_BATHROOM');
-
-CREATE TABLE IF NOT EXISTS Room (
-    id int UNSIGNED NOT NULL AUTO_INCREMENT,
-    propertyId int UNSIGNED NOT NULL,
-    roomTypeId int UNSIGNED NOT NULL,
-    width int UNSIGNED NOT NULL,
-    height int UNSIGNED NOT NULL,
-    length int UNSIGNED NOT NULL,
-    lastModified timestamp NOT NULL,
-
-    PRIMARY KEY (id),
-    FOREIGN KEY (propertyId) REFERENCES Property(id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (roomTypeId) REFERENCES RoomType(id) ON DELETE CASCADE ON UPDATE CASCADE
-) COMMENT="A room in a property";
-
 CREATE TABLE IF NOT EXISTS Sale (
     id int UNSIGNED NOT NULL AUTO_INCREMENT,
     propertyId int UNSIGNED NOT NULL,

@@ -121,6 +121,38 @@ pp_property_sales_get:
     requirements:
         id: \d+
 
+# Sales Offers
+pp_property_sales_offers_get_all:
+    pattern: /sales/{saleId}/offers
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:SalesOffers:getAll }
+    methods: [GET]
+    requirements:
+        saleId: \d+
+
+pp_property_sales_offers_get:
+    pattern: /sales/{saleId}/offers/{offerId}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:SalesOffers:get }
+    methods: [GET]
+    requirements:
+        saleId: \d+
+        offerId: \d+
+
+pp_property_sales_offers_post:
+    pattern: /sales/{saleId}/offers
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:SalesOffers:post }
+    methods: [POST]
+    requirements:
+        saleId: \d+
+
+pp_property_sales_offers_delete:
+    pattern: /sales/{saleId}/offers/{offerId}
+    defaults: { _controller: PropertyPrivatelyPropertyBundle:SalesOffers:delete }
+    methods: [DELETE]
+    requirements:
+        saleId: \d+
+        offerId: \d+
+
+
 # User Properties
 pp_property_user_properties_get_all:
     pattern: /user/properties

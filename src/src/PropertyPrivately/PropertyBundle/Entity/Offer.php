@@ -1,49 +1,68 @@
 <?php
 
+/**
+ * Property Privately API
+ *
+ * (c) Elliot Wright, 2014 <wright.elliot@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PropertyPrivately\PropertyBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
+use PropertyPrivately\PropertyBundle\Entity\Sale;
+use PropertyPrivately\SecurityBundle\Entity\User;
 
 /**
- * Offer
+ * PropertyPrivately\PropertyBundle\Entity\Offer
+ *
+ * @ORM\Entity(repositoryClass="PropertyPrivately\PropertyBundle\Entity\Repository\OfferRepository")
+ * @ORM\Table(name="PPProperty.Offer")
+ * @ORM\HasLifecycleCallbacks
  */
-class Offer
+class Offer implements ArrayableInterface
 {
     /**
-     * @var integer
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @var integer
+     * @ORM\Column(name="offer", type="integer")
+     * @Assert\Type(type="integer", message="Your offer value is not a valid {{ type }}.")
+     *
+     * @Assert\NotBlank()
      */
     private $offer;
 
     /**
-     * @var \DateTime
+     * @ORM\Column(name="created", type="datetime")
      */
     private $created;
 
     /**
-     * @var \DateTime
+     * @ORM\ManyToOne(targetEntity="Sale", fetch="EAGER", inversedBy="offers")
+     * @ORM\JoinColumn(name="saleId", referencedColumnName="id")
      */
-    private $lastmodified;
+    private $sale;
 
     /**
-     * @var \PropertyPrivately\PropertyBundle\Entity\Sale
+     * @ORM\ManyToOne(targetEntity="PropertyPrivately\SecurityBundle\Entity\User", fetch="EAGER", inversedBy="properties")
+     * @ORM\JoinColumn(name="userId", referencedColumnName="id")
      */
-    private $saleid;
-
-    /**
-     * @var \PropertyPrivately\PropertyBundle\Entity\User
-     */
-    private $userid;
+    private $user;
 
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -66,7 +85,7 @@ class Offer
     /**
      * Get offer
      *
-     * @return integer 
+     * @return integer
      */
     public function getOffer()
     {
@@ -89,7 +108,7 @@ class Offer
     /**
      * Get created
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreated()
     {
@@ -97,49 +116,26 @@ class Offer
     }
 
     /**
-     * Set lastmodified
+     * Set sale
      *
-     * @param \DateTime $lastmodified
+     * @param \PropertyPrivately\PropertyBundle\Entity\Sale $sale
      * @return Offer
      */
-    public function setLastmodified($lastmodified)
+    public function setSale(Sale $sale = null)
     {
-        $this->lastmodified = $lastmodified;
+        $this->sale = $sale;
 
         return $this;
     }
 
     /**
-     * Get lastmodified
+     * Get sale
      *
-     * @return \DateTime 
+     * @return \PropertyPrivately\PropertyBundle\Entity\Sale
      */
-    public function getLastmodified()
+    public function getSale()
     {
-        return $this->lastmodified;
-    }
-
-    /**
-     * Set saleid
-     *
-     * @param \PropertyPrivately\PropertyBundle\Entity\Sale $saleid
-     * @return Offer
-     */
-    public function setSaleid(\PropertyPrivately\PropertyBundle\Entity\Sale $saleid = null)
-    {
-        $this->saleid = $saleid;
-
-        return $this;
-    }
-
-    /**
-     * Get saleid
-     *
-     * @return \PropertyPrivately\PropertyBundle\Entity\Sale 
-     */
-    public function getSaleid()
-    {
-        return $this->saleid;
+        return $this->sale;
     }
 
     /**
@@ -148,20 +144,40 @@ class Offer
      * @param \PropertyPrivately\PropertyBundle\Entity\User $userid
      * @return Offer
      */
-    public function setUserid(\PropertyPrivately\PropertyBundle\Entity\User $userid = null)
+    public function setUser(User $user = null)
     {
-        $this->userid = $userid;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get userid
+     * Get user
      *
-     * @return \PropertyPrivately\PropertyBundle\Entity\User 
+     * @return \PropertyPrivately\PropertyBundle\Entity\User
      */
-    public function getUserid()
+    public function getUser()
     {
-        return $this->userid;
+        return $this->user;
+    }
+
+    /**
+     * @ORM\PrePersist()
+     */
+    public function prePersist()
+    {
+        $this->setCreated(new \DateTime());
+    }
+
+    /**
+     * @see ArrayableInterface::toArray()
+     */
+    public function toArray()
+    {
+        return [
+            'id'      => $this->id,
+            'offer'   => $this->offer,
+            'created' => $this->created->format(\DateTime::ISO8601)
+        ];
     }
 }

@@ -67,6 +67,11 @@ class Sale implements ArrayableInterface
      */
     protected $property;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Offer", mappedBy="sale")
+     */
+    protected $offers;
+
 
     public function __construct()
     {
