@@ -26,7 +26,8 @@ class SaleInputDictionary implements InputDictionaryInterface
     {
         return [
             Sale::class => [
-                'price', 'enabled'
+                'price',
+                'enabled'
             ]
         ];
     }

@@ -15,6 +15,9 @@ use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use SeerUK\RestBundle\Input\DataMapper\InputDataMapper;
+use SeerUK\RestBundle\Input\Exception\AlreadyDispatchedException;
+use SeerUK\RestBundle\Input\Exception\InvalidModelException;
+use SeerUK\RestBundle\Input\Exception\UnsupportedModelException;
 
 /**
  * Input Filter
@@ -66,9 +69,9 @@ class InputFilter
      */
     public function __construct(ValidatorInterface $validator, InputDictionaryInterface $dictionary, array $models)
     {
-        $this->errors     = new ConstraintViolationList();
-        $this->mapper     = new InputDataMapper();
-        $this->validator  = $validator;
+        $this->errors    = new ConstraintViolationList();
+        $this->mapper    = new InputDataMapper();
+        $this->validator = $validator;
 
         $this->processDictionary($dictionary);
         $this->processModels($models);
@@ -83,16 +86,14 @@ class InputFilter
     public function dispatch($data, $clearMissing = true)
     {
         if ($this->dispatched) {
-            // Throw an error
-            // You can't dispatch more than once!
+            throw new AlreadyDispatchedException('You can not dispatch an input filter twice.');
         }
 
         $modelsData  = [];
 
         foreach ($this->definitions as $model => $definition) {
             if ( ! array_key_exists($model, $this->models)) {
-                // Throw an error, the model in the definition was not given to use
-                // in the models array
+                throw new UnsupportedModelException('A model defined in the input filter dictionary was not given to the input filter.');
             }
 
             $modelsData[$model] = [];
@@ -164,8 +165,7 @@ class InputFilter
     public function isValid()
     {
         if ( ! $this->dispatched) {
-            // Throw an error
-            // Need to have dispatched to check validity
+            return false;
         }
 
         return count($this->errors) === 0;
@@ -180,8 +180,7 @@ class InputFilter
     private function mapModelErrorsToDataProperty($model, $errors)
     {
         if ( ! is_object($model)) {
-            // Throw an error
-            // We can only deal with objects, just like above.
+            throw new InvalidModelException('Only objects may be models, received: ' . gettype($model));
         }
 
         $definition  = $this->definitions[get_class($model)];
@@ -231,8 +230,7 @@ class InputFilter
     {
         foreach ($models as $model) {
             if ( ! is_object($model)) {
-                // Throw an error
-                // Only objects can be models
+                throw new InvalidModelException('Only objects may be models, received: ' . gettype($model));
             }
 
             $this->models[get_class($model)] = $model;
