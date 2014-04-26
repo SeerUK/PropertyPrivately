@@ -17,9 +17,10 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use SeerUK\RestBundle\Controller\RestController;
 use SeerUK\RestBundle\Validator\Exception\ConstraintViolationException;
+use PropertyPrivately\PropertyBundle\Entity\Address;
 use PropertyPrivately\PropertyBundle\Entity\Property;
 use PropertyPrivately\PropertyBundle\Exception\Utils\ErrorMessages;
-use PropertyPrivately\PropertyBundle\Form\Type\PropertyType;
+use PropertyPrivately\PropertyBundle\Input\Dictionary\PropertyInputDictionary;
 use PropertyPrivately\SecurityBundle\Exception\Utils\ErrorMessages as SecurityErrorMessages;
 
 /**
@@ -64,22 +65,21 @@ class PropertiesController extends RestController
             throw new AccessDeniedHttpException(SecurityErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
         }
 
-        $request    = $this->get('request');
-        $user       = $this->get('security.context')->getToken()->getUser();
-        $repository = $this->get('pp_property.property_repository');
+        $user   = $this->get('security.context')->getToken()->getUser();
+        $filter = $this->createInputFilter(new PropertyInputDictionary(), [new Address(), new Property()]);
+        $filter->handleRequest($this->get('request'));
 
-        $form = $this->createForm(new PropertyType(), new Property());
-        $form->submit(json_decode($request->getContent(), true));
-
-        if ( ! $form->isValid()) {
-            throw new ConstraintViolationException(
-                $this->getFormConstraintViolationList($form)
-            );
+        if ( ! $filter->isValid()) {
+            throw new ConstraintViolationException($filter->getErrors());
         }
 
-        $property = $form->getData();
+        $property = $filter->getData(Property::class);
         $property->setUser($user);
-        $repository->persist($property);
+        $this->get('pp_property.property_repository')->persist($property);
+
+        $address = $filter->getData(Address::class);
+        $address->setProperty($property);
+        $this->get('pp_property.address_repository')->persist($address);
 
         return $this->getPostResponse('pp_property_properties_get', array(
             'id' => $property->getId()
@@ -92,25 +92,34 @@ class PropertiesController extends RestController
             throw new AccessDeniedHttpException(SecurityErrorMessages::REQUIRE_AUTHENTICATED_FULLY);
         }
 
-        $request    = $this->get('request');
-        $user       = $this->get('security.context')->getToken()->getUser();
-        $repository = $this->get('pp_property.property_repository');
-        $property   = $repository->findOneBy([
+        $user     = $this->get('security.context')->getToken()->getUser();
+        $propRepo = $this->get('pp_property.property_repository');
+        $property = $propRepo->findOneBy([
             'id'   => $id,
             'user' => $user->getId()
         ]);
 
-        $form = $this->createForm(new PropertyType(), $property);
-        $form->submit(json_decode($request->getContent(), true), false);
-
-        if ( ! $form->isValid()) {
-            throw new ConstraintViolationException(
-                $this->getFormConstraintViolationList($form)
-            );
+        if ( ! $property) {
+            throw new NotFoundHttpException(ErrorMessages::PROPERTY_NOT_FOUND);
         }
 
-        $property = $form->getData();
-        $repository->update($property);
+        $address = $property->getAddress();
+        if ( ! $address) {
+            $address = new Address();
+        }
+
+        $filter = $this->createInputFilter(new PropertyInputDictionary(true), [$address, $property]);
+        $filter->handleRequest($this->get('request'));
+
+        if ( ! $filter->isValid()) {
+            throw new ConstraintViolationException($filter->getErrors());
+        }
+
+        $property = $filter->getData(Property::class);
+        $this->get('pp_property.property_repository')->update($property);
+
+        $address = $filter->getData(Address::class);
+        $this->get('pp_property.address_repository')->update($address);
 
         return $this->getPatchResponse('pp_property_properties_get', array(
             'id' => $property->getId()

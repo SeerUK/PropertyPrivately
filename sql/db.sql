@@ -126,8 +126,8 @@ CREATE TABLE IF NOT EXISTS Address (
     buildingName varchar(50),
     address1 varchar(100) NOT NULL,
     address2 varchar(50),
-    town varchar(50),
-    postcode varchar(7),
+    town varchar(50) NOT NULL,
+    postcode varchar(7) NOT NULL,
     lastModified timestamp NOT NULL,
 
     PRIMARY KEY (id),

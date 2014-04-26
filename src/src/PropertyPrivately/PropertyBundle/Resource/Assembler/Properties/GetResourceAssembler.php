@@ -32,7 +32,7 @@ class GetResourceAssembler extends AbstractResourceAssembler
         $propAssembler->setVariable('property', $this->getVariable('property'));
         $propAssembler->setRootResource($this->getRootResource());
 
-        $resource = $propAssembler->assemble();
+        $resource = $propAssembler->assemble(['address']);
         $resource->removeLink('self');
         $resource->addLinks($this->assembleLinks());
 

@@ -14,6 +14,7 @@ namespace PropertyPrivately\PropertyBundle\Resource\Assembler;
 use SeerUK\RestBundle\Hal\Link\Link;
 use SeerUK\RestBundle\Hal\Resource\Resource;
 use SeerUK\RestBundle\Resource\Assembler\AbstractResourceAssembler;
+use PropertyPrivately\PropertyBundle\Entity\Address;
 
 /**
  * Property Resource Assembler
@@ -29,6 +30,20 @@ class PropertyResourceAssembler extends AbstractResourceAssembler
 
         $this->rootResource->setVariables($property->toArray());
         $this->rootResource->addLinks($this->assembleLinks());
+
+        if (in_array('address', $nested)) {
+            $address = $property->getAddress();
+            if ( ! $address) {
+                $address = new Address();
+            }
+
+            $address = $address->toArray();
+            unset($address['id']);
+
+            foreach ($address as $key => $value) {
+                $this->rootResource->setVariable($key, $value);
+            }
+        }
 
         return $this->rootResource;
     }

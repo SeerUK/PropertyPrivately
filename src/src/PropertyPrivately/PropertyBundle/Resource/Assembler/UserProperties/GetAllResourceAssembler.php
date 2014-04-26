@@ -36,7 +36,7 @@ class GetAllResourceAssembler extends AbstractResourceAssembler
             $propertyAssembler->setRootResource(new Resource());
             $propertyAssembler->setVariable('property', $property);
 
-            $this->rootResource->addResource('properties', $propertyAssembler->assemble(), true);
+            $this->rootResource->addResource('properties', $propertyAssembler->assemble(['address']), true);
         }
 
         return $this->rootResource;

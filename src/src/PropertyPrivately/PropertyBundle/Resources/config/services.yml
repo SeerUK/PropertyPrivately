@@ -1,11 +1,13 @@
 parameters:
     # Entities
+    pp_property.address.class: PropertyPrivately\PropertyBundle\Entity\Address
     pp_property.image.class: PropertyPrivately\PropertyBundle\Entity\Image
     pp_property.offer.class: PropertyPrivately\PropertyBundle\Entity\Offer
     pp_property.property.class: PropertyPrivately\PropertyBundle\Entity\Property
     pp_property.sale.class: PropertyPrivately\PropertyBundle\Entity\Sale
 
     # Repos
+    pp_property.address_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\AddressRepository
     pp_property.image_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\ImageRepository
     pp_property.offer_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\OfferRepository
     pp_property.property_repository.class: PropertyPrivately\PropertyBundle\Entity\Repository\PropertyRepository
@@ -36,6 +38,13 @@ parameters:
 
 services:
     # Repos
+    pp_property.address_repository:
+        class: %pp_property.address_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+            - %pp_property.address.class%
+
     pp_property.image_repository:
         class: %pp_property.image_repository.class%
         factory_service: doctrine.orm.entity_manager

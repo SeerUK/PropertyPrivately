@@ -1,59 +1,114 @@
 <?php
 
+/**
+ * Property Privately API
+ *
+ * (c) Elliot Wright, 2014 <wright.elliot@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace PropertyPrivately\PropertyBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
+use PropertyPrivately\PropertyBundle\Entity\Property;
 
 /**
- * Address
+ * PropertyPrivately\PropertyBundle\Entity\Address
+ *
+ * @ORM\Entity(repositoryClass="PropertyPrivately\PropertyBundle\Entity\Repository\AddressRepository")
+ * @ORM\Table(name="PPProperty.Address")
+ * @ORM\HasLifecycleCallbacks
  */
-class Address
+class Address implements ArrayableInterface
 {
     /**
-     * @var integer
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
-     * @var string
+     * @ORM\Column(name="buildingName", type="string", length=50)
+     * @Assert\Length(
+     *  min="1",
+     *  max="50",
+     *  minMessage="Your building name must be at least {{ limit }} characters long.",
+     *  maxMessage="Your building name cannot be longer than {{ limit }} characters long."
+     * )
+     * @Assert\Type(type="string", message="Your building name value is not a valid {{ type }}.")
      */
-    private $buildingname;
+    private $buildingName;
 
     /**
-     * @var string
+     * @ORM\Column(name="address1", type="string", length=100)
+     * @Assert\Length(
+     *  min="3",
+     *  max="100",
+     *  minMessage="Your address line 1 must be at least {{ limit }} characters long.",
+     *  maxMessage="Your address line 1 cannot be longer than {{ limit }} characters long."
+     * )
+     * @Assert\Type(type="string", message="Your address line 1 value is not a valid {{ type }}.")
+     *
+     * @Assert\NotBlank(groups={"CREATE"})
      */
     private $address1;
 
     /**
-     * @var string
+     * @ORM\Column(name="address2", type="string", length=50)
+     * @Assert\Length(
+     *  min="3",
+     *  max="50",
+     *  minMessage="Your address line 2 must be at least {{ limit }} characters long.",
+     *  maxMessage="Your address line 2 cannot be longer than {{ limit }} characters long."
+     * )
+     * @Assert\Type(type="string", message="Your address line 2 value is not a valid {{ type }}.")
      */
     private $address2;
 
     /**
-     * @var string
+     * @ORM\Column(name="town", type="string", length=50)
+     * @Assert\Length(
+     *  min="1",
+     *  max="50",
+     *  minMessage="Your town must be at least {{ limit }} characters long.",
+     *  maxMessage="Your town cannot be longer than {{ limit }} characters long."
+     * )
+     * @Assert\Type(type="string", message="Your town value is not a valid {{ type }}.")
+     *
+     * @Assert\NotBlank(groups={"CREATE"})
      */
     private $town;
 
     /**
-     * @var string
+     * @ORM\Column(name="postcode", type="string", length=7)
+     * @Assert\Length(
+     *  min="5",
+     *  max="7",
+     *  minMessage="Your postcode must be at least {{ limit }} characters long.",
+     *  maxMessage="Your postcode cannot be longer than {{ limit }} characters long."
+     * )
+     * @Assert\Type(type="string", message="Your postcode value is not a valid {{ type }}.")
+     *
+     * @Assert\NotBlank(groups={"CREATE"})
      */
     private $postcode;
 
     /**
-     * @var \DateTime
+     * @ORM\OneToOne(targetEntity="Property", inversedBy="address")
+     * @ORM\JoinColumn(name="propertyId", referencedColumnName="id")
      */
-    private $lastmodified;
-
-    /**
-     * @var \PropertyPrivately\PropertyBundle\Entity\Property
-     */
-    private $propertyid;
+    private $property;
 
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -61,26 +116,26 @@ class Address
     }
 
     /**
-     * Set buildingname
+     * Set buildingName
      *
-     * @param string $buildingname
+     * @param string $buildingName
      * @return Address
      */
-    public function setBuildingname($buildingname)
+    public function setBuildingName($buildingName)
     {
-        $this->buildingname = $buildingname;
+        $this->buildingName = $buildingName;
 
         return $this;
     }
 
     /**
-     * Get buildingname
+     * Get buildingName
      *
-     * @return string 
+     * @return string
      */
-    public function getBuildingname()
+    public function getBuildingName()
     {
-        return $this->buildingname;
+        return $this->buildingName;
     }
 
     /**
@@ -99,7 +154,7 @@ class Address
     /**
      * Get address1
      *
-     * @return string 
+     * @return string
      */
     public function getAddress1()
     {
@@ -122,7 +177,7 @@ class Address
     /**
      * Get address2
      *
-     * @return string 
+     * @return string
      */
     public function getAddress2()
     {
@@ -145,7 +200,7 @@ class Address
     /**
      * Get town
      *
-     * @return string 
+     * @return string
      */
     public function getTown()
     {
@@ -168,7 +223,7 @@ class Address
     /**
      * Get postcode
      *
-     * @return string 
+     * @return string
      */
     public function getPostcode()
     {
@@ -176,48 +231,40 @@ class Address
     }
 
     /**
-     * Set lastmodified
+     * Set property
      *
-     * @param \DateTime $lastmodified
+     * @param  Property $property
      * @return Address
      */
-    public function setLastmodified($lastmodified)
+    public function setProperty(Property $property = null)
     {
-        $this->lastmodified = $lastmodified;
+        $this->property = $property;
 
         return $this;
     }
 
     /**
-     * Get lastmodified
+     * Get property
      *
-     * @return \DateTime 
+     * @return Property
      */
-    public function getLastmodified()
+    public function getProperty()
     {
-        return $this->lastmodified;
+        return $this->property;
     }
 
     /**
-     * Set propertyid
-     *
-     * @param \PropertyPrivately\PropertyBundle\Entity\Property $propertyid
-     * @return Address
+     * @see ArrayableInterface::toArray()
      */
-    public function setPropertyid(\PropertyPrivately\PropertyBundle\Entity\Property $propertyid = null)
+    public function toArray()
     {
-        $this->propertyid = $propertyid;
-
-        return $this;
-    }
-
-    /**
-     * Get propertyid
-     *
-     * @return \PropertyPrivately\PropertyBundle\Entity\Property 
-     */
-    public function getPropertyid()
-    {
-        return $this->propertyid;
+        return [
+            'id'           => $this->id,
+            'buildingName' => $this->buildingName,
+            'address1'     => $this->address1,
+            'address2'     => $this->address2,
+            'town'         => $this->town,
+            'postcode'     => $this->postcode
+        ];
     }
 }

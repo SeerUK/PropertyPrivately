@@ -13,10 +13,8 @@ namespace PropertyPrivately\PropertyBundle\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
-use Doctrine\ORM\Mapping\ManyToOne;
-use Doctrine\ORM\Mapping\OneToMany;
 use PropertyPrivately\CoreBundle\Supports\Contracts\ArrayableInterface;
+use PropertyPrivately\PropertyBundle\Entity\Address;
 use PropertyPrivately\SecurityBundle\Entity\User;
 
 /**
@@ -67,18 +65,23 @@ class Property implements ArrayableInterface
     protected $created;
 
     /**
-     * @ManyToOne(targetEntity="PropertyPrivately\SecurityBundle\Entity\User", fetch="EAGER", inversedBy="properties")
-     * @JoinColumn(name="userId", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="Address", mappedBy="property", cascade={"persist"})
+     */
+    protected $address;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="PropertyPrivately\SecurityBundle\Entity\User", fetch="EAGER", inversedBy="properties")
+     * @ORM\JoinColumn(name="userId", referencedColumnName="id")
      */
     protected $user;
 
     /**
-     * @OneToMany(targetEntity="Image", mappedBy="property")
+     * @ORM\OneToMany(targetEntity="Image", mappedBy="property")
      */
     protected $images;
 
     /**
-     * @OneToMany(targetEntity="Sale", mappedBy="property")
+     * @ORM\OneToMany(targetEntity="Sale", mappedBy="property")
      */
     protected $sales;
 
@@ -159,6 +162,29 @@ class Property implements ArrayableInterface
         $this->created = $created;
 
         return $this;
+    }
+
+    /**
+     * Set address
+     *
+     * @param Address $address
+     * @return Property
+     */
+    public function setAddress(Address $address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return Address
+     */
+    public function getAddress()
+    {
+        return $this->address;
     }
 
     /**
