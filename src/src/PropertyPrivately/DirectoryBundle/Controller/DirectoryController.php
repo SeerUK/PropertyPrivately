@@ -33,6 +33,7 @@ class DirectoryController extends Controller
         $resource->addLink('pp:auth', new HalLink($router->generate('pp_security_authentication_post')));
         $resource->addLink('pp:applications', new HalLink($router->generate('pp_security_applications_directory')));
         $resource->addLink('pp:properties', new HalLink($router->generate('pp_property_properties_directory')));
+        $resource->addLink('pp:sales', new HalLink($router->generate('pp_property_sales_directory')));
         $resource->addLink('pp:user', new HalLink($router->generate('pp_security_user_get')));
         $resource->addLink('pp:users', new HalLink($router->generate('pp_security_users_directory')));
 
